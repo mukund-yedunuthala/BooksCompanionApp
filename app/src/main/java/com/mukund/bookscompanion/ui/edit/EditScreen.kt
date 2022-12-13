@@ -50,6 +50,9 @@ fun EditScreen(
                 viewModel.updateYear(year)
 
             },
+            updateStatus = {status:String ->
+                viewModel.updateStatus(status)
+            },
             updateBook = {book:Book ->
                 viewModel.updateBook(book)
             },

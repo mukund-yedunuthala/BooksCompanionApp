@@ -11,8 +11,10 @@ import androidx.navigation.navArgument
 import com.mukund.bookscompanion.core.Constants.Companion.BOOK_ID
 import com.mukund.bookscompanion.navigation.Screen.BooksScreen
 import com.mukund.bookscompanion.navigation.Screen.UpdateBookScreen
+import com.mukund.bookscompanion.navigation.Screen.SettingsScreen
 import com.mukund.bookscompanion.ui.edit.EditScreen
 import com.mukund.bookscompanion.ui.home.HomeScreen
+import com.mukund.bookscompanion.ui.settings.SettingScreen
 import com.mukund.bookscompanion.ui.theme.BooksCompanionTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +34,9 @@ fun NavGraph(
                     HomeScreen(
                         navigateTo = {
                             navController.navigate("${UpdateBookScreen.route}/${it}")
+                        },
+                        settings = {
+                            navController.navigate(SettingsScreen.route)
                         }
                     )
                 }
@@ -50,6 +55,13 @@ fun NavGraph(
                             navController.popBackStack()
                         }
                     )
+                }
+                composable(
+                    route = SettingsScreen.route,
+                ) {
+                    SettingScreen {
+                        navController.popBackStack()
+                    }
                 }
             }
         }

@@ -13,6 +13,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mukund.bookscompanion.core.Constants
 import com.mukund.bookscompanion.domain.model.Book
+import com.mukund.bookscompanion.ui.home.components.CategoryRow
 import com.mukund.bookscompanion.ui.home.components.CustomAdditionTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,10 +25,12 @@ fun UpdateContent(
     updateAuthor: (author: String) -> Unit,
     updateYear: (year: String) -> Unit,
     updateBook: (book: Book) -> Unit,
-    backPress: () -> Unit
-    ) {
+    backPress: () -> Unit,
+    updateStatus: (String) -> Unit
+) {
     var yearString by rememberSaveable { mutableStateOf("") }
     yearString = book.year.toString()
+    var status : String?
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -69,6 +72,8 @@ fun UpdateContent(
                 },
                 keyboardType = KeyboardType.Number
             )
+            status = CategoryRow(current = book.status)
+            status?.let { updateStatus(it) }
             Button(
                 onClick = {
                     updateBook(book)

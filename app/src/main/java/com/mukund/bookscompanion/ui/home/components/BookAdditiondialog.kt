@@ -34,7 +34,7 @@ fun BookAdditionDialog(
         var title by remember { mutableStateOf(NO_VALUE) }
         var author by remember { mutableStateOf(NO_VALUE) }
         var year by remember { mutableStateOf(NO_VALUE) }
-
+        var category by remember { mutableStateOf(NO_VALUE) }
         Dialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
             onDismissRequest = closeDialog,
@@ -93,6 +93,7 @@ fun BookAdditionDialog(
                             },
                             keyboardType = KeyboardType.Number
                         )
+                        CategoryRow()?.let { category = it }
                         Button(
                             onClick = {
                                 if (
@@ -100,7 +101,7 @@ fun BookAdditionDialog(
                                             author.isNotEmpty() and
                                             year.isNotEmpty()
                                         ) {
-                                    val book = Book(0, title, author, year = year.toLong())
+                                    val book = Book(0, title, author, year = year.toLong(), status = category)
                                     addBook(book)
                                     closeDialog()
                                 }
@@ -109,7 +110,7 @@ fun BookAdditionDialog(
                                 .fillMaxWidth()
                                 .padding(10.dp),
                             shape = RoundedCornerShape(20.dp),
-                            contentPadding = PaddingValues(10.dp)
+                            contentPadding = PaddingValues(15.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Done,
@@ -120,7 +121,7 @@ fun BookAdditionDialog(
                             )
                             Text(
                                 text = ADD.uppercase(),
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier
                                     .wrapContentWidth()
                             )

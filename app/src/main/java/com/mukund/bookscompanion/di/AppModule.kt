@@ -24,7 +24,9 @@ class AppModule {
         context = context,
         BooksDatabase::class.java,
         name = BOOK_TABLE
-    ).build()
+    )
+        .fallbackToDestructiveMigration()
+        .build()
 
     @Provides
     fun provideDao(

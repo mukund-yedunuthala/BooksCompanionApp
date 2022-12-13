@@ -10,5 +10,6 @@ data class Book(
     val id: Int,
     val title: String,
     val author: String,
-    val year: Long
+    val year: Long,
+    val status: String
 )

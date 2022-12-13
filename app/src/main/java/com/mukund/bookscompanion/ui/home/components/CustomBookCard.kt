@@ -81,6 +81,13 @@ fun CustomBookCard(
                     modifier = Modifier.fillMaxWidth()
 
                 ) {
+                    SuggestionChip(
+                        onClick = {},
+                        label = { Text("Status: ${book.status.trim()}") },
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .padding(10.dp)
+                    )
                     AssistChip(
                         onClick = { showDeleteDialog.value = !showDeleteDialog.value },
                         label = { Text("Delete".uppercase()) },

@@ -18,7 +18,7 @@ class BooksViewModel @Inject constructor(
     private val repository: BooksRepository
 ) : ViewModel() {
 
-    var book by mutableStateOf(Book(0, NO_VALUE, NO_VALUE, 0))
+    var book by mutableStateOf(Book(0, NO_VALUE, NO_VALUE, 0, NO_VALUE))
         private set
 
     var openDialog by mutableStateOf(false)
@@ -53,6 +53,10 @@ class BooksViewModel @Inject constructor(
         if (year.isNotEmpty()) {
             book = book.copy(year = year.toLong())
         }
+    }
+
+    fun updateStatus(status: String) {
+        book = book.copy(status = status.trim())
     }
 
     fun openDialog() {
