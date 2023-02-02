@@ -1,0 +1,11 @@
+package com.mukund.bookcompanion.navigation
+
+import com.mukund.bookcompanion.core.Constants.Companion.BOOKS_SCREEN
+import com.mukund.bookcompanion.core.Constants.Companion.SETTINGS_SCREEN
+import com.mukund.bookcompanion.core.Constants.Companion.UPDATE_BOOK_SCREEN
+
+sealed class Screen(val route: String) {
+    object BooksScreen: Screen(BOOKS_SCREEN)
+    object UpdateBookScreen: Screen(UPDATE_BOOK_SCREEN)
+    object SettingsScreen: Screen(SETTINGS_SCREEN)
+}
