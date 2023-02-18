@@ -10,6 +10,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -28,7 +31,8 @@ fun BookAdditionDialog(
     paddingValues: PaddingValues,
     openDialog: Boolean,
     closeDialog: () -> Unit,
-    addBook: (book : Book) -> Unit
+    addBook: (book: Book) -> Unit,
+    haptic: HapticFeedback
 ) {
     if (openDialog) {
         var title by remember { mutableStateOf(NO_VALUE) }
@@ -93,7 +97,7 @@ fun BookAdditionDialog(
                             },
                             keyboardType = KeyboardType.Number
                         )
-                        CategoryRow()?.let { category = it }
+                        CategoryRow().let { category = it }
                         Button(
                             onClick = {
                                 if (
@@ -102,6 +106,7 @@ fun BookAdditionDialog(
                                             year.isNotEmpty()
                                         ) {
                                     val book = Book(0, title, author, year = year.toLong(), status = category)
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     addBook(book)
                                     closeDialog()
                                 }
@@ -116,14 +121,15 @@ fun BookAdditionDialog(
                                 imageVector = Icons.Filled.Done,
                                 contentDescription = "Save this book",
                                 modifier = Modifier
-                                    .size(ButtonDefaults.IconSize)
+                                    .size(20.dp)
                                     .wrapContentWidth()
                             )
                             Text(
                                 text = ADD.uppercase(),
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier
-                                    .wrapContentWidth()
+                                    .wrapContentWidth(),
+                                fontWeight = FontWeight.Bold
                             )
                         }
                     }

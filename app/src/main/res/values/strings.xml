@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Book Companion</string>
+    <string name="Attribution">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
+    <string name="Source">https://github.com/mukund-yedunuthala/BooksCompanionApp</string>
 </resources>

@@ -1,45 +1,68 @@
 package com.mukund.bookcompanion.ui.home.components
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.mukund.bookcompanion.R
+import com.mukund.bookcompanion.ui.settings.mToast
 
 @ExperimentalMaterial3Api
 @Composable
-fun CustomHomeTopBar(settings: () -> Unit): Int {
-    var state by remember { mutableStateOf(0) }
-    val titles = listOf("All", "Read", "Unread")
+fun CustomHomeTopBar(settings: () -> Unit, haptic: HapticFeedback, context: Context): Unit {
+    //var scopeState by remember { mutableStateOf(0) }
+    //val titles = listOf("All", "Read", "Unread")
     Column {
         LargeTopAppBar(
                 title = {
                     Text(
-                        text = "Books Companion",
+                        text = "Book Companion",
                         fontWeight = FontWeight.W400,
                         style = MaterialTheme.typography.headlineLarge
                     )
                 },
                 actions = {
-                    IconButton(onClick = { settings() }) {
+                    IconButton(onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        mToast(context, "Coming soon!")
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.sort),
+                            contentDescription = "Sort",
+                            modifier = Modifier.size(25.dp)
+                        )
+                    }
+                    IconButton(onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        settings()
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings")
+                            contentDescription = "Settings",
+                            modifier = Modifier.size(25.dp)
+                        )
                     }
                 }
             )
-        TabRow(selectedTabIndex = state) {
+        /*TabRow(selectedTabIndex = scopeState) {
             titles.forEachIndexed { index, title ->
                 Tab(
-                    selected = state == index,
-                    onClick = { state = index },
+                    selected = scopeState == index,
+                    onClick = { scopeState = index },
                     text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) }
                 )
             }
-        }
+        }*/
     }
-    return state
+    //return scopeState
 }

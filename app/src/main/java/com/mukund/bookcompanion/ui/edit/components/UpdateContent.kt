@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.core.Constants
@@ -83,20 +84,21 @@ fun UpdateContent(
                     .fillMaxWidth()
                     .padding(10.dp),
                 shape = RoundedCornerShape(20.dp),
-                contentPadding = PaddingValues(10.dp)
+                contentPadding = PaddingValues(15.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Done,
                     contentDescription = "Save this book",
                     modifier = Modifier
-                        .size(ButtonDefaults.IconSize)
+                        .size(20.dp)
                         .wrapContentWidth()
                 )
                 Text(
                     text = Constants.UPDATE.uppercase(),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
-                        .wrapContentWidth()
+                        .wrapContentWidth(),
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
