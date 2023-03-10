@@ -30,10 +30,11 @@ fun SettingScreen(backPress: () -> Boolean, libraries: () -> Unit) {
     val uriHandler = LocalUriHandler.current
     val attribution = stringResource(id = R.string.Attribution)
     val source = stringResource(id = R.string.Source)
+    val policy = stringResource(id = R.string.PrivacyPolicy)
     val context = LocalContext.current
     var openSourceDialog = remember { mutableStateOf(false) }
     var openLicenseDialog = remember { mutableStateOf(false) }
-
+    var openPrivacyDialog = remember { mutableStateOf(value = false) }
     Scaffold(
         topBar = {
             LargeTopAppBar(
@@ -92,9 +93,7 @@ fun SettingScreen(backPress: () -> Boolean, libraries: () -> Unit) {
                         subText = "Open source libraries"
                     )
                     CustomEntryButton(
-                        onClick = {
-                            mToast(context, "Coming Soon!")
-                        },
+                        onClick = {openPrivacyDialog.value = true},
                         painter = painterResource(id = R.drawable.policy),
                         contentDescription = "Privacy Policy",
                         leadText = "Privacy Policy"
@@ -108,6 +107,9 @@ fun SettingScreen(backPress: () -> Boolean, libraries: () -> Unit) {
     }
     if (openLicenseDialog.value) {
         CustomURLDialog(openLicenseDialog, attribution, uriHandler)
+    }
+    if (openPrivacyDialog.value) {
+        CustomURLDialog(openPrivacyDialog, policy, uriHandler)
     }
 
 }

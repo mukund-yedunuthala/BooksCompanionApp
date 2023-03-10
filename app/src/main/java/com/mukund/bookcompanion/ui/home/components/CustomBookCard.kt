@@ -1,8 +1,8 @@
 package com.mukund.bookcompanion.ui.home.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -18,24 +18,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.domain.model.Book
 
+@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun CustomBookCard(
     book: Book,
     deleteBook: (book: Book) -> Unit,
-    navigateTo: (bookId: Int) -> Unit
-    ) {
+    navigateTo: (bookId: Int) -> Unit,
+    animModifier: Modifier
+) {
     var expandedCard by remember { mutableStateOf(false) }
     val showDeleteDialog = remember { mutableStateOf(false) }
     Card(
-        modifier = Modifier
+        modifier = animModifier
             .padding(16.dp, 8.dp)
             .animateContentSize(
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = LinearOutSlowInEasing
-                )
-            ),
+                animationSpec = spring(dampingRatio = 1f)
+            )
+        ,
         shape = RoundedCornerShape(10.dp),
         onClick = { expandedCard = !expandedCard }
     ) {

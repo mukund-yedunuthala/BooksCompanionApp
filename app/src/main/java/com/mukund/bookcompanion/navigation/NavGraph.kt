@@ -44,7 +44,7 @@ fun NavGraph(
                     },
                     exitTransition = {
                         slideOutHorizontally(
-                            targetOffsetX = { -300 },
+                            targetOffsetX = { 300 },
                             animationSpec = tween(300, easing = FastOutSlowInEasing)
                         ) +
                                 fadeOut(animationSpec = tween(300))
@@ -75,7 +75,7 @@ fun NavGraph(
                     },
                     popExitTransition = {
                         slideOutHorizontally(
-                            targetOffsetX = { -300 },
+                            targetOffsetX = { 300 },
                             animationSpec = tween(300, easing = FastOutSlowInEasing)
                         ) +
                                 fadeOut(animationSpec = tween(300))
@@ -100,7 +100,7 @@ fun NavGraph(
                     },
                     popExitTransition = {
                         slideOutHorizontally(
-                            targetOffsetX = { -300 },
+                            targetOffsetX = { 300 },
                             animationSpec = tween(300, easing = FastOutSlowInEasing)
                         ) +
                                 fadeOut(animationSpec = tween(300))
@@ -121,7 +121,7 @@ fun NavGraph(
                     route = LibrariesScreen.route,
                     popExitTransition = {
                         slideOutHorizontally(
-                            targetOffsetX = { -300 },
+                            targetOffsetX = { 300 },
                             animationSpec = tween(300, easing = FastOutSlowInEasing)
                         ) +
                                 fadeOut(animationSpec = tween(300))
