@@ -12,9 +12,11 @@ import com.mukund.bookcompanion.core.Constants.Companion.BOOK_ID
 import com.mukund.bookcompanion.navigation.Screen.BooksScreen
 import com.mukund.bookcompanion.navigation.Screen.UpdateBookScreen
 import com.mukund.bookcompanion.navigation.Screen.SettingsScreen
+import com.mukund.bookcompanion.navigation.Screen.LibrariesScreen
 import com.mukund.bookcompanion.ui.edit.EditScreen
 import com.mukund.bookcompanion.ui.home.HomeScreen
 import com.mukund.bookcompanion.ui.settings.SettingScreen
+import com.mukund.bookcompanion.ui.settings.components.LibsScreen
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +61,14 @@ fun NavGraph(
                 composable(
                     route = SettingsScreen.route,
                 ) {
-                    SettingScreen {
+                    SettingScreen (
+                        backPress = { navController.popBackStack() }
+                    ) { navController.navigate(LibrariesScreen.route) }
+                }
+                composable(
+                    route = LibrariesScreen.route
+                ) {
+                    LibsScreen {
                         navController.popBackStack()
                     }
                 }
