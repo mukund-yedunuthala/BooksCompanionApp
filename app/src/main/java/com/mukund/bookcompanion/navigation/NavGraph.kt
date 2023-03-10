@@ -34,7 +34,21 @@ fun NavGraph(
                 startDestination = BooksScreen.route
             ) {
                 composable(
-                    route = BooksScreen.route
+                    route = BooksScreen.route,
+                    popEnterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = { 300 },
+                            animationSpec = tween(300, easing = FastOutSlowInEasing)
+                        ) +
+                                fadeIn(animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = { -300 },
+                            animationSpec = tween(300, easing = FastOutSlowInEasing)
+                        ) +
+                                fadeOut(animationSpec = tween(300))
+                    }
                 ) {
                     HomeScreen(
                         navigateTo = {
@@ -50,8 +64,22 @@ fun NavGraph(
                     arguments = listOf(
                         navArgument(BOOK_ID) {
                             type = IntType
-                        }
-                    )
+                        },
+                    ),
+                    enterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = { 300 },
+                            animationSpec = tween(300, easing = FastOutSlowInEasing)
+                        ) +
+                                fadeIn(animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = { -300 },
+                            animationSpec = tween(300, easing = FastOutSlowInEasing)
+                        ) +
+                                fadeOut(animationSpec = tween(300))
+                    }
                 ) { navBackStackEntry ->
                     val bookId = navBackStackEntry.arguments?.getInt(BOOK_ID) ?: 0
                     EditScreen(
@@ -65,42 +93,42 @@ fun NavGraph(
                     route = SettingsScreen.route,
                     enterTransition = {
                         slideInHorizontally(
-                            initialOffsetX = {300},
+                            initialOffsetX = { 300 },
                             animationSpec = tween(300, easing = FastOutSlowInEasing)
                         ) +
                                 fadeIn(animationSpec = tween(300))
                     },
-                    exitTransition = {
+                    popExitTransition = {
                         slideOutHorizontally(
-                            targetOffsetX = {-300},
+                            targetOffsetX = { -300 },
                             animationSpec = tween(300, easing = FastOutSlowInEasing)
                         ) +
-                        fadeOut(animationSpec = tween(300))
+                                fadeOut(animationSpec = tween(300))
                     },
                     popEnterTransition = {
                         slideInHorizontally(
-                            initialOffsetX = {300},
+                            initialOffsetX = { 300 },
                             animationSpec = tween(300, easing = FastOutSlowInEasing)
                         ) +
-                        fadeIn(animationSpec = tween(300))
+                                fadeIn(animationSpec = tween(300))
                     }
                 ) {
-                    SettingScreen (
+                    SettingScreen(
                         backPress = { navController.popBackStack() }
                     ) { navController.navigate(LibrariesScreen.route) }
                 }
                 composable(
                     route = LibrariesScreen.route,
-                    exitTransition = {
+                    popExitTransition = {
                         slideOutHorizontally(
-                            targetOffsetX = {-300},
+                            targetOffsetX = { -300 },
                             animationSpec = tween(300, easing = FastOutSlowInEasing)
                         ) +
                                 fadeOut(animationSpec = tween(300))
                     },
                     enterTransition = {
                         slideInHorizontally(
-                            initialOffsetX = {300},
+                            initialOffsetX = { 300 },
                             animationSpec = tween(300, easing = FastOutSlowInEasing)
                         ) +
                                 fadeIn(animationSpec = tween(300))
