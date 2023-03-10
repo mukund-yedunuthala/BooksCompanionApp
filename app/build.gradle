@@ -78,6 +78,8 @@ dependencies {
     // AboutLibraries
     implementation "com.mikepenz:aboutlibraries-core:${latestAboutLibsRelease}"
     implementation "com.mikepenz:aboutlibraries-compose:${latestAboutLibsRelease}"
+    // Navigation Animation
+    implementation "com.google.accompanist:accompanist-navigation-animation:${accompanistNavigation}"
 }
 kapt {
     correctErrorTypes true
