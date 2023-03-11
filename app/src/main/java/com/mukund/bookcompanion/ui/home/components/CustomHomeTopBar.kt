@@ -1,13 +1,14 @@
 package com.mukund.bookcompanion.ui.home.components
 
 import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -19,7 +20,11 @@ import com.mukund.bookcompanion.ui.settings.mToast
 
 @ExperimentalMaterial3Api
 @Composable
-fun CustomHomeTopBar(settings: () -> Unit, haptic: HapticFeedback, context: Context): Unit {
+fun CustomHomeTopBar(
+    settings: () -> Unit,
+    haptic: HapticFeedback,
+    context: Context,
+): Unit {
     //var scopeState by remember { mutableStateOf(0) }
     //val titles = listOf("All", "Read", "Unread")
     Column {
@@ -44,7 +49,7 @@ fun CustomHomeTopBar(settings: () -> Unit, haptic: HapticFeedback, context: Cont
                     }
                     IconButton(onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        settings()
+                        settings.invoke()
                     }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
@@ -54,15 +59,5 @@ fun CustomHomeTopBar(settings: () -> Unit, haptic: HapticFeedback, context: Cont
                     }
                 }
             )
-        /*TabRow(selectedTabIndex = scopeState) {
-            titles.forEachIndexed { index, title ->
-                Tab(
-                    selected = scopeState == index,
-                    onClick = { scopeState = index },
-                    text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) }
-                )
-            }
-        }*/
     }
-    //return scopeState
 }

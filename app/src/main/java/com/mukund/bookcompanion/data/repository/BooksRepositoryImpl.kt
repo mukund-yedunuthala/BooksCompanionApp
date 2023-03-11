@@ -1,19 +1,20 @@
 package com.mukund.bookcompanion.data.repository
 
-import com.mukund.bookcompanion.data.network.BooksDao
+import com.mukund.bookcompanion.data.network.BookDbProvider
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.domain.repository.BooksRepository
 
 class BooksRepositoryImpl(
-    private val booksDao: BooksDao
+    private val provider: BookDbProvider
 ) : BooksRepository {
-    override fun getBooksFromRoom() = booksDao.getBooks()
+    override fun getBooksFromRoom() = provider.BooksDao().getBooks()
 
-    override fun getBookFromRoom(id: Int) = booksDao.getBook(id)
+    override fun getBookFromRoom(id: Int) = provider.BooksDao().getBook(id)
 
-    override fun addBookToRoom(book: Book) = booksDao.addBook(book)
+    override fun addBookToRoom(book: Book) = provider.BooksDao().addBook(book)
 
-    override fun updateBookInRoom(book: Book) = booksDao.updateBook(book)
+    override fun updateBookInRoom(book: Book) = provider.BooksDao().updateBook(book)
 
-    override fun deleteBookFromRoom(book: Book) = booksDao.deleteBook(book)
+    override fun deleteBookFromRoom(book: Book) = provider.BooksDao().deleteBook(book)
+
 }

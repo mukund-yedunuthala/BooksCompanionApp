@@ -109,3 +109,41 @@ fun CustomEntryButton (
         }
     }
 }
+@Composable
+fun CustomEntryButton (
+    onClick: () -> Unit = {},
+    leadText : String,
+    subText : String? = null
+) {
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier
+            .height(BUTTON_HEIGHT),
+        shape = RectangleShape,
+    ) {
+        Column(
+            Modifier
+                .align(Alignment.CenterVertically)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = leadText,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
+                    .padding(20.dp, bottom = 2.dp),
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Left
+            )
+            if (subText != null) {
+                Text(
+                    text = subText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .padding(20.dp, top = 3.dp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Left
+                )
+            }
+        }
+    }
+}

@@ -1,40 +1,60 @@
 package com.mukund.bookcompanion.di
 
-import android.content.Context
-import androidx.room.Room
-import com.mukund.bookcompanion.core.Constants.Companion.BOOK_TABLE
-import com.mukund.bookcompanion.data.network.BooksDao
-import com.mukund.bookcompanion.data.network.BooksDatabase
+import android.app.Application
+import com.mukund.bookcompanion.data.network.BookDbProvider
 import com.mukund.bookcompanion.data.repository.BooksRepositoryImpl
+import com.mukund.bookcompanion.domain.repository.BooksBackupRepo
 import com.mukund.bookcompanion.domain.repository.BooksRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.sync.Mutex
+import java.util.concurrent.Executors
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
     @Provides
-    fun provideDb(
-        @ApplicationContext
-        context: Context
-    ) = Room.databaseBuilder(
-        context = context,
-        BooksDatabase::class.java,
-        name = BOOK_TABLE
+    @Singleton
+    fun provideBooksDatabaseProvider(application: Application) : BookDbProvider = BookDbProvider(application)
+
+    @Provides
+    @Singleton
+    fun provideCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob())
+
+    @Provides
+    fun provideMutex(): Mutex = Mutex()
+
+    @Provides
+    @Singleton
+    fun provideExecutorCoroutineDispatcher(): ExecutorCoroutineDispatcher
+        = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+
+    @Provides
+    @Singleton
+    fun provideBooksRepository(bookDbProvider: BookDbProvider) : BooksRepositoryImpl
+        = BooksRepositoryImpl(bookDbProvider)
+
+    @Provides
+    @Singleton
+    fun provideBooksBackupRepo(
+        bookDbProvider: BookDbProvider,
+        application: Application,
+        mutex: Mutex,
+        coroutineScope: CoroutineScope,
+        executorCoroutineDispatcher: ExecutorCoroutineDispatcher,
+    ): BooksBackupRepo = BooksBackupRepo(
+        provider = bookDbProvider,
+        context = application,
+        mutex = mutex,
+        scope = coroutineScope,
+        dispatcher = executorCoroutineDispatcher
     )
-        .fallbackToDestructiveMigration()
-        .build()
-
-    @Provides
-    fun provideDao(
-        booksDatabase: BooksDatabase
-    ) = booksDatabase.booksDao()
-
-    @Provides
-    fun provideRepo(
-        booksDao: BooksDao
-    ) : BooksRepository = BooksRepositoryImpl(booksDao = booksDao)
 }

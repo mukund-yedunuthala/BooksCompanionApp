@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'com.mikepenz.aboutlibraries.plugin'
 }
 android {
     namespace 'com.mukund.bookcompanion'
@@ -10,16 +11,16 @@ android {
 
     defaultConfig {
         applicationId "com.mukund.bookcompanion"
-        minSdk 33
+        minSdk 23
         targetSdk 33
-        versionCode 5
-        versionName '0.0.1'
+        versionCode 11
+        versionName '0.5.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
-        versionNameSuffix '-alpha03'
+        versionNameSuffix '-01'
     }
 
     buildTypes {
@@ -71,10 +72,14 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     // Compose
-    implementation 'androidx.compose.material3:material3:1.1.0-alpha06'
-    debugImplementation "androidx.compose.ui:ui-tooling:1.3.3"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.3.3"
-
+    implementation 'androidx.compose.material3:material3:1.1.0-alpha07'
+    debugImplementation "androidx.compose.ui:ui-tooling:1.4.0-rc01"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.4.0-rc01"
+    // AboutLibraries
+    implementation "com.mikepenz:aboutlibraries-core:${latestAboutLibsRelease}"
+    implementation "com.mikepenz:aboutlibraries-compose:${latestAboutLibsRelease}"
+    // Navigation Animation
+    implementation "com.google.accompanist:accompanist-navigation-animation:${accompanistNavigation}"
 }
 kapt {
     correctErrorTypes true

@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -24,7 +23,6 @@ import com.mukund.bookcompanion.core.Constants.Companion.BOOK_TITLE
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.core.Constants.Companion.YEAR
 import com.mukund.bookcompanion.domain.model.Book
-@OptIn(ExperimentalComposeUiApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun BookAdditionDialog(
@@ -32,13 +30,16 @@ fun BookAdditionDialog(
     openDialog: Boolean,
     closeDialog: () -> Unit,
     addBook: (book: Book) -> Unit,
-    haptic: HapticFeedback
+    haptic: HapticFeedback,
+    books: List<Book>
 ) {
     if (openDialog) {
         var title by remember { mutableStateOf(NO_VALUE) }
         var author by remember { mutableStateOf(NO_VALUE) }
         var year by remember { mutableStateOf(NO_VALUE) }
         var category by remember { mutableStateOf(NO_VALUE) }
+        var dupeFlag = remember { mutableStateOf(false) }
+
         Dialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
             onDismissRequest = closeDialog,
@@ -100,10 +101,10 @@ fun BookAdditionDialog(
                         CategoryRow().let { category = it }
                         Button(
                             onClick = {
+                                dupeFlag.value = false
                                 if (
-                                    title.isNotEmpty() and
-                                            author.isNotEmpty() and
-                                            year.isNotEmpty()
+                                    emptyCheck(title, author, year) and
+                                            !dupeCheck(title, author, year, books, dupeFlag)
                                         ) {
                                     val book = Book(0, title, author, year = year.toLong(), status = category)
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -137,4 +138,34 @@ fun BookAdditionDialog(
             }
         }
     }
+}
+
+fun emptyCheck(title: String, author: String, year: String): Boolean {
+    return (
+            title.isNotEmpty() and
+                    author.isNotEmpty() and
+                    year.isNotEmpty()
+            )
+}
+
+fun dupeCheck(
+    title: String,
+    author: String,
+    year: String,
+    allBooks: List<Book>,
+    dupeFlag: MutableState<Boolean>
+): Boolean {
+    for (book in allBooks) {
+        if (
+            (book.title == title) and
+            (book.author == author) and
+            (book.year.toString() == year)
+        ) {
+            dupeFlag.value = true
+        }
+    }
+    if (dupeFlag.value) {
+        /*TODO*/
+    }
+    return dupeFlag.value
 }
