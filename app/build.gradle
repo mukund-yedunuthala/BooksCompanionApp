@@ -11,9 +11,9 @@ android {
 
     defaultConfig {
         applicationId "com.mukund.bookcompanion"
-        minSdk 29
+        minSdk 23
         targetSdk 33
-        versionCode 9
+        versionCode 10
         versionName '0.0.1'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -80,9 +80,7 @@ dependencies {
     implementation "com.mikepenz:aboutlibraries-compose:${latestAboutLibsRelease}"
     // Navigation Animation
     implementation "com.google.accompanist:accompanist-navigation-animation:${accompanistNavigation}"
-    // Room Backup
     implementation 'de.raphaelebner:roomdatabasebackup:1.0.0-beta11'
-
 }
 kapt {
     correctErrorTypes true

@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.core
 
+import kotlin.system.measureTimeMillis
+
 class Constants {
     companion object {
         //Room
@@ -31,5 +33,8 @@ class Constants {
         const val AUTHOR = "Type the author name..."
         const val YEAR = "Type the year of publication..."
         const val NO_VALUE = ""
+
+        // export
+        var DEFAULT_EXPORT_NAME = "export.db"
     }
 }

@@ -1,34 +1,46 @@
 package com.mukund.bookcompanion.ui.home
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
+import com.mukund.bookcompanion.data.repository.BooksRepositoryImpl
 import com.mukund.bookcompanion.domain.model.Book
-import com.mukund.bookcompanion.domain.repository.BooksRepository
+import com.mukund.bookcompanion.domain.repository.BooksBackupRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BooksViewModel @Inject constructor(
-    private val repository: BooksRepository
+    private val repository: BooksRepositoryImpl,
+    private val backup: BooksBackupRepo
 ) : ViewModel() {
 
+    var books: List<Book> by mutableStateOf(emptyList())
     var book by mutableStateOf(Book(0, NO_VALUE, NO_VALUE, 0, NO_VALUE))
         private set
-
+    private var observeBooksJob: Job? = null
+    init {
+        observe()
+    }
     var openDialog by mutableStateOf(false)
 
-    val books = repository.getBooksFromRoom()
 
     fun getBook(id: Int) = viewModelScope.launch(Dispatchers.IO) {
         book = repository.getBookFromRoom(id)
     }
-
+    fun getBooks() = viewModelScope.launch(Dispatchers.IO) {
+        repository.getBooksFromRoom().collectLatest {books ->
+            this@BooksViewModel.books = books
+        }
+    }
     fun addBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
         repository.addBookToRoom(book)
     }
@@ -65,5 +77,32 @@ class BooksViewModel @Inject constructor(
 
     fun closeDialog() {
         openDialog = false
+    }
+
+    fun onExport(uri: Uri) {
+        viewModelScope.launch {
+            backup.export(uri)
+            observe()
+        }
+    }
+
+    fun onImport(uri: Uri) {
+        viewModelScope.launch {
+            backup.import(uri)
+            observe()
+        }
+    }
+
+    private fun observe() {
+        observeBooks()
+    }
+
+    private fun observeBooks() {
+        observeBooksJob?.cancel()
+        observeBooksJob = viewModelScope.launch {
+            repository.getBooksFromRoom().collectLatest { books ->
+                this@BooksViewModel.books = books
+            }
+        }
     }
 }
