@@ -10,6 +10,7 @@ class Constants {
         const val UPDATE_BOOK_SCREEN = "Update book"
         const val SETTINGS_SCREEN = "Settings"
         const val LIBRARIES_SCREEN = "Libraries"
+        const val OVERVIEW_SCREEN = "Overview"
 
 
         //Arguments

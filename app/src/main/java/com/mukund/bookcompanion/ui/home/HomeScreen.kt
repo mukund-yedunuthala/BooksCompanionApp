@@ -64,7 +64,8 @@ fun HomeScreen(
                 addBook = { book ->
                     viewModel.addBook(book)
                 },
-                haptic
+                haptic,
+                books = books
             )
         }
     }

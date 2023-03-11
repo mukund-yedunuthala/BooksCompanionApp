@@ -13,7 +13,7 @@ android {
         applicationId "com.mukund.bookcompanion"
         minSdk 29
         targetSdk 33
-        versionCode 8
+        versionCode 9
         versionName '0.0.1'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

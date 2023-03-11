@@ -98,6 +98,13 @@ fun NavGraph(
                         ) +
                                 fadeIn(animationSpec = tween(300))
                     },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = { 300 },
+                            animationSpec = tween(300, easing = FastOutSlowInEasing)
+                        ) +
+                                fadeOut(animationSpec = tween(300))
+                    },
                     popExitTransition = {
                         slideOutHorizontally(
                             targetOffsetX = { 300 },

@@ -68,7 +68,7 @@ fun SettingScreen(backPress: () -> Boolean, libraries: () -> Unit) {
                         imageVector = Icons.Outlined.Info,
                         contentDescription = "App version",
                         leadText = "App Version",
-                        subText = BuildConfig.VERSION_NAME
+                        subText = BuildConfig.VERSION_NAME + " (${BuildConfig.VERSION_CODE})"
                     )
                     CustomEntryButton(
                         onClick = {openLicenseDialog.value = true},
