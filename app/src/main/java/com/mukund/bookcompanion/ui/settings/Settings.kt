@@ -26,7 +26,11 @@ import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(backPress: () -> Boolean, libraries: () -> Unit) {
+fun SettingScreen(
+    backPress: () -> Boolean,
+    libraries: () -> Unit,
+    backup: () -> Unit
+) {
     val uriHandler = LocalUriHandler.current
     val attribution = stringResource(id = R.string.Attribution)
     val source = stringResource(id = R.string.Source)
@@ -61,6 +65,12 @@ fun SettingScreen(backPress: () -> Boolean, libraries: () -> Unit) {
                     .padding(paddingValues)
             ) {
                 item {
+                    CustomEntryButton(
+                        onClick = { backup.invoke() },
+                        leadText = "Backup & Restore",
+                        subText = null
+                    )
+                    Divider()
                     CustomEntryButton(
                         onClick = {
                             mToast(context, "Coming Soon!")
@@ -121,7 +131,7 @@ fun mToast(context: Context, text : String){
 @Composable
 fun SettingsPreview1() {
     BooksCompanionTheme() {
-        SettingScreen (backPress = { false }) { false }
+        SettingScreen (backPress = { false }, {}, {})
     }
 }
 
@@ -129,6 +139,6 @@ fun SettingsPreview1() {
 @Composable
 fun SettingsPreview2() {
     BooksCompanionTheme() {
-        SettingScreen (backPress = { false }) { false }
+        SettingScreen (backPress = { false }, {}, {})
     }
 }

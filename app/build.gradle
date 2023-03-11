@@ -80,6 +80,9 @@ dependencies {
     implementation "com.mikepenz:aboutlibraries-compose:${latestAboutLibsRelease}"
     // Navigation Animation
     implementation "com.google.accompanist:accompanist-navigation-animation:${accompanistNavigation}"
+    // Room Backup
+    implementation 'de.raphaelebner:roomdatabasebackup:1.0.0-beta11'
+
 }
 kapt {
     correctErrorTypes true

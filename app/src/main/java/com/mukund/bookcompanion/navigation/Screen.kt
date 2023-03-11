@@ -1,5 +1,6 @@
 package com.mukund.bookcompanion.navigation
 
+import com.mukund.bookcompanion.core.Constants.Companion.BACKUP_SCREEN
 import com.mukund.bookcompanion.core.Constants.Companion.BOOKS_SCREEN
 import com.mukund.bookcompanion.core.Constants.Companion.LIBRARIES_SCREEN
 import com.mukund.bookcompanion.core.Constants.Companion.OVERVIEW_SCREEN
@@ -12,4 +13,5 @@ sealed class Screen(val route: String) {
     object SettingsScreen: Screen(SETTINGS_SCREEN)
     object LibrariesScreen: Screen(LIBRARIES_SCREEN)
     object OverviewScreen: Screen(OVERVIEW_SCREEN)
+    object BackupScreen: Screen(BACKUP_SCREEN)
 }

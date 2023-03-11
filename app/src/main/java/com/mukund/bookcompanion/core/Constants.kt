@@ -11,6 +11,7 @@ class Constants {
         const val SETTINGS_SCREEN = "Settings"
         const val LIBRARIES_SCREEN = "Libraries"
         const val OVERVIEW_SCREEN = "Overview"
+        const val BACKUP_SCREEN = "Backup"
 
 
         //Arguments

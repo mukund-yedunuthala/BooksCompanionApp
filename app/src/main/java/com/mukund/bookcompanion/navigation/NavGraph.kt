@@ -1,8 +1,6 @@
 package com.mukund.bookcompanion.navigation
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -17,6 +15,7 @@ import com.mukund.bookcompanion.ui.edit.EditScreen
 import com.mukund.bookcompanion.ui.home.HomeScreen
 import com.mukund.bookcompanion.ui.overview.Overview
 import com.mukund.bookcompanion.ui.settings.SettingScreen
+import com.mukund.bookcompanion.ui.settings.backup.Backup_Screen
 import com.mukund.bookcompanion.ui.settings.components.LibsScreen
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 
@@ -74,8 +73,10 @@ fun NavGraph(
                     popEnterTransition = customPopEnterTransition()
                 ) {
                     SettingScreen(
-                        backPress = { navController.popBackStack() }
-                    ) { navController.navigate(LibrariesScreen.route) }
+                        backPress = { navController.popBackStack() },
+                        libraries = { navController.navigate(LibrariesScreen.route) },
+                        backup = { navController.navigate(BackupScreen.route) }
+                    )
                 }
                 // OSS LIBS
                 composable(
@@ -108,6 +109,14 @@ fun NavGraph(
                             navController.navigate("${UpdateBookScreen.route}/${bookId}")
                         }
                     )
+                }
+                // BACKUP
+                composable(
+                    route = BackupScreen.route,
+                    popExitTransition = customPopExitTransition(),
+                    enterTransition = customEnterTransition()
+                ) {
+                    Backup_Screen { navController.popBackStack() }
                 }
             }
         }
