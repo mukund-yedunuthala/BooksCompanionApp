@@ -12,12 +12,10 @@ import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.mukund.bookcompanion.core.Constants.Companion.BOOK_ID
-import com.mukund.bookcompanion.navigation.Screen.BooksScreen
-import com.mukund.bookcompanion.navigation.Screen.UpdateBookScreen
-import com.mukund.bookcompanion.navigation.Screen.SettingsScreen
-import com.mukund.bookcompanion.navigation.Screen.LibrariesScreen
+import com.mukund.bookcompanion.navigation.Screen.*
 import com.mukund.bookcompanion.ui.edit.EditScreen
 import com.mukund.bookcompanion.ui.home.HomeScreen
+import com.mukund.bookcompanion.ui.overview.Overview
 import com.mukund.bookcompanion.ui.settings.SettingScreen
 import com.mukund.bookcompanion.ui.settings.components.LibsScreen
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
@@ -33,32 +31,22 @@ fun NavGraph(
                 navController = navController,
                 startDestination = BooksScreen.route
             ) {
+                // HOME
                 composable(
                     route = BooksScreen.route,
-                    popEnterTransition = {
-                        slideInHorizontally(
-                            initialOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeIn(animationSpec = tween(300))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(
-                            targetOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeOut(animationSpec = tween(300))
-                    }
+                    popEnterTransition = customPopEnterTransition(),
+                    exitTransition = customExitTransition()
                 ) {
                     HomeScreen(
                         navigateTo = {
-                            navController.navigate("${UpdateBookScreen.route}/${it}")
+                            navController.navigate("${OverviewScreen.route}/${it}")
                         },
                         settings = {
                             navController.navigate(SettingsScreen.route)
                         }
                     )
                 }
+                // UPDATE
                 composable(
                     route = "${UpdateBookScreen.route}/{$BOOK_ID}",
                     arguments = listOf(
@@ -66,20 +54,8 @@ fun NavGraph(
                             type = IntType
                         },
                     ),
-                    enterTransition = {
-                        slideInHorizontally(
-                            initialOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeIn(animationSpec = tween(300))
-                    },
-                    popExitTransition = {
-                        slideOutHorizontally(
-                            targetOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeOut(animationSpec = tween(300))
-                    }
+                    enterTransition = customEnterTransition(),
+                    popExitTransition = customPopExitTransition()
                 ) { navBackStackEntry ->
                     val bookId = navBackStackEntry.arguments?.getInt(BOOK_ID) ?: 0
                     EditScreen(
@@ -89,61 +65,49 @@ fun NavGraph(
                         }
                     )
                 }
+                // SETTINGS
                 composable(
                     route = SettingsScreen.route,
-                    enterTransition = {
-                        slideInHorizontally(
-                            initialOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeIn(animationSpec = tween(300))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(
-                            targetOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeOut(animationSpec = tween(300))
-                    },
-                    popExitTransition = {
-                        slideOutHorizontally(
-                            targetOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeOut(animationSpec = tween(300))
-                    },
-                    popEnterTransition = {
-                        slideInHorizontally(
-                            initialOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeIn(animationSpec = tween(300))
-                    }
+                    enterTransition = customEnterTransition(),
+                    exitTransition = customExitTransition(),
+                    popExitTransition = customPopExitTransition(),
+                    popEnterTransition = customPopEnterTransition()
                 ) {
                     SettingScreen(
                         backPress = { navController.popBackStack() }
                     ) { navController.navigate(LibrariesScreen.route) }
                 }
+                // OSS LIBS
                 composable(
                     route = LibrariesScreen.route,
-                    popExitTransition = {
-                        slideOutHorizontally(
-                            targetOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeOut(animationSpec = tween(300))
-                    },
-                    enterTransition = {
-                        slideInHorizontally(
-                            initialOffsetX = { 300 },
-                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-                        ) +
-                                fadeIn(animationSpec = tween(300))
-                    }
+                    popExitTransition = customPopExitTransition(),
+                    enterTransition = customEnterTransition()
                 ) {
                     LibsScreen {
                         navController.popBackStack()
                     }
+                }
+                // OVERVIEW
+                composable(
+                    route = "${OverviewScreen.route}/{$BOOK_ID}",
+                    arguments = listOf(
+                        navArgument(BOOK_ID) {
+                            type = IntType
+                        },
+                    ),
+                    enterTransition = customEnterTransition(),
+                    exitTransition = customExitTransition(),
+                    popExitTransition = customPopExitTransition(),
+                    popEnterTransition = customPopEnterTransition()
+                ) { navBackStackEntry ->
+                    val bookId = navBackStackEntry.arguments?.getInt(BOOK_ID) ?: 0
+                    Overview(
+                        bookId = bookId,
+                        backPress = { navController.popBackStack() },
+                        navigateTo = {
+                            navController.navigate("${UpdateBookScreen.route}/${bookId}")
+                        }
+                    )
                 }
             }
         }

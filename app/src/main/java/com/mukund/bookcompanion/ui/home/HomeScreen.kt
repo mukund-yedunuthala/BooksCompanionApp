@@ -48,9 +48,6 @@ fun HomeScreen(
             HomeContent(
                 paddingValues = paddingValues,
                 books = books,
-                deleteBook = { book ->
-                    viewModel.deleteBook(book)
-                },
                 navigateTo = navigateTo,
                 state = state,
                 haptic

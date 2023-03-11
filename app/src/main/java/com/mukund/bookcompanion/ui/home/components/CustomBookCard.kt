@@ -2,12 +2,9 @@ package com.mukund.bookcompanion.ui.home.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,26 +15,23 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.domain.model.Book
 
-@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun CustomBookCard(
     book: Book,
-    deleteBook: (book: Book) -> Unit,
     navigateTo: (bookId: Int) -> Unit,
-    animModifier: Modifier
+    modifier: Modifier
 ) {
     var expandedCard by remember { mutableStateOf(false) }
-    val showDeleteDialog = remember { mutableStateOf(false) }
     Card(
-        modifier = animModifier
+        modifier = modifier
             .padding(16.dp, 8.dp)
             .animateContentSize(
                 animationSpec = spring(dampingRatio = 1f)
             )
         ,
         shape = RoundedCornerShape(10.dp),
-        onClick = { expandedCard = !expandedCard }
+        onClick = { navigateTo.invoke(book.id) }
     ) {
         Column(Modifier.fillMaxWidth()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -88,80 +82,8 @@ fun CustomBookCard(
                             .wrapContentWidth()
                             .padding(10.dp)
                     )
-                    AssistChip(
-                        onClick = { showDeleteDialog.value = !showDeleteDialog.value },
-                        label = { Text("Delete".uppercase()) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete this book",
-                                modifier = Modifier.size(AssistChipDefaults.IconSize)
-                            )
-                        },
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .padding(10.dp)
-                    )
-                    AssistChip(
-                        onClick = { navigateTo(book.id) },
-                        label = { Text("Edit".uppercase()) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Edit this book",
-                                Modifier.size(AssistChipDefaults.IconSize)
-                            )
-                        },
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .padding(10.dp)
-                    )
                 }
             }
         }
     }
-    if (showDeleteDialog.value) {
-        ConfirmDelete(
-            showDeleteDialog,
-            deleteBook,
-            book
-        )
-    }
-}
-
-@Composable
-fun ConfirmDelete(
-    showDeleteDialog: MutableState<Boolean>,
-    deleteBook: (book:Book) -> Unit,
-    book: Book
-) {
-    AlertDialog(
-        onDismissRequest = { showDeleteDialog.value = false },
-        title = {
-            Text("Remove?")
-        },
-        text = {
-            Text("Book will be deleted")
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    showDeleteDialog.value = false
-                    deleteBook(book)
-                }
-            ) {
-                Text("Confirm".uppercase())
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = {
-                    showDeleteDialog.value = false
-                }
-            ) {
-                Text("Dismiss".uppercase())
-            }
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
 }

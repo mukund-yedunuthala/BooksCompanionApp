@@ -18,7 +18,6 @@ import com.mukund.bookcompanion.domain.repository.Books
 fun HomeContent(
     paddingValues: PaddingValues,
     books: Books,
-    deleteBook: (book: Book) -> Unit,
     navigateTo: (id: Int) -> Unit,
     state: Int,
     haptic: HapticFeedback
@@ -29,25 +28,23 @@ fun HomeContent(
             .padding(paddingValues)
     ) {
         items(items = books) { book ->
-            val animModifier = Modifier.animateItemPlacement(
+            val modifier = Modifier.animateItemPlacement(
                 animationSpec = tween(400)
             )
             when (state) {
                 0 -> {
                     CustomBookCard(
                         book = book,
-                        deleteBook = deleteBook,
                         navigateTo = navigateTo,
-                        animModifier = animModifier
+                        modifier = modifier
                     )
                 }
                 1 -> {
                     if (book.status == "Read") {
                         CustomBookCard(
                             book = book,
-                            deleteBook = deleteBook,
                             navigateTo = navigateTo,
-                            animModifier = animModifier
+                            modifier = modifier
                         )
                     }
                 }
@@ -55,9 +52,8 @@ fun HomeContent(
                     if (book.status == "Unread") {
                         CustomBookCard(
                             book = book,
-                            deleteBook = deleteBook,
                             navigateTo = navigateTo,
-                            animModifier = animModifier
+                            modifier = modifier
                         )
                     }
                 }
