@@ -16,7 +16,7 @@ import com.mukund.bookcompanion.ui.home.HomeScreen
 import com.mukund.bookcompanion.ui.overview.Overview
 import com.mukund.bookcompanion.ui.settings.SettingScreen
 import com.mukund.bookcompanion.ui.settings.backup.Backup_Screen
-import com.mukund.bookcompanion.ui.settings.components.LibsScreen
+import com.mukund.bookcompanion.ui.settings.LibsScreen
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -33,6 +33,7 @@ fun NavGraph(
                 // HOME
                 composable(
                     route = BooksScreen.route,
+                    enterTransition = customEnterTransition(),
                     popEnterTransition = customPopEnterTransition(),
                     exitTransition = customExitTransition()
                 ) {

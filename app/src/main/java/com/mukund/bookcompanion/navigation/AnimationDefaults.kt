@@ -5,8 +5,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.navigation.NavBackStackEntry
 
-@OptIn(ExperimentalAnimationApi::class)
-fun customPopEnterTransition(): AnimatedContentScope<NavBackStackEntry>.() -> EnterTransition? {
+fun customPopEnterTransition(): (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? {
     return {
         slideInHorizontally(
             initialOffsetX = { 300 },
@@ -15,8 +14,7 @@ fun customPopEnterTransition(): AnimatedContentScope<NavBackStackEntry>.() -> En
                 fadeIn(animationSpec = tween(300))
     }
 }
-@OptIn(ExperimentalAnimationApi::class)
-fun customEnterTransition(): AnimatedContentScope<NavBackStackEntry>.() -> EnterTransition? {
+fun customEnterTransition(): (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?)? {
     return {
         slideInHorizontally(
             initialOffsetX = { 300 },
@@ -25,8 +23,7 @@ fun customEnterTransition(): AnimatedContentScope<NavBackStackEntry>.() -> Enter
                 fadeIn(animationSpec = tween(300))
     }
 }
-@OptIn(ExperimentalAnimationApi::class)
-fun customPopExitTransition(): AnimatedContentScope<NavBackStackEntry>.() -> ExitTransition? {
+fun customPopExitTransition(): (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? {
     return {
         slideOutHorizontally(
             targetOffsetX = { 300 },
@@ -35,8 +32,7 @@ fun customPopExitTransition(): AnimatedContentScope<NavBackStackEntry>.() -> Exi
                 fadeOut(animationSpec = tween(300))
     }
 }
-@OptIn(ExperimentalAnimationApi::class)
-fun customExitTransition(): AnimatedContentScope<NavBackStackEntry>.() -> ExitTransition? {
+fun customExitTransition(): (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?)? {
     return {
         slideOutHorizontally(
             targetOffsetX = { 300 },
