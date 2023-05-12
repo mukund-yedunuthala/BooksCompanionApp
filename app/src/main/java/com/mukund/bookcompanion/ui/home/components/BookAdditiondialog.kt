@@ -11,11 +11,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mukund.bookcompanion.core.Constants.Companion.ADD
 import com.mukund.bookcompanion.core.Constants.Companion.ADD_BOOK
 import com.mukund.bookcompanion.core.Constants.Companion.AUTHOR

@@ -1,7 +1,12 @@
 package com.mukund.bookcompanion.ui.home.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -20,68 +25,81 @@ import com.mukund.bookcompanion.domain.model.Book
 fun CustomBookCard(
     book: Book,
     navigateTo: (bookId: Int) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    index: Int,
+    visibleState: MutableTransitionState<Boolean>,
 ) {
     var expandedCard by remember { mutableStateOf(false) }
-    Card(
-        modifier = modifier
-            .padding(16.dp, 8.dp)
-            .animateContentSize(
-                animationSpec = spring(dampingRatio = 1f)
-            )
-        ,
-        shape = RoundedCornerShape(10.dp),
-        onClick = { navigateTo.invoke(book.id) }
+    AnimatedVisibility(
+        visibleState = visibleState,
+        enter = slideInHorizontally (
+            initialOffsetX = { -it },
+            animationSpec = tween(durationMillis = 500, delayMillis = index * 100)
+        ),
+        exit = slideOutHorizontally(
+            targetOffsetX = { it },
+            animationSpec = tween(durationMillis = 500, delayMillis = index * 100)
+        )
     ) {
-        Column(Modifier.fillMaxWidth()) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = book.title.trim(),
-                    modifier = Modifier
-                        .padding(10.dp, top = 10.dp)
-                        .fillMaxWidth(0.9f),
-                    style = MaterialTheme.typography.titleLarge,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Box(
-                    modifier = Modifier.weight(0.1f),
-                    contentAlignment = Alignment.TopEnd
-                ) {
-                    IconButton(onClick = { expandedCard = !expandedCard }) {
-                        Icon(
-                            Icons.Default.MoreVert,
-                            "Expand",
-                            tint = MaterialTheme.colorScheme.onBackground
-                        )
+        Card(
+            modifier = modifier
+                .padding(16.dp, 8.dp)
+                .animateContentSize(
+                    animationSpec = spring(dampingRatio = 1f)
+                ),
+            shape = RoundedCornerShape(10.dp),
+            onClick = { navigateTo.invoke(book.id) }
+        ) {
+            Column(Modifier.fillMaxWidth()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = book.title.trim(),
+                        modifier = Modifier
+                            .padding(10.dp, top = 10.dp)
+                            .fillMaxWidth(0.9f),
+                        style = MaterialTheme.typography.titleLarge,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Box(
+                        modifier = Modifier.weight(0.1f),
+                        contentAlignment = Alignment.TopEnd
+                    ) {
+                        IconButton(onClick = { expandedCard = !expandedCard }) {
+                            Icon(
+                                Icons.Default.MoreVert,
+                                "Expand",
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
                     }
                 }
-            }
-            Text(
-                text = book.author.trim(),
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(10.dp)
-            )
-            if (expandedCard) {
                 Text(
-                    text = book.year.toString(),
-                    fontStyle = FontStyle.Italic,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth()
+                    text = book.author.trim(),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(10.dp)
                 )
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-
-                ) {
-                    SuggestionChip(
-                        onClick = {},
-                        label = { Text("Status: ${book.status.trim()}") },
+                if (expandedCard) {
+                    Text(
+                        text = book.year.toString(),
+                        fontStyle = FontStyle.Italic,
+                        style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
-                            .wrapContentWidth()
                             .padding(10.dp)
+                            .fillMaxWidth()
                     )
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+
+                    ) {
+                        SuggestionChip(
+                            onClick = {},
+                            label = { Text("Status: ${book.status.trim()}") },
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .padding(10.dp)
+                        )
+                    }
                 }
             }
         }
