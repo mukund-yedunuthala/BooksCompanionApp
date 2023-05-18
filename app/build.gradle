@@ -80,7 +80,9 @@ dependencies {
     implementation "com.mikepenz:aboutlibraries-compose:${latestAboutLibsRelease}"
     // Navigation Animation
     implementation "com.google.accompanist:accompanist-navigation-animation:${accompanistNavigation}"
-}
+    // backup
+    implementation 'com.google.code.gson:gson:2.9.0'
+    }
 kapt {
     correctErrorTypes true
 }

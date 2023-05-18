@@ -1,15 +1,17 @@
 package com.mukund.bookcompanion.ui.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -32,19 +34,18 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
-
 @Composable
 fun BooksCompanionTheme(
-    dark: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean,
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        dynamicColor -> {
             val context = LocalContext.current
-            if (dark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        dark -> DarkColorScheme
+        darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current
@@ -57,7 +58,7 @@ fun BooksCompanionTheme(
             (view.context as Activity).window.statusBarColor = colorScheme.background.toArgb()
             (view.context as Activity).window.navigationBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(currentWindow, view)
-                .isAppearanceLightStatusBars = !dark
+                .isAppearanceLightStatusBars = !darkTheme
         }
     }
     MaterialTheme(

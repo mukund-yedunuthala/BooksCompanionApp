@@ -1,6 +1,7 @@
 package com.mukund.bookcompanion.navigation
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -22,9 +23,9 @@ import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun NavGraph(
-    navController: NavHostController
+    navController: NavHostController,
 ) {
-    BooksCompanionTheme() {
+    BooksCompanionTheme(darkTheme = isSystemInDarkTheme()) {
         Surface {
             AnimatedNavHost(
                 navController = navController,

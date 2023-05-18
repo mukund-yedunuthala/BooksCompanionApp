@@ -41,8 +41,6 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.getBooks()
     }
-    var state by remember { mutableStateOf(0) }
-
     val visibilityState = remember { MutableTransitionState(false) }
     visibilityState.targetState = true
     val (currentCategory, setCurrentCategory) = remember { mutableStateOf(BookCategory.All) }
@@ -59,50 +57,53 @@ fun HomeScreen(
     }
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
-    BooksCompanionTheme() {
-        Scaffold(
-            topBar = {
-                CustomHomeTopBar(settings, haptic, context)
-            },
-            bottomBar = {
-                CustomBottomBar(
-                    onFABClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        viewModel.openDialog()
-                    },
-                    haptic,
-                    categories = BookCategory.values(),
-                    currentCategory, setCurrentCategory, visibleStateAll, visibleStateRead, visibleStateUnread
-                )
-            },
-        ) { paddingValues ->
-            AnimatedVisibility(
-                visibleState = visibilityState,
-                enter = fadeIn(
-                    initialAlpha = 0.0f,
-                    animationSpec = tween(durationMillis = 1000)
-                )
-            )  {
-                HomeContent(
-                    paddingValues = paddingValues,
-                    books = viewModel.books,
-                    navigateTo = navigateTo,
-                    currentCategory,
-                    visibleStateAll, visibleStateRead, visibleStateUnread
-                )
-            }
-            BookAdditionDialog(
-                paddingValues = paddingValues,
-                openDialog = viewModel.openDialog,
-                closeDialog = {
-                    viewModel.closeDialog()
-                },
-                addBook = { book ->
-                    viewModel.addBook(book)
+
+    Scaffold(
+        topBar = {
+            CustomHomeTopBar(settings, haptic, context)
+        },
+        bottomBar = {
+            CustomBottomBar(
+                onFABClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    viewModel.openDialog()
                 },
                 haptic,
-                books = viewModel.books
+                categories = BookCategory.values(),
+                currentCategory,
+                setCurrentCategory,
+                visibleStateAll,
+                visibleStateRead,
+                visibleStateUnread
+            )
+        },
+    ) { paddingValues ->
+        AnimatedVisibility(
+            visibleState = visibilityState,
+            enter = fadeIn(
+                initialAlpha = 0.0f,
+                animationSpec = tween(durationMillis = 1000)
+            )
+        ) {
+            HomeContent(
+                paddingValues = paddingValues,
+                books = viewModel.books,
+                navigateTo = navigateTo,
+                currentCategory,
+                visibleStateAll, visibleStateRead, visibleStateUnread
             )
         }
+        BookAdditionDialog(
+            paddingValues = paddingValues,
+            openDialog = viewModel.openDialog,
+            closeDialog = {
+                viewModel.closeDialog()
+            },
+            addBook = { book ->
+                viewModel.addBook(book)
+            },
+            haptic,
+            books = viewModel.books
+        )
     }
 }
