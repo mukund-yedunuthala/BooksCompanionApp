@@ -15,4 +15,5 @@ interface BooksRepository {
     fun updateBookInRoom(book: Book)
 
     fun deleteBookFromRoom(book: Book)
+    fun insertAllBooks(books: List<Book>)
 }

@@ -16,5 +16,6 @@ class BooksRepositoryImpl(
     override fun updateBookInRoom(book: Book) = provider.BooksDao().updateBook(book)
 
     override fun deleteBookFromRoom(book: Book) = provider.BooksDao().deleteBook(book)
+    override fun insertAllBooks(books: List<Book>) = provider.BooksDao().insertAll(books)
 
 }

@@ -92,6 +92,11 @@ class BooksViewModel @Inject constructor(
             observe()
         }
     }
+    fun insertAllBooks(books: List<Book>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertAllBooks(books)
+        }
+    }
 
     private fun observe() {
         observeBooks()

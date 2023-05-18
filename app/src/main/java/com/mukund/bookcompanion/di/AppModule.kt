@@ -1,13 +1,15 @@
 package com.mukund.bookcompanion.di
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import com.mukund.bookcompanion.data.network.BookDbProvider
 import com.mukund.bookcompanion.data.repository.BooksRepositoryImpl
 import com.mukund.bookcompanion.domain.repository.BooksBackupRepo
-import com.mukund.bookcompanion.domain.repository.BooksRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
@@ -23,7 +25,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideBooksDatabaseProvider(application: Application) : BookDbProvider = BookDbProvider(application)
+    fun provideBooksDatabaseProvider(application: Application): BookDbProvider =
+        BookDbProvider(application)
 
     @Provides
     @Singleton
@@ -34,13 +37,13 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideExecutorCoroutineDispatcher(): ExecutorCoroutineDispatcher
-        = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    fun provideExecutorCoroutineDispatcher(): ExecutorCoroutineDispatcher =
+        Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     @Provides
     @Singleton
-    fun provideBooksRepository(bookDbProvider: BookDbProvider) : BooksRepositoryImpl
-        = BooksRepositoryImpl(bookDbProvider)
+    fun provideBooksRepository(bookDbProvider: BookDbProvider): BooksRepositoryImpl =
+        BooksRepositoryImpl(bookDbProvider)
 
     @Provides
     @Singleton
@@ -57,4 +60,10 @@ class AppModule {
         scope = coroutineScope,
         dispatcher = executorCoroutineDispatcher
     )
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(@ApplicationContext appContext: Context): SharedPreferences {
+        return appContext.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+    }
 }

@@ -10,6 +10,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -18,27 +20,31 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.BuildConfig
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.ui.settings.components.CustomEntryButton
+import com.mukund.bookcompanion.ui.settings.components.CustomEntrySwitch
 import com.mukund.bookcompanion.ui.settings.components.CustomURLDialog
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 
+private const val THEME_PREF_KEY = "themePref"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(
     backPress: () -> Boolean,
     libraries: () -> Unit,
-    backup: () -> Unit
-) {
+    backup: () -> Unit,
+){
     val uriHandler = LocalUriHandler.current
     val attribution = stringResource(id = R.string.Attribution)
     val source = stringResource(id = R.string.Source)
     val policy = stringResource(id = R.string.PrivacyPolicy)
     val context = LocalContext.current
-    var openSourceDialog = remember { mutableStateOf(false) }
-    var openLicenseDialog = remember { mutableStateOf(false) }
-    var openPrivacyDialog = remember { mutableStateOf(value = false) }
+    val openSourceDialog = remember { mutableStateOf(false) }
+    val openLicenseDialog = remember { mutableStateOf(false) }
+    val openPrivacyDialog = remember { mutableStateOf(value = false) }
+
     Scaffold(
         topBar = {
             LargeTopAppBar(
@@ -57,61 +63,60 @@ fun SettingScreen(
                     }
                 },
             )
-        },
-        content = { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                item {
-                    CustomEntryButton(
-                        onClick = { backup.invoke() },
-                        leadText = "Backup & Restore",
-                        subText = null
-                    )
-                    Divider()
-                    CustomEntryButton(
-                        onClick = {
-                            mToast(context, "Coming Soon!")
-                        },
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = "App version",
-                        leadText = "App Version",
-                        subText = BuildConfig.VERSION_NAME + " (${BuildConfig.VERSION_CODE})"
-                    )
-                    CustomEntryButton(
-                        onClick = {openLicenseDialog.value = true},
-                        painter = painterResource(id = R.drawable.attribution),
-                        contentDescription = "License",
-                        leadText = "License",
-                        subText = "GNU General Public License v3.0"
-                    )
-                    CustomEntryButton(
-                        onClick = {openSourceDialog.value = true},
-                        painter = painterResource(id = R.drawable.code),
-                        contentDescription = "Source Code",
-                        leadText = "Source Code",
-                    )
-                    CustomEntryButton(
-                        onClick = {
-                            libraries()
-                        },
-                        painter = painterResource(id = R.drawable.description),
-                        contentDescription = "Libraries",
-                        leadText = "Libraries",
-                        subText = "Open source libraries"
-                    )
-                    CustomEntryButton(
-                        onClick = {openPrivacyDialog.value = true},
-                        painter = painterResource(id = R.drawable.policy),
-                        contentDescription = "Privacy Policy",
-                        leadText = "Privacy Policy"
-                    )
-                }
+        }
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            item {
+                CustomEntryButton(
+                    onClick = { backup.invoke() },
+                    leadText = "Backup & Restore",
+                    subText = null
+                )
+                Divider()
+                CustomEntryButton(
+                    onClick = {
+                        mToast(context, "Coming Soon!")
+                    },
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "App version",
+                    leadText = "App Version",
+                    subText = BuildConfig.VERSION_NAME + " (${BuildConfig.VERSION_CODE})"
+                )
+                CustomEntryButton(
+                    onClick = { openLicenseDialog.value = true },
+                    painter = painterResource(id = R.drawable.attribution),
+                    contentDescription = "License",
+                    leadText = "License",
+                    subText = "GNU General Public License v3.0"
+                )
+                CustomEntryButton(
+                    onClick = { openSourceDialog.value = true },
+                    painter = painterResource(id = R.drawable.code),
+                    contentDescription = "Source Code",
+                    leadText = "Source Code",
+                )
+                CustomEntryButton(
+                    onClick = {
+                        libraries()
+                    },
+                    painter = painterResource(id = R.drawable.description),
+                    contentDescription = "Libraries",
+                    leadText = "Libraries",
+                    subText = "Open source libraries"
+                )
+                CustomEntryButton(
+                    onClick = { openPrivacyDialog.value = true },
+                    painter = painterResource(id = R.drawable.policy),
+                    contentDescription = "Privacy Policy",
+                    leadText = "Privacy Policy"
+                )
             }
         }
-    )
+    }
     if (openSourceDialog.value) {
         CustomURLDialog(openSourceDialog, source, uriHandler)
     }
@@ -126,11 +131,10 @@ fun SettingScreen(
 fun mToast(context: Context, text : String){
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 }
-
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SettingsPreview1() {
-    BooksCompanionTheme() {
+    BooksCompanionTheme(darkTheme = true) {
         SettingScreen (backPress = { false }, {}, {})
     }
 }
@@ -138,7 +142,7 @@ fun SettingsPreview1() {
 @Preview
 @Composable
 fun SettingsPreview2() {
-    BooksCompanionTheme() {
+    BooksCompanionTheme(darkTheme = false) {
         SettingScreen (backPress = { false }, {}, {})
     }
 }

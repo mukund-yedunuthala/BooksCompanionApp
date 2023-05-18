@@ -1,4 +1,4 @@
-package com.mukund.bookcompanion.ui.settings.components
+package com.mukund.bookcompanion.ui.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
