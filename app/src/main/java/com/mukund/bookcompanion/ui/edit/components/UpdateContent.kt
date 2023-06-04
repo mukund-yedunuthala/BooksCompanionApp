@@ -14,7 +14,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.core.Constants
 import com.mukund.bookcompanion.domain.model.Book
-import com.mukund.bookcompanion.ui.home.components.CategoryRow
 import com.mukund.bookcompanion.ui.home.components.CustomAdditionTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,7 +30,7 @@ fun UpdateContent(
 ) {
     var yearString by rememberSaveable { mutableStateOf("") }
     yearString = book.year.toString()
-    var status : String?
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +44,7 @@ fun UpdateContent(
                 text = book.title,
                 placeholder = Constants.BOOK_TITLE,
                 label = "Title",
-                onChange = {title ->
+                onChange = { title ->
                     updateTitle(title)
                 }
             )
@@ -56,7 +55,7 @@ fun UpdateContent(
                 text = book.author,
                 placeholder = Constants.AUTHOR,
                 label = "Author",
-                onChange = {author ->
+                onChange = { author ->
                     updateAuthor(author)
                 }
             )
@@ -73,8 +72,7 @@ fun UpdateContent(
                 },
                 keyboardType = KeyboardType.Number
             )
-            status = CategoryRow(current = book.status)
-            status?.let { updateStatus(it) }
+
             Button(
                 onClick = {
                     updateBook(book)

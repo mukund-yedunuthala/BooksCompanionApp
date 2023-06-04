@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.ui.home.components
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +19,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.mukund.bookcompanion.core.Constants.Companion.ADD
 import com.mukund.bookcompanion.core.Constants.Companion.ADD_BOOK
 import com.mukund.bookcompanion.core.Constants.Companion.AUTHOR
@@ -35,18 +36,18 @@ fun BookAdditionDialog(
     haptic: HapticFeedback,
     books: List<Book>
 ) {
+    val context = LocalContext.current
     if (openDialog) {
         var title by remember { mutableStateOf(NO_VALUE) }
         var author by remember { mutableStateOf(NO_VALUE) }
         var year by remember { mutableStateOf(NO_VALUE) }
-        var category by remember { mutableStateOf(NO_VALUE) }
+        var category by remember { mutableStateOf("Unread") }
         var dupeFlag = remember { mutableStateOf(false) }
 
         Dialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
             onDismissRequest = closeDialog,
-        )
-        {
+        ) {
             Scaffold(
                 topBar = {
                     MediumTopAppBar(
@@ -63,8 +64,8 @@ fun BookAdditionDialog(
                         }
                     )
                 }
-            ) { paddingValues ->
-                LazyColumn(Modifier.padding(paddingValues)) {
+            ) { innerPadding ->
+                LazyColumn(contentPadding = innerPadding) {
                     item {
                         CustomAdditionTextField(
                             modifier = Modifier
@@ -100,14 +101,24 @@ fun BookAdditionDialog(
                             },
                             keyboardType = KeyboardType.Number
                         )
-                        CategoryRow().let { category = it }
+                        CategoryRow(
+                            current = category,
+                            onCategorySelected = { selectedStatus ->
+                                category = selectedStatus
+                            }
+                        )
                         Button(
                             onClick = {
                                 dupeFlag.value = false
-                                if (
-                                    emptyCheck(title, author, year) and
-                                            !dupeCheck(title, author, year, books, dupeFlag)
-                                        ) {
+                                if (emptyCheck(title, author, year) && !dupeCheck(
+                                        title,
+                                        author,
+                                        year,
+                                        books,
+                                        dupeFlag,
+                                        context
+                                    )
+                                ) {
                                     val book = Book(0, title, author, year = year.toLong(), status = category)
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     addBook(book)
@@ -142,6 +153,7 @@ fun BookAdditionDialog(
     }
 }
 
+
 fun emptyCheck(title: String, author: String, year: String): Boolean {
     return (
             title.isNotEmpty() and
@@ -155,8 +167,10 @@ fun dupeCheck(
     author: String,
     year: String,
     allBooks: List<Book>,
-    dupeFlag: MutableState<Boolean>
+    dupeFlag: MutableState<Boolean>,
+    context: Context
 ): Boolean {
+
     for (book in allBooks) {
         if (
             (book.title == title) and
@@ -167,7 +181,7 @@ fun dupeCheck(
         }
     }
     if (dupeFlag.value) {
-        /*TODO*/
+        Toast.makeText(context, "Book already exists!", Toast.LENGTH_SHORT).show()
     }
     return dupeFlag.value
 }
