@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.mukund.bookcompanion"
-        minSdk 33
+        minSdk 29
         targetSdk 33
         versionCode 14
         versionName '0.0.7'
