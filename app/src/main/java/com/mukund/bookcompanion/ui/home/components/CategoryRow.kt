@@ -1,13 +1,18 @@
 package com.mukund.bookcompanion.ui.home.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.*
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
@@ -17,12 +22,11 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CategoryRow(
     current: String = "Unread",
-): String {
+    onCategorySelected: (String) -> Unit
+) {
     val categories = listOf<String>("Unread", "Read")
-    val (selectedCat, onCatSelected) = remember {
-        mutableStateOf(current)
-    }
-    //if (!current.isNullOrEmpty()) { selectedCat = current }
+    val (selectedCat, onCatSelected) = remember { mutableStateOf(current) }
+
     Row(
         Modifier
             .selectableGroup()
@@ -55,7 +59,7 @@ fun CategoryRow(
                 ) {
                     RadioButton(
                         selected = (text == selectedCat),
-                        onClick = null
+                        onClick = { onCatSelected(text) }
                     )
                     Text(
                         text = text,
@@ -67,5 +71,5 @@ fun CategoryRow(
             }
         }
     }
-    return selectedCat
+    onCategorySelected(selectedCat)
 }

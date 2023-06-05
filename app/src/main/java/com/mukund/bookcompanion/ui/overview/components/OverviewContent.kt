@@ -83,7 +83,7 @@ fun OverviewContent(
                         onClick = {navigateTo.invoke()},
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit button",
-                        leadText = "Edit this book",
+                        leadText = "Edit details",
                         subText = null
                     )
                     CustomEntryButton(
