@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -29,8 +30,17 @@ fun UpdateContent(
     updateStatus: (String) -> Unit
 ) {
     var yearString by rememberSaveable { mutableStateOf("") }
+    var category by rememberSaveable { mutableStateOf("") }
     yearString = book.year.toString()
+    category = book.status
 
+    val readState = remember { mutableStateOf(false) }
+    val unreadState = remember { mutableStateOf(false) }
+
+    if (category == "Read") {
+        readState.value = true
+    }
+    else { unreadState.value = true }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -72,10 +82,10 @@ fun UpdateContent(
                 },
                 keyboardType = KeyboardType.Number
             )
-
+            EditScreenButtonRow(updateStatus, readState, unreadState)
             Button(
                 onClick = {
-                    updateBook(book)
+                    updateBook(book.copy(status = category))
                     backPress.invoke()
                 },
                 modifier = Modifier
@@ -100,5 +110,80 @@ fun UpdateContent(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun EditScreenButtonRow(updateStatus: (String) -> Unit, readState: MutableState<Boolean>, unreadState: MutableState<Boolean>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (readState.value) {
+            EditFilledButton(
+                text = "Read",
+                onClick = {}
+            )
+            EditOutlinedButton(
+                text = "Unread",
+                onClick = {
+                    updateStatus("Unread")
+                    unreadState.value = !unreadState.value
+                    readState.value = !readState.value
+                }
+            )
+        }
+        else {
+            EditOutlinedButton(
+                text = "Read",
+                onClick = {
+                    updateStatus("Read")
+                    readState.value = !readState.value
+                    unreadState.value = !unreadState.value
+                }
+            )
+            EditFilledButton(
+                text = "Unread",
+                onClick = {}
+            )
+        }
+    }
+}
+
+@Composable
+fun EditFilledButton(text: String, onClick: () -> Unit) {
+    FilledTonalButton(
+        onClick = onClick,
+        modifier = Modifier
+            .wrapContentWidth()
+            .padding(8.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = ButtonDefaults.filledTonalButtonColors(),
+        contentPadding = ButtonDefaults.TextButtonContentPadding
+    ) {
+        Text(
+            text = text.uppercase(),
+            style = MaterialTheme.typography.labelLarge,
+        )
+    }
+}
+
+@Composable
+fun EditOutlinedButton(text: String, onClick: () -> Unit) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = Modifier
+            .padding(8.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = ButtonDefaults.outlinedButtonColors(),
+        contentPadding = ButtonDefaults.TextButtonContentPadding
+    ) {
+        Text(
+            text = text.uppercase(),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     }
 }
