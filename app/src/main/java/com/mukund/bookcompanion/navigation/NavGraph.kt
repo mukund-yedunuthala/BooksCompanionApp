@@ -25,7 +25,7 @@ import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 fun NavGraph(
     navController: NavHostController,
 ) {
-    BooksCompanionTheme(darkTheme = isSystemInDarkTheme()) {
+    BooksCompanionTheme() {
         Surface {
             AnimatedNavHost(
                 navController = navController,
