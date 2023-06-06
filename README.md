@@ -5,7 +5,7 @@
 
 This is one of many open source book trackers available for Android, still a work-in-progress. 
 Hobby project, built entirely on Jetpack compose. 
-
+[![Android Build CI/CD](https://github.com/mukund-yedunuthala/BooksCompanionApp/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/mukund-yedunuthala/BooksCompanionApp/actions/workflows/gradle-publish.yml)
 
 ## Installation
 
