@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.data.repository.BooksRepositoryImpl
 import com.mukund.bookcompanion.domain.model.Book
-import com.mukund.bookcompanion.domain.repository.BooksBackupRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,7 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class BooksViewModel @Inject constructor(
     private val repository: BooksRepositoryImpl,
-    private val backup: BooksBackupRepo
 ) : ViewModel() {
 
     var books: List<Book> by mutableStateOf(emptyList())
@@ -79,19 +77,6 @@ class BooksViewModel @Inject constructor(
         openDialog = false
     }
 
-    fun onExport(uri: Uri) {
-        viewModelScope.launch {
-            backup.export(uri)
-            observe()
-        }
-    }
-
-    fun onImport(uri: Uri) {
-        viewModelScope.launch {
-            backup.import(uri)
-            observe()
-        }
-    }
     fun insertAllBooks(books: List<Book>) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertAllBooks(books)

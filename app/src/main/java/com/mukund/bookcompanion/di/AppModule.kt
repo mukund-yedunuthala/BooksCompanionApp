@@ -1,15 +1,14 @@
 package com.mukund.bookcompanion.di
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.createDataStore
 import com.mukund.bookcompanion.data.network.BookDbProvider
 import com.mukund.bookcompanion.data.repository.BooksRepositoryImpl
-import com.mukund.bookcompanion.domain.repository.BooksBackupRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
@@ -42,28 +41,12 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideDataStore(application: Application): DataStore<Preferences> =
+        application.createDataStore(name = "preferences")
+
+    @Provides
+    @Singleton
     fun provideBooksRepository(bookDbProvider: BookDbProvider): BooksRepositoryImpl =
         BooksRepositoryImpl(bookDbProvider)
 
-    @Provides
-    @Singleton
-    fun provideBooksBackupRepo(
-        bookDbProvider: BookDbProvider,
-        application: Application,
-        mutex: Mutex,
-        coroutineScope: CoroutineScope,
-        executorCoroutineDispatcher: ExecutorCoroutineDispatcher,
-    ): BooksBackupRepo = BooksBackupRepo(
-        provider = bookDbProvider,
-        context = application,
-        mutex = mutex,
-        scope = coroutineScope,
-        dispatcher = executorCoroutineDispatcher
-    )
-
-    @Provides
-    @Singleton
-    fun provideSharedPreferences(@ApplicationContext appContext: Context): SharedPreferences {
-        return appContext.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
-    }
 }

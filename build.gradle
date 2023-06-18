@@ -3,7 +3,7 @@ buildscript {
         gradle_version = '8.0.2'
         kotlin_version = "1.8.21"
         viewmodel_version = '2.6.1'
-        nav_version = '2.7.0-alpha01'
+        nav_version = '2.7.0-beta01'
         compose_compiler = '1.4.7'
         room_version = '2.5.1'
         appcompat_version = '1.7.0-alpha02'
@@ -11,6 +11,7 @@ buildscript {
         hilt_nav_version = "1.1.0-alpha01"
         latestAboutLibsRelease = '10.7.0'
         accompanistNavigation = '0.31.3-beta'
+        dataStoreVersion = '1.0.0-alpha06'
     }
     repositories {
         google()

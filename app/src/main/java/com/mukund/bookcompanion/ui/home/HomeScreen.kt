@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.ui.home.components.*
-import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 
 enum class BookCategory(val icon: ImageVector) {
     All(Icons.Default.List),
@@ -94,7 +93,6 @@ fun HomeScreen(
             )
         }
         BookAdditionDialog(
-            paddingValues = paddingValues,
             openDialog = viewModel.openDialog,
             closeDialog = {
                 viewModel.closeDialog()
