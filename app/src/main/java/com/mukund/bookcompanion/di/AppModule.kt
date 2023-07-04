@@ -1,9 +1,6 @@
 package com.mukund.bookcompanion.di
 
 import android.app.Application
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.createDataStore
 import com.mukund.bookcompanion.data.network.BookDbProvider
 import com.mukund.bookcompanion.data.repository.BooksRepositoryImpl
 import dagger.Module
@@ -38,11 +35,6 @@ class AppModule {
     @Singleton
     fun provideExecutorCoroutineDispatcher(): ExecutorCoroutineDispatcher =
         Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-
-    @Provides
-    @Singleton
-    fun provideDataStore(application: Application): DataStore<Preferences> =
-        application.createDataStore(name = "preferences")
 
     @Provides
     @Singleton
