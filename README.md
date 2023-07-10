@@ -15,6 +15,19 @@ This is one of many open source book trackers available for Android, still a wor
 Hobby project, built entirely on Jetpack compose.
 
 ## Screenshots
+<h2>Portrait Mode Screenshots</h2>
+<div>
+  <img src="./assets/screenshot1.png" alt="Screenshot 1" style="width: 300px;">
+  <img src="./assets/screenshot2.png" alt="Screenshot 2" style="width: 300px;">
+  <img src="./assets/screenshot3.png" alt="Screenshot 3" style="width: 300px;">
+  <img src="./assets/screenshot4.png" alt="Screenshot 4" style="width: 300px;">
+</div>
+
+<h2>Landscape Mode Screenshots</h2>
+<div>
+  <img src="assets/landscape1.png" alt="Landscape 1" style="width: 500px;">
+  <img src="assets/landscape2.png" alt="Landscape 2" style="width: 500px;">
+</div>
 
 
 ## Installation
