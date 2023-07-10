@@ -105,7 +105,7 @@ fun importBackupFile(viewModel: BooksViewModel, contentResolver: ContentResolver
 }
 fun createBackupIntent(): Intent {
     val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
-    val defaultFileName = "backup_$timestamp.json"
+    val defaultFileName = "bookCompanion_backup_$timestamp.json"
     val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
     intent.addCategory(Intent.CATEGORY_OPENABLE)
     intent.type = "application/json"

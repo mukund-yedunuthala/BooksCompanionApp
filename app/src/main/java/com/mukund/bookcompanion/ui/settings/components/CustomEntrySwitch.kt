@@ -16,31 +16,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-
 @Composable
 fun CustomEntrySwitch(
     leadText: String,
     subText: String? = null,
-    valBool: Boolean,
+    boolVal: Boolean,
+    onChange: (Boolean) -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
                 .weight(0.75f)
-                .height(BUTTON_HEIGHT)
-            ,
+                .height(BUTTON_HEIGHT),
             contentAlignment = Alignment.CenterStart
         ) {
             TextButton(
-                onClick = {
-
-                },
-                modifier = Modifier
-                    .height(BUTTON_HEIGHT),
+                onClick = { onChange(!boolVal) },
+                modifier = Modifier.height(BUTTON_HEIGHT),
                 shape = RectangleShape,
             ) {
                 Column(
@@ -51,8 +46,7 @@ fun CustomEntrySwitch(
                     Text(
                         text = leadText,
                         style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .padding(20.dp, bottom = 2.dp),
+                        modifier = Modifier.padding(20.dp, bottom = 2.dp),
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Left
                     )
@@ -60,8 +54,7 @@ fun CustomEntrySwitch(
                         Text(
                             text = subText,
                             style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
-                                .padding(20.dp, top = 3.dp),
+                            modifier = Modifier.padding(20.dp, top = 3.dp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Left
                         )
@@ -72,15 +65,12 @@ fun CustomEntrySwitch(
         Box(
             modifier = Modifier
                 .weight(0.25f)
-                .height(BUTTON_HEIGHT)
-            ,
+                .height(BUTTON_HEIGHT),
             contentAlignment = Alignment.CenterEnd
         ) {
             Switch(
-                checked = valBool,
-                onCheckedChange = {
-
-                },
+                checked = boolVal,
+                onCheckedChange = onChange,
                 modifier = Modifier.padding(20.dp)
             )
         }

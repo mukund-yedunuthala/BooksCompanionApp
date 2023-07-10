@@ -29,7 +29,6 @@ import com.mukund.bookcompanion.domain.model.Book
 @ExperimentalMaterial3Api
 @Composable
 fun BookAdditionDialog(
-    paddingValues: PaddingValues,
     openDialog: Boolean,
     closeDialog: () -> Unit,
     addBook: (book: Book) -> Unit,

@@ -40,7 +40,7 @@ fun CustomURLDialog(
                         uriHandler.openUri(source)
                     },
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        color = Color.Blue,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer,
                         textDecoration = TextDecoration.Underline
                     )
                 )

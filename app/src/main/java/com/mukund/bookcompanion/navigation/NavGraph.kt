@@ -1,15 +1,14 @@
 package com.mukund.bookcompanion.navigation
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType.Companion.IntType
-import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.AnimatedNavHost
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.mukund.bookcompanion.core.Constants.Companion.BOOK_ID
 import com.mukund.bookcompanion.navigation.Screen.*
 import com.mukund.bookcompanion.ui.edit.EditScreen
@@ -18,16 +17,25 @@ import com.mukund.bookcompanion.ui.overview.Overview
 import com.mukund.bookcompanion.ui.settings.SettingScreen
 import com.mukund.bookcompanion.ui.settings.backup.Backup_Screen
 import com.mukund.bookcompanion.ui.settings.LibsScreen
+import com.mukund.bookcompanion.ui.settings.SettingsViewModel
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun NavGraph(
     navController: NavHostController,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    BooksCompanionTheme() {
+    val darkTheme = viewModel.hasUserDarkThemeEnabled
+    val systemTheme = viewModel.followSystemTheme
+    val darkSetting = if (systemTheme) {
+        isSystemInDarkTheme()
+    }
+    else {
+        darkTheme
+    }
+    BooksCompanionTheme(darkTheme = darkSetting) {
         Surface {
-            AnimatedNavHost(
+            NavHost(
                 navController = navController,
                 startDestination = BooksScreen.route
             ) {
