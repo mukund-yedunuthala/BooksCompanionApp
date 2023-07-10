@@ -1,8 +1,6 @@
 package com.mukund.bookcompanion.ui.home.components
 
 import android.content.Context
-import android.net.Uri
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -59,5 +57,48 @@ fun CustomHomeTopBar(
                     }
                 }
             )
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun CustomLandscapeHomeTopBar(
+    settings: () -> Unit,
+    haptic: HapticFeedback,
+    context: Context,
+): Unit {
+    //var scopeState by remember { mutableStateOf(0) }
+    //val titles = listOf("All", "Read", "Unread")
+    Column {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = "Book Companion",
+                    fontWeight = FontWeight.W400,
+                )
+            },
+            actions = {
+                IconButton(onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    mToast(context, "Coming soon!")
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.sort),
+                        contentDescription = "Sort",
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
+                IconButton(onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    settings.invoke()
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Settings",
+                        modifier = Modifier.size(25.dp)
+                    )
+                }
+            }
+        )
     }
 }
