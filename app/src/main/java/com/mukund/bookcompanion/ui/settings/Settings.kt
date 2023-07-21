@@ -106,7 +106,7 @@ fun SettingScreen(
                     imageVector = Icons.Outlined.Info,
                     contentDescription = "App version",
                     leadText = "App Version",
-                    subText = BuildConfig.VERSION_NAME + " (${BuildConfig.VERSION_CODE})"
+                    subText = BuildConfig.VERSION_NAME
                 )
 
                 CustomEntryButton(

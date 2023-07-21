@@ -13,14 +13,14 @@ android {
         applicationId "com.mukund.bookcompanion"
         minSdk 29
         targetSdk 34
-        versionCode 16
-        versionName '0.0.8'
+        versionCode 18
+        versionName '0.0.9'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
-        versionNameSuffix '(01)'
+        versionNameSuffix " ($versionCode)"
     }
 
     buildTypes {
