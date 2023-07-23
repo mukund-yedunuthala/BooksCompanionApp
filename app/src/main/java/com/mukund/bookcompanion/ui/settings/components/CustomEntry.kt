@@ -1,7 +1,14 @@
 package com.mukund.bookcompanion.ui.settings.components
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -11,7 +18,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-val BUTTON_HEIGHT = 70.dp
+val BUTTON_HEIGHT = 75.dp
 val ICON_SIZE = 25.dp
 @Composable
 fun CustomEntryButton (
@@ -42,7 +49,7 @@ fun CustomEntryButton (
         ) {
             Text(
                 text = leadText,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .padding(20.dp, bottom = 3.dp),
                 color = MaterialTheme.colorScheme.onBackground,
@@ -90,7 +97,7 @@ fun CustomEntryButton (
         ) {
             Text(
                 text = leadText,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .padding(20.dp, bottom = 2.dp),
                 color = MaterialTheme.colorScheme.onBackground,
@@ -128,7 +135,7 @@ fun CustomEntryButton (
         ) {
             Text(
                 text = leadText,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .padding(20.dp, bottom = 2.dp),
                 color = MaterialTheme.colorScheme.onBackground,

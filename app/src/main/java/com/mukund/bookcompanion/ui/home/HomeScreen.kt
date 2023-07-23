@@ -95,9 +95,19 @@ fun PortraitLayout(
     visibleStateRead: MutableTransitionState<Boolean>,
     visibleStateUnread: MutableTransitionState<Boolean>,
 ) {
+    var sortedBy by remember { mutableStateOf("") }
+    var selectedIndex by remember { mutableStateOf(0) }
     Scaffold(
         topBar = {
-            CustomHomeTopBar(settings, haptic, context)
+            CustomHomeTopBar(settings, haptic, onSortSelected = { selectedOption ->
+                sortedBy = selectedOption
+                // Call your sorting function here with the selectedOption
+            },
+                selectedIndex = selectedIndex,
+                onRadioSelected = { index ->
+                    selectedIndex = index
+                }
+            )
         },
         bottomBar = {
             CustomBottomBar(

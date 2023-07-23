@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.BuildConfig
 import com.mukund.bookcompanion.R
@@ -68,6 +69,11 @@ fun SettingScreen(
                 .padding(paddingValues)
         ) {
             item {
+                Text(
+                    text = "General",
+                    modifier = Modifier.padding(20.dp),
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                )
                 CustomEntrySwitch(
                     leadText = "System Theme",
                     boolVal = viewModel.followSystemTheme,
@@ -90,6 +96,11 @@ fun SettingScreen(
                     subText = null
                 )
                 Divider()
+                Text(
+                    text = "About",
+                    modifier = Modifier.padding(20.dp),
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                )
                 CustomEntryButton(
                     onClick = {
                         // Get the latest version from your API or GitHub releases
