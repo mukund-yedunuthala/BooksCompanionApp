@@ -1,6 +1,5 @@
 package com.mukund.bookcompanion.ui.home.components
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,10 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
@@ -33,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.R
-import com.mukund.bookcompanion.ui.settings.mToast
 
 @ExperimentalMaterial3Api
 @Composable
@@ -42,9 +37,10 @@ fun CustomHomeTopBar(
     haptic: HapticFeedback,
     onSortSelected: (String) -> Unit,
     selectedIndex: Int,
-    onRadioSelected: (Int) -> Unit,) {
-    val sortingOptions = listOf("Title", "Year")
-    var expanded by remember { mutableStateOf(false) }
+    onRadioSelected: (Int) -> Unit,
+    sortingOptions: List<String>,
+    expandSortDropDown: MutableState<Boolean>
+) {
     Column {
         LargeTopAppBar(
             title = {
@@ -57,8 +53,7 @@ fun CustomHomeTopBar(
             actions = {
                 IconButton(onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    expanded = true
-//                    mToast(context, "Coming soon!")
+                    expandSortDropDown.value = true
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.sort),
@@ -66,35 +61,13 @@ fun CustomHomeTopBar(
                         modifier = Modifier.size(25.dp)
                     )
                 }
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    offset = DpOffset((10).dp,0.dp)
-                ) {
-                    sortingOptions.forEachIndexed { index, option ->
-                        DropdownMenuItem(
-                            onClick = {
-                                expanded = false
-                                onSortSelected(option)
-                            },
-                            text = {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable(onClick = {onRadioSelected(index)})
-                                ) {
-                                    RadioButton(
-                                        selected = index == selectedIndex,
-                                        onClick = { onRadioSelected(index) }
-                                    )
-                                    Text(text = option)
-                                }
-                            },
-                            contentPadding = PaddingValues(5.dp)
-                        )
-                    }
-                }
+                SortDropDown(
+                    expandSortDropDown,
+                    sortingOptions,
+                    onSortSelected,
+                    onRadioSelected,
+                    selectedIndex
+                )
                 IconButton(onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     settings.invoke()
@@ -115,10 +88,12 @@ fun CustomHomeTopBar(
 fun CustomLandscapeHomeTopBar(
     settings: () -> Unit,
     haptic: HapticFeedback,
-    context: Context,
-): Unit {
-    //var scopeState by remember { mutableStateOf(0) }
-    //val titles = listOf("All", "Read", "Unread")
+    onSortSelected: (String) -> Unit,
+    selectedIndex: Int,
+    onRadioSelected: (Int) -> Unit,
+    sortingOptions: List<String>,
+    expandSortDropDown: MutableState<Boolean>
+){
     Column {
         CenterAlignedTopAppBar(
             title = {
@@ -130,7 +105,7 @@ fun CustomLandscapeHomeTopBar(
             actions = {
                 IconButton(onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    mToast(context, "Coming soon!")
+                    expandSortDropDown.value = true
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.sort),
@@ -138,6 +113,13 @@ fun CustomLandscapeHomeTopBar(
                         modifier = Modifier.size(25.dp)
                     )
                 }
+                SortDropDown(
+                    expandSortDropDown,
+                    sortingOptions,
+                    onSortSelected,
+                    onRadioSelected,
+                    selectedIndex
+                )
                 IconButton(onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     settings.invoke()
@@ -150,5 +132,45 @@ fun CustomLandscapeHomeTopBar(
                 }
             }
         )
+    }
+}
+
+@Composable
+fun SortDropDown(
+    expanded: MutableState<Boolean>,
+    sortingOptions: List<String>,
+    onSortSelected: (String) -> Unit,
+    onRadioSelected: (Int) -> Unit,
+    selectedIndex: Int
+) {
+
+    DropdownMenu(
+        expanded = expanded.value,
+        onDismissRequest = { expanded.value = false },
+        offset = DpOffset((10).dp,0.dp)
+    ) {
+        sortingOptions.forEachIndexed { index, option ->
+            DropdownMenuItem(
+                onClick = {
+                    expanded.value = false
+                    onSortSelected(option)
+                },
+                text = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = { onRadioSelected(index) })
+                    ) {
+                        RadioButton(
+                            selected = index == selectedIndex,
+                            onClick = { onRadioSelected(index) }
+                        )
+                        Text(text = option)
+                    }
+                },
+                contentPadding = PaddingValues(5.dp)
+            )
+        }
     }
 }

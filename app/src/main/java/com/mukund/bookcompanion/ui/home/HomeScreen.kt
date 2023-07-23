@@ -1,6 +1,5 @@
 package com.mukund.bookcompanion.ui.home
 
-import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
@@ -19,7 +18,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.ui.home.components.*
@@ -37,17 +35,18 @@ fun HomeScreen(
     navigateTo: (id: Int) -> Unit,
     settings: () -> Unit
 ) {
-    val haptic = LocalHapticFeedback.current
-
+    // viewModel
     LaunchedEffect(Unit) {
         viewModel.getBooks()
     }
+    // Haptic
+    val haptic = LocalHapticFeedback.current
+    // FabClick
     val onFabClick = {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             viewModel.openDialog()
     }
-    val context = LocalContext.current
-
+    // Bottom bar
     val visibilityState = remember { MutableTransitionState(false) }
     visibilityState.targetState = true
     val (currentCategory, setCurrentCategory) = remember { mutableStateOf(BookCategory.All) }
@@ -62,19 +61,25 @@ fun HomeScreen(
             BookCategory.Unread -> visibleStateUnread.targetState = true
         }
     }
-
-
+    // Sorting dropdown
+    var sortedBy = remember { mutableStateOf("") }
+    var selectedIndex = remember { mutableStateOf(0) }
+    val expandSortDropDown = remember { mutableStateOf(false) }
+    // Orientation
     val currentConfiguration = LocalConfiguration.current
     val screenOrientation = currentConfiguration.orientation
     if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
         PortraitLayout(viewModel, navigateTo, settings,
-            haptic, context, onFabClick, visibilityState, currentCategory, setCurrentCategory,
-            visibleStateAll, visibleStateRead, visibleStateUnread)
+            haptic, onFabClick, visibilityState, currentCategory, setCurrentCategory,
+            visibleStateAll, visibleStateRead, visibleStateUnread,
+            sortedBy, selectedIndex, expandSortDropDown
+        )
     }
     else {
         LandscapeLayout(viewModel, navigateTo, settings,
-            haptic, context, onFabClick, visibilityState, currentCategory, setCurrentCategory,
-            visibleStateAll, visibleStateRead, visibleStateUnread
+            haptic, onFabClick, visibilityState, currentCategory, setCurrentCategory,
+            visibleStateAll, visibleStateRead, visibleStateUnread,
+            sortedBy, selectedIndex, expandSortDropDown
         )
     }
 }
@@ -86,7 +91,6 @@ fun PortraitLayout(
     navigateTo: (id: Int) -> Unit,
     settings: () -> Unit,
     haptic: HapticFeedback,
-    context: Context,
     onFabClick: () -> Unit,
     visibilityState: MutableTransitionState<Boolean>,
     currentCategory: BookCategory,
@@ -94,19 +98,25 @@ fun PortraitLayout(
     visibleStateAll: MutableTransitionState<Boolean>,
     visibleStateRead: MutableTransitionState<Boolean>,
     visibleStateUnread: MutableTransitionState<Boolean>,
+    sortedBy: MutableState<String>,
+    selectedIndex: MutableState<Int>,
+    expandSortDropDown: MutableState<Boolean>,
 ) {
-    var sortedBy by remember { mutableStateOf("") }
-    var selectedIndex by remember { mutableStateOf(0) }
     Scaffold(
         topBar = {
-            CustomHomeTopBar(settings, haptic, onSortSelected = { selectedOption ->
-                sortedBy = selectedOption
-                // Call your sorting function here with the selectedOption
-            },
-                selectedIndex = selectedIndex,
+            CustomHomeTopBar(
+                settings = settings,
+                haptic = haptic,
+                onSortSelected = { selectedOption ->
+                    sortedBy.value = selectedOption
+                    // Call your sorting function here with the selectedOption
+                },
+                sortingOptions = listOf("Title", "Year"),
+                selectedIndex = selectedIndex.value,
                 onRadioSelected = { index ->
-                    selectedIndex = index
-                }
+                    selectedIndex.value = index
+                },
+                expandSortDropDown = expandSortDropDown
             )
         },
         bottomBar = {
@@ -158,7 +168,6 @@ fun LandscapeLayout(
     navigateTo: (id: Int) -> Unit,
     settings: () -> Unit,
     haptic: HapticFeedback,
-    context: Context,
     onFabClick: () -> Unit,
     visibilityState: MutableTransitionState<Boolean>,
     currentCategory: BookCategory,
@@ -166,10 +175,26 @@ fun LandscapeLayout(
     visibleStateAll: MutableTransitionState<Boolean>,
     visibleStateRead: MutableTransitionState<Boolean>,
     visibleStateUnread: MutableTransitionState<Boolean>,
+    sortedBy: MutableState<String>,
+    selectedIndex: MutableState<Int>,
+    expandSortDropDown: MutableState<Boolean>,
 ) {
     Scaffold(
         topBar = {
-            CustomLandscapeHomeTopBar(settings, haptic, context) // Move the top bar outside the Scaffold
+            CustomLandscapeHomeTopBar(
+                settings = settings,
+                haptic = haptic,
+                onSortSelected = { selectedOption ->
+                    sortedBy.value = selectedOption
+                    // Call your sorting function here with the selectedOption
+                },
+                sortingOptions = listOf("Title", "Year"),
+                selectedIndex = selectedIndex.value,
+                onRadioSelected = { index ->
+                    selectedIndex.value = index
+                },
+                expandSortDropDown = expandSortDropDown
+            ) // Move the top bar outside the Scaffold
         }
     ) { paddingValues ->
         Row(Modifier.fillMaxSize()) {
