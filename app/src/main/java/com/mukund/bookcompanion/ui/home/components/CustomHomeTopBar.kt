@@ -145,7 +145,7 @@ fun SortDropDown(
 ) {
 
     DropdownMenu(
-        expanded = expanded.value,
+        expanded = false,
         onDismissRequest = { expanded.value = false },
         offset = DpOffset((10).dp,0.dp)
     ) {
