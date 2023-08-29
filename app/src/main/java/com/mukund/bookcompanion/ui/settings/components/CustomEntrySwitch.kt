@@ -45,7 +45,7 @@ fun CustomEntrySwitch(
                 ) {
                     Text(
                         text = leadText,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(20.dp, bottom = 2.dp),
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Left

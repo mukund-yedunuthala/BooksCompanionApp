@@ -1,8 +1,8 @@
 package com.mukund.bookcompanion.ui.settings
 import android.app.Application
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

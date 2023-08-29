@@ -1,10 +1,11 @@
 package com.mukund.bookcompanion.ui.settings
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -13,7 +14,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.util.withContext
 
@@ -64,11 +67,11 @@ fun LibsScreen(
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
-                        .clickable(enabled = false) {
-                            alertFlag.value = true
-                            alertContent.value = it.licenses.elementAt(0).licenseContent.toString()
-                        }
+                        .padding(10.dp),
+                    onClick = {
+                        alertContent.value = it.licenses.elementAt(0).licenseContent.toString()
+                        alertFlag.value = !alertFlag.value
+                    }
                 ) {
                     Text(
                         text = it.name,
@@ -97,23 +100,40 @@ fun LibsScreen(
         if (alertFlag.value) {
             AlertDialog(
                 onDismissRequest = { alertFlag.value = false },
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight()
-            ) {
-               Surface(
-                   shape = MaterialTheme.shapes.extraLarge
-               ) {
-                   LazyColumn() {
-                       items(0) {
-                           Text(
-                               text = alertContent.value,
-                               modifier = Modifier.padding(10.dp)
-                           )
-                       }
-                   }
-               }
-            }
+                text = {
+                    ScrollableLicenseText(alertContent.value)
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            alertFlag.value = false
+                        },
+                    ) {
+                        Text("Confirm".uppercase(), Modifier.padding(10.dp))
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { alertFlag.value = false },
+                    ) {
+                        Text("Dismiss".uppercase(), Modifier.padding(10.dp))
+                    }
+                },
+                modifier = Modifier.wrapContentWidth(),
+            )
         }
     }
+}
+@Composable
+fun ScrollableLicenseText(licenseText: String) {
+    val scrollState = rememberScrollState()
+    Text(
+        text = licenseText,
+        style = TextStyle(fontSize = 14.sp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .verticalScroll(scrollState)
+            .fillMaxHeight(0.4f) // Adjust the height as needed
+    )
 }

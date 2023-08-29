@@ -16,13 +16,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.BuildConfig
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.ui.settings.components.CustomEntryButton
 import com.mukund.bookcompanion.ui.settings.components.CustomEntrySwitch
 import com.mukund.bookcompanion.ui.settings.components.CustomURLDialog
-import com.mukund.bookcompanion.ui.settings.components.getLatestVersion
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,6 +68,11 @@ fun SettingScreen(
                 .padding(paddingValues)
         ) {
             item {
+                Text(
+                    text = "General",
+                    modifier = Modifier.padding(20.dp),
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                )
                 CustomEntrySwitch(
                     leadText = "System Theme",
                     boolVal = viewModel.followSystemTheme,
@@ -89,24 +94,29 @@ fun SettingScreen(
                     leadText = "Backup & Restore",
                     subText = null
                 )
-                Divider()
+                HorizontalDivider()
+                Text(
+                    text = "About",
+                    modifier = Modifier.padding(20.dp),
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
+                )
                 CustomEntryButton(
                     onClick = {
                         // Get the latest version from your API or GitHub releases
-                        val latestVersion: String = getLatestVersion() // Implement this method to retrieve the latest version
+//                        val latestVersion: String = getLatestVersion() // Implement this method to retrieve the latest version
 
                         // Compare the current version with the latest version
                         val currentVersion: String = BuildConfig.VERSION_NAME
-                        if (currentVersion == latestVersion) {
-                            mToast(context, "Running the latest version: $currentVersion")
-                        } else {
-                            mToast(context, "New version available! Latest version: $latestVersion")
-                        }
+//                        if (currentVersion == latestVersion) {
+//                            mToast(context, "Running the latest version: $currentVersion")
+//                        } else {
+//                            mToast(context, "New version available! Latest version: $latestVersion")
+//                        }
                     },
                     imageVector = Icons.Outlined.Info,
                     contentDescription = "App version",
                     leadText = "App Version",
-                    subText = BuildConfig.VERSION_NAME + " (${BuildConfig.VERSION_CODE})"
+                    subText = BuildConfig.VERSION_NAME
                 )
 
                 CustomEntryButton(
