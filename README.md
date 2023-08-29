@@ -10,6 +10,7 @@
   </a>
 </p>
 
+
 This is one of many open source book trackers available for Android, still a work-in-progress.
 Hobby project, built entirely on Jetpack compose.
 
@@ -47,9 +48,7 @@ Currently no public releases are available. Pre-release versions are available [
 - Implement data fields such as tags, description
 - Implement sorting
 - Tablet optimization
-
 ## License
-
 ``` 
 Copyright (C) 2023  Mukund Yedunuthala
 
