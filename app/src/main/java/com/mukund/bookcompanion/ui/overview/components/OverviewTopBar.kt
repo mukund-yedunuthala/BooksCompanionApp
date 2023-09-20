@@ -1,7 +1,7 @@
 package com.mukund.bookcompanion.ui.overview.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
@@ -18,7 +18,7 @@ fun OverviewTopBar(backPress: () -> Boolean, navigateTo: () -> Unit) {
         navigationIcon = {
             IconButton(onClick = { backPress.invoke() }) {
                 Icon(
-                    Icons.Default.ArrowBack,
+                    Icons.AutoMirrored.Filled.ArrowBack,
                     "Return to home"
                 )
             }

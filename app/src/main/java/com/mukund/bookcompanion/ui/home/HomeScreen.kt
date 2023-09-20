@@ -8,8 +8,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.ui.home.components.*
 
 enum class BookCategory(val icon: ImageVector) {
-    All(Icons.Default.List),
+    All(Icons.AutoMirrored.Filled.List),
     Read(Icons.Filled.CheckCircle),
     Unread(Icons.Outlined.CheckCircle);
 }
