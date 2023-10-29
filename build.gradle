@@ -1,15 +1,15 @@
 buildscript {
     ext {
-        gradle_version = '8.1.1'
+        gradle_version = '8.1.2'
         kotlin_version = "1.8.21"
         viewmodel_version = '2.6.2'
-        nav_version = '2.7.2'
+        nav_version = '2.7.4'
         compose_compiler = '1.4.7'
-        room_version = '2.5.2'
+        room_version = '2.6.0'
         appcompat_version = '1.7.0-alpha03'
-        hilt_version = '2.48'
-        hilt_nav_version = "1.1.0-alpha01"
-        latestAboutLibsRelease = '10.8.3'
+        hilt_version = '2.48.1'
+        hilt_nav_version = '1.1.0-rc01'
+        latestAboutLibsRelease = '10.9.1'
         dataStoreVersion = '1.1.0-alpha05'
     }
     repositories {
