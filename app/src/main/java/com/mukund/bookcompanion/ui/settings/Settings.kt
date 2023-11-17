@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -54,7 +54,7 @@ fun SettingScreen(
                 navigationIcon = {
                     IconButton(onClick = { backPress.invoke() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Return to home"
                         )
                     }
@@ -102,16 +102,6 @@ fun SettingScreen(
                 )
                 CustomEntryButton(
                     onClick = {
-                        // Get the latest version from your API or GitHub releases
-//                        val latestVersion: String = getLatestVersion() // Implement this method to retrieve the latest version
-
-                        // Compare the current version with the latest version
-                        val currentVersion: String = BuildConfig.VERSION_NAME
-//                        if (currentVersion == latestVersion) {
-//                            mToast(context, "Running the latest version: $currentVersion")
-//                        } else {
-//                            mToast(context, "New version available! Latest version: $latestVersion")
-//                        }
                     },
                     imageVector = Icons.Outlined.Info,
                     contentDescription = "App version",
