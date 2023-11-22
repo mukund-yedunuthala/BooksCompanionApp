@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,12 +32,14 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Backup_Screen(
-    viewModel:BooksViewModel = hiltViewModel(),
+    viewModel: BooksViewModel = hiltViewModel(),
     backPress: () -> Boolean
 ) {
     val context = LocalContext.current
     val resolver = context.contentResolver
-    val books = viewModel.books
+    LaunchedEffect(Unit) {
+        viewModel.getBooks()
+    }
 
 
     val importUriState = remember { mutableStateOf<Uri?>(null) }
@@ -52,7 +55,7 @@ fun Backup_Screen(
         if (result.resultCode == Activity.RESULT_OK) {
             val uri = result.data?.data
             uri?.let { backupUri ->
-                performBackup(context, resolver, books, backupUri)
+                performBackup(context, resolver, viewModel.books, backupUri)
             }
         }
     }
