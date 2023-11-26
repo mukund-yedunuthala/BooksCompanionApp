@@ -65,13 +65,13 @@ class BooksViewModel @Inject constructor(
         book = book.copy(title = title)
     }
 
-//    fun updateGenre(genre: String) {
-//        book = book.copy(genre = genre)
-//    }
-//
-//    fun updateISBN(isbn: String) {
-//        book = book.copy(isbn = isbn)
-//    }
+    fun updateGenre(genre: String) {
+        book = book.copy(genre = genre)
+    }
+
+    fun updateISBN(isbn: String) {
+        book = book.copy(isbn = isbn)
+    }
 
     fun updateAuthor(author: String) {
         book = book.copy(author = author)
