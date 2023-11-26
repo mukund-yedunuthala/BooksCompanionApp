@@ -135,7 +135,9 @@ fun PreviewOverview() {
         author = "Sarah Andersen",
         year = 2021,
         id = 0,
-        status = "Unread"
+        status = "Unread",
+        genre = "Something",
+        isbn = "901908000"
     )
     OverviewContent(book = book, navigateTo = { }, deleteBook = {
     }, backPress = { false })

@@ -11,5 +11,7 @@ data class Book(
     val title: String,
     val author: String,
     val year: Long,
-    val status: String
+    val status: String,
+    val genre: String,
+    val isbn: String,
 )
