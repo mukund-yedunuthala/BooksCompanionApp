@@ -2,6 +2,7 @@
 name: Android Build CI/CD
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "master" ]
 
@@ -44,7 +45,7 @@ jobs:
 
       - name: Extract commit message
         id: extract_commit_message
-        run: echo "::set-output name=commit_message::$(git log --format=%B -n 1 $GITHUB_SHA)"
+        run: echo "commit_message = $(git log --format=%B -n 1 $GITHUB_SHA)" >> $GITHUB_OUTPUT
 
       - name: Create pre-release
         id: create_release
@@ -52,7 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.AUTH_TOKEN }}
         with:
-          tag_name: ${{ steps.date.outputs.date }}
+          tag_name: pre-release-build-tag
           release_name: Pre-release V${{ steps.date.outputs.date }}
           draft: false
           prerelease: true
