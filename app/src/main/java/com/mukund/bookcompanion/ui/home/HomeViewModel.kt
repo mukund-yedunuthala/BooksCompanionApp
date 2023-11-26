@@ -27,22 +27,28 @@ class BooksViewModel @Inject constructor(
 ) : ViewModel() {
 
     var books: List<Book> by mutableStateOf(emptyList())
-    var book by mutableStateOf(Book(0, NO_VALUE, NO_VALUE, 0, NO_VALUE))
+    var book by mutableStateOf(
+        Book(id = 0,
+            title = NO_VALUE,
+            genre = NO_VALUE,
+            isbn =  NO_VALUE,
+            author = NO_VALUE,
+            year = 0,
+            status = NO_VALUE)
+    )
         private set
     var openDialog by mutableStateOf(false)
 
-    private val _sortOption = MutableLiveData(SortOption.TITLE) // Default
-    private val _unsortedBooks = MutableLiveData(books)
-    val sortOption: LiveData<SortOption> get() = _sortOption
-    val unsortedBooks: LiveData<List<Book>> get() = _unsortedBooks
     fun getBook(id: Int) = viewModelScope.launch(Dispatchers.IO) {
         book = repository.getBookFromRoom(id)
     }
+
     fun getBooks() = viewModelScope.launch(Dispatchers.IO) {
         repository.getBooksFromRoom().collectLatest {books ->
             this@BooksViewModel.books = books
         }
     }
+
     fun addBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
         repository.addBookToRoom(book)
     }
@@ -57,6 +63,14 @@ class BooksViewModel @Inject constructor(
 
     fun updateTitle(title: String) {
         book = book.copy(title = title)
+    }
+
+    fun updateGenre(genre: String) {
+        book = book.copy(genre = genre)
+    }
+
+    fun updateISBN(isbn: String) {
+        book = book.copy(isbn = isbn)
     }
 
     fun updateAuthor(author: String) {
@@ -85,20 +99,6 @@ class BooksViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.insertAllBooks(books)
         }
-    }
-
-    fun setSortOption(sortOption: SortOption) {
-        _sortOption.value = sortOption
-        sortBooks()
-    }
-
-    private fun sortBooks() {
-        val sortedBooks = when (sortOption.value) {
-            SortOption.TITLE -> _unsortedBooks.value?.sortedBy { it.title }
-            SortOption.YEAR -> _unsortedBooks.value?.sortedBy { it.year }
-            else -> _unsortedBooks.value
-        }
-        _unsortedBooks.value = sortedBooks
     }
 
 }

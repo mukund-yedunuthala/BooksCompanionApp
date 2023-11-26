@@ -53,6 +53,12 @@ fun EditScreen(
             updateStatus = {status:String ->
                 viewModel.updateStatus(status)
             },
+            updateGenre = {genre: String ->
+                viewModel.updateGenre(genre)
+            },
+            updateISBN = {isbn: String ->
+                viewModel.updateISBN(isbn)
+            },
             updateBook = {book:Book ->
                 viewModel.updateBook(book)
             },

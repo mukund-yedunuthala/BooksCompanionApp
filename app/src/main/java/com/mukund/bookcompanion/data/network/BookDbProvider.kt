@@ -13,7 +13,7 @@ class BookDbProvider(
     fun instance() : BooksDatabase {
         if (database == null) {
             database = Room.databaseBuilder(application, BooksDatabase::class.java, BOOK_TABLE)
-                .fallbackToDestructiveMigration()
+                .addMigrations(BooksDatabase.MIGRATION_2_3)
                 .build()
         }
         return database!!

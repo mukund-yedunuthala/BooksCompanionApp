@@ -41,6 +41,8 @@ import com.mukund.bookcompanion.core.Constants.Companion.AUTHOR
 import com.mukund.bookcompanion.core.Constants.Companion.BOOK_TITLE
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.core.Constants.Companion.YEAR
+import com.mukund.bookcompanion.core.Constants.Companion.GENRE
+import com.mukund.bookcompanion.core.Constants.Companion.ISBN
 import com.mukund.bookcompanion.domain.model.Book
 
 @ExperimentalMaterial3Api
@@ -57,6 +59,8 @@ fun BookAdditionDialog(
         var title by remember { mutableStateOf(NO_VALUE) }
         var author by remember { mutableStateOf(NO_VALUE) }
         var year by remember { mutableStateOf(NO_VALUE) }
+        var genre by remember { mutableStateOf(NO_VALUE) }
+        var isbn by remember { mutableStateOf(NO_VALUE) }
         var category by remember { mutableStateOf("Unread") }
         var dupeFlag = remember { mutableStateOf(false) }
 
@@ -109,11 +113,34 @@ fun BookAdditionDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp),
+                            text = genre,
+                            placeholder = GENRE,
+                            label = "Genre",
+                            onChange = {
+                                genre = it
+                            }
+                        )
+                        CustomAdditionTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
                             text = year,
                             placeholder = YEAR,
-                            label = "Year",
+                            label = "Year of publication",
                             onChange = {
                                 year = it
+                            },
+                            keyboardType = KeyboardType.Number
+                        )
+                        CustomAdditionTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            text = isbn,
+                            placeholder = ISBN,
+                            label = "ISBN",
+                            onChange = {
+                                isbn = it
                             },
                             keyboardType = KeyboardType.Number
                         )
@@ -135,7 +162,11 @@ fun BookAdditionDialog(
                                         context
                                     )
                                 ) {
-                                    val book = Book(0, title, author, year = year.toLong(), status = category)
+                                    val book = Book(
+                                        0, title = title, author = author,
+                                        genre = genre, isbn = isbn,
+                                        year = year.toLong(),
+                                        status = category)
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                     addBook(book)
                                     closeDialog()

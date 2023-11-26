@@ -25,6 +25,8 @@ fun UpdateContent(
     updateTitle: (title: String) -> Unit,
     updateAuthor: (author: String) -> Unit,
     updateYear: (year: String) -> Unit,
+    updateGenre: (genre: String) -> Unit,
+    updateISBN: (isbn: String) -> Unit,
     updateBook: (book: Book) -> Unit,
     backPress: () -> Unit,
     updateStatus: (String) -> Unit
@@ -73,12 +75,35 @@ fun UpdateContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
+                text = book.genre,
+                placeholder = Constants.GENRE,
+                label = "Genre",
+                onChange = { genre ->
+                    updateGenre(genre)
+                }
+            )
+            CustomAdditionTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
                 text = yearString,
                 placeholder = Constants.YEAR,
                 label = "Year",
                 onChange = {
                     yearString = it
                     updateYear(yearString)
+                },
+                keyboardType = KeyboardType.Number
+            )
+            CustomAdditionTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                text = book.isbn,
+                placeholder = Constants.ISBN,
+                label = "ISBN",
+                onChange = { isbn ->
+                    updateISBN(isbn)
                 },
                 keyboardType = KeyboardType.Number
             )
