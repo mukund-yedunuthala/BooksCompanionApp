@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.domain.model.Book
 
 @Composable
@@ -81,8 +82,31 @@ fun OverviewContent(
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.W300
                     )
+                    if (book.genre != NO_VALUE) {
+                        Text(
+                            text = "Genre: ${book.genre}",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier
+                                .padding(10.dp, top = 5.dp, bottom = 5.dp)
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.W300
+                        )
+                    }
+                    if (book.isbn != NO_VALUE) {
+                        Text(
+                            text = "ISBN: ${book.isbn}",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier
+                                .padding(10.dp, top = 5.dp, bottom = 5.dp)
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.W300
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(200.dp))
                     SuggestionChip(
-                        onClick = {  },
+                        onClick = { },
                         modifier = Modifier
                             .padding(10.dp, top = 5.dp, bottom = 5.dp)
                             .wrapContentWidth()
@@ -104,7 +128,7 @@ fun OverviewContent(
                         )
                         Spacer(modifier = Modifier.width(30.dp))
                         CustomEntryChipButton(
-                            onClick = {showDeleteDialog.value = true},
+                            onClick = { showDeleteDialog.value = true },
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Delete button",
                             leadText = "Delete",

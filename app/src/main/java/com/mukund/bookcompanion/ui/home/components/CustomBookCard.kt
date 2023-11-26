@@ -32,8 +32,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.domain.model.Book
 
 @ExperimentalMaterial3Api
@@ -50,11 +52,11 @@ fun CustomBookCard(
         visibleState = visibleState,
         enter = slideInHorizontally (
             initialOffsetX = { -it },
-            animationSpec = tween(durationMillis = 500, delayMillis = index * 100)
+            animationSpec = tween(durationMillis = 300, delayMillis = index * 100)
         ),
         exit = slideOutHorizontally(
             targetOffsetX = { it },
-            animationSpec = tween(durationMillis = 500, delayMillis = index * 100)
+            animationSpec = tween(durationMillis = 300, delayMillis = index * 100)
         )
     ) {
         Card(
@@ -66,7 +68,7 @@ fun CustomBookCard(
             shape = RoundedCornerShape(10.dp),
             onClick = { navigateTo.invoke(book.id) }
         ) {
-            Column(Modifier.fillMaxWidth()) {
+            Column() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = book.title.trim(),
@@ -95,18 +97,41 @@ fun CustomBookCard(
                     modifier = Modifier.padding(10.dp)
                 )
                 if (expandedCard) {
-                    Text(
-                        text = book.year.toString(),
-                        fontStyle = FontStyle.Italic,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .fillMaxWidth()
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            text = "Year of publication: ${book.year.toString()}",
+                            fontStyle = FontStyle.Italic,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(10.dp),
+                            textAlign = TextAlign.Start
+                        )
+                        if (book.genre != NO_VALUE) {
+                            Text(
+                                text = "|",
+                                fontStyle = FontStyle.Italic,
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                textAlign = TextAlign.Start
+                            )
+                            Text(
+                                text = "Genre: ${book.genre}",
+                                fontStyle = FontStyle.Italic,
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                textAlign = TextAlign.Start
+                            )
+                        }
+                    }
+
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()
-
                     ) {
                         SuggestionChip(
                             onClick = {},
