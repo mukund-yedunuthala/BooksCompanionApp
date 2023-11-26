@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.1.0-1](https://github.com/mukund-yedunuthala/BooksCompanionApp/compare/v0.0.10...v0.1.0-1) (2023-11-26)
+
+### Features
+
+* add genre and isbn fields
+([84374c7](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/84374c77e39055698e561b784c6e107fd7fec05c)),
+closes
+[#16](https://github.com/mukund-yedunuthala/BooksCompanionApp/issues/16)
+
+### Fixes
+
+* backup bug fix
+([e669b92](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/e669b926348b7b7c5415e360cccb28f316a939a2))
+
 ### [v0.0.10](https://github.com/mukund-yedunuthala/BooksCompanionApp/compare/v0.0.9...v0.0.10) (2023-11-17)
 
 #### Features
