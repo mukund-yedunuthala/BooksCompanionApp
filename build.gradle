@@ -1,16 +1,16 @@
 buildscript {
     ext {
-        gradle_version = '8.1.4'
+        gradle_version = '8.2.2'
         kotlin_version = "1.9.20"
-        viewmodel_version = '2.6.2'
-        nav_version = '2.7.5'
+        viewmodel_version = '2.7.0'
+        nav_version = '2.7.7'
         compose_compiler = '1.5.4'
-        room_version = '2.6.0'
+        room_version = '2.6.1'
         appcompat_version = '1.7.0-alpha03'
-        hilt_version = '2.48.1'
-        hilt_nav_version = '1.1.0'
-        latestAboutLibsRelease = '10.9.1'
-        dataStoreVersion = '1.1.0-alpha06'
+        hilt_version = '2.50'
+        hilt_nav_version = '1.2.0'
+        latestAboutLibsRelease = '10.10.0'
+        dataStoreVersion = '1.1.0-beta01'
     }
     repositories {
         google()
