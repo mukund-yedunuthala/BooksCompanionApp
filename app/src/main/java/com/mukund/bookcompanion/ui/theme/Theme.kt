@@ -2,6 +2,7 @@ package com.mukund.bookcompanion.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -35,6 +36,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun BooksCompanionTheme(
     darkTheme: Boolean,
