@@ -4,6 +4,7 @@ plugins {
     id 'com.google.devtools.ksp'
     id 'com.google.dagger.hilt.android'
     id 'com.mikepenz.aboutlibraries.plugin'
+    id 'org.jetbrains.kotlin.plugin.compose'
 }
 android {
     namespace 'com.mukund.bookcompanion'
