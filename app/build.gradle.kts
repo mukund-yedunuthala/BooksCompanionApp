@@ -14,8 +14,8 @@ android {
         applicationId="com.mukund.bookcompanion"
         minSdk=29
         targetSdk=34
-        versionCode=25
-        versionName="0.1.4"
+        versionCode=26
+        versionName="0.1.5"
 
         vectorDrawables {
             useSupportLibrary = true
