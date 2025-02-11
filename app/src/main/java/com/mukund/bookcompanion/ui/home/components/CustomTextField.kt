@@ -41,9 +41,9 @@ fun CustomAdditionTextField(
         ),
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Words,
-            imeAction = imeAction,
+            autoCorrectEnabled = false,
             keyboardType = keyboardType,
-            autoCorrect = false
+            imeAction = imeAction
         ),
         keyboardActions = keyboardActions,
         shape = RoundedCornerShape(20.dp),
