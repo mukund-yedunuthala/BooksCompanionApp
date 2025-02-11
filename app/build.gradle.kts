@@ -8,7 +8,7 @@ plugins {
 }
 android {
     namespace = "com.mukund.bookcompanion"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId="com.mukund.bookcompanion"
@@ -59,8 +59,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat-resources:1.7.0")
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.52")
-    ksp("com.google.dagger:hilt-compiler:2.52")
+    implementation("com.google.dagger:hilt-android:2.55")
+    ksp("com.google.dagger:hilt-compiler:2.55")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // ViewModel
@@ -68,7 +68,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
     // Navigation
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.6")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")
@@ -77,20 +77,20 @@ dependencies {
 
     // Compose
     implementation("androidx.compose.material3:material3:1.3.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.7.5")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.5")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.5")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.7.7")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.7.7")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.7")
 
     // AboutLibraries
-    implementation("com.mikepenz:aboutlibraries-core:11.2.3")
-    releaseImplementation("com.mikepenz:aboutlibraries-compose:11.2.3")
+    implementation("com.mikepenz:aboutlibraries-core:11.5.0")
+    releaseImplementation("com.mikepenz:aboutlibraries-compose:11.5.0")
 
     // backup
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.12.1")
 
     // DataStore
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.2")
 
     // Others
-    implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("androidx.activity:activity-ktx:1.10.0")
 }
