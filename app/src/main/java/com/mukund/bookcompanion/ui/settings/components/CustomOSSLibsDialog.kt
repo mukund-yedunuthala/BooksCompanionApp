@@ -12,6 +12,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
@@ -45,7 +46,8 @@ fun CustomURLDialog(
                             LinkAnnotation.Url(
                                 source, TextLinkStyles(
                                     SpanStyle(
-                                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                                        color = Color.Blue,
+                                        textDecoration = TextDecoration.Underline
                                     )
                                 )
                             ) {
