@@ -39,8 +39,8 @@ fun HomeContent(
                 }
             }
         ) { index, book ->
-            val modifier = Modifier.animateItemPlacement(
-                animationSpec = tween(400)
+            val modifier = Modifier.animateItem(
+                fadeInSpec = null, fadeOutSpec = null, placementSpec = tween(400)
             )
             CustomBookCard(
                 book = book,

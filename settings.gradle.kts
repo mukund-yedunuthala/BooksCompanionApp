@@ -14,4 +14,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Books Companion"
-include ':app'
+include(":app")
