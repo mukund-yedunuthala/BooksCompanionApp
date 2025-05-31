@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId="com.mukund.bookcompanion"
         minSdk=29
-        targetSdk=34
+        targetSdk=36
         versionCode=26
         versionName="0.1.5"
 
@@ -51,6 +51,7 @@ android {
         androidResources {
         generateLocaleConfig = true
     }
+    buildToolsVersion = "36.0.0"
 }
 
 dependencies {
