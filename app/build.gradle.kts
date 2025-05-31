@@ -8,7 +8,7 @@ plugins {
 }
 android {
     namespace = "com.mukund.bookcompanion"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId="com.mukund.bookcompanion"
