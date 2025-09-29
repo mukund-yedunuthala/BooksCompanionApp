@@ -1,8 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Book Companion</string>
-    <string name="Attribution">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
-    <string name="Source">https://github.com/mukund-yedunuthala/BooksCompanionApp</string>
-    <string name="PrivacyPolicy">https://mukund-yedunuthala.de/books-companion-privacy-policy/</string>
     <string name="settingsscreen_toplabel">Settings</string>
     <string name="settings_section_general">General</string>
     <string name="settings_general_system_theme">System Theme</string>
@@ -12,7 +9,6 @@
     <string name="settings_about_app_version">App Version</string>
     <string name="settings_about_license">License</string>
     <string name="settings_about_license_subtext">GNU General Public License v3.0</string>
-    <string name="settings_about_source_code">Source Code</string>
     <string name="settings_about_libraries">Libraries</string>
     <string name="settings_about_libraries_subtext">Open source libraries</string>
     <string name="settings_about_privacy_policy">Privacy Policy</string>
