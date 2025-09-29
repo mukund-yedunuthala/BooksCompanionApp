@@ -12,15 +12,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
@@ -31,13 +34,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.domain.model.Book
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun CustomBookCard(
@@ -74,7 +78,8 @@ fun CustomBookCard(
                         text = book.title.trim(),
                         modifier = Modifier
                             .padding(10.dp, top = 10.dp)
-                            .fillMaxWidth(0.9f),
+                            .fillMaxWidth(0.9f)
+                            .height(30.dp),
                         style = MaterialTheme.typography.titleLarge,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -84,65 +89,58 @@ fun CustomBookCard(
                     ) {
                         IconButton(onClick = { expandedCard = !expandedCard }) {
                             Icon(
-                                Icons.Default.MoreVert,
-                                "Expand",
-                                tint = MaterialTheme.colorScheme.onBackground
+                                painter = painterResource(id = R.drawable.expand_circle_down),
+                                contentDescription = "Expand",
+                                tint = MaterialTheme.colorScheme.onBackground,
+                                modifier = Modifier
+                                    .padding(top = 10.dp)
+                                    .height(30.dp)
+                                    .size(IconButtonDefaults.smallIconSize)
                             )
                         }
                     }
                 }
-                Text(
-                    text = book.author.trim(),
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(10.dp)
-                )
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = book.author.trim(),
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
                 if (expandedCard) {
                     Row(
-                        horizontalArrangement = Arrangement.Start,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text(
-                            text = "Year of publication: ${book.year.toString()}",
-                            fontStyle = FontStyle.Italic,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier
-                                .padding(10.dp),
-                            textAlign = TextAlign.Start
-                        )
-                        if (book.genre != NO_VALUE) {
-                            Text(
-                                text = "|",
-                                fontStyle = FontStyle.Italic,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier
-                                    .padding(10.dp),
-                                textAlign = TextAlign.Start
-                            )
-                            Text(
-                                text = "Genre: ${book.genre}",
-                                fontStyle = FontStyle.Italic,
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier
-                                    .padding(10.dp),
-                                textAlign = TextAlign.Start
-                            )
-                        }
+                        CustomSuggestionChip( text = book.year.toString().trim())
+                        CustomSuggestionChip( text = "Status: ${book.status.trim()}")
+                        if (book.genre != NO_VALUE) CustomSuggestionChip( text = "Genre: ${book.genre}")
                     }
 
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        SuggestionChip(
-                            onClick = {},
-                            label = { Text("Status: ${book.status.trim()}") },
-                            modifier = Modifier
-                                .wrapContentWidth()
-                                .padding(10.dp)
-                        )
-                    }
+
                 }
             }
         }
     }
+}
+
+@Composable
+private fun CustomSuggestionChip(text: String) {
+    SuggestionChip(
+        onClick = { },
+        label = {
+            Text(
+                text = text,
+            )
+        },
+        modifier = Modifier
+            .wrapContentWidth()
+            .padding(10.dp),
+        shape = ButtonDefaults.shape
+    )
 }

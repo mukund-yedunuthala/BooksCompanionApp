@@ -7,25 +7,21 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.ui.home.components.*
+import com.mukund.bookcompanion.R
 
-enum class BookCategory(val icon: ImageVector) {
-    All(Icons.AutoMirrored.Filled.List),
-    Read(Icons.Filled.CheckCircle),
-    Unread(Icons.Outlined.CheckCircle);
+enum class BookCategory(val icon: Int) {
+    All(R.drawable.list_alt),
+    Read(R.drawable.check_circle),
+    Unread(R.drawable.check_circle_unread);
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -123,7 +119,7 @@ fun PortraitLayout(
             CustomBottomBar(
                 onFABClick = onFabClick,
                 haptic,
-                categories = BookCategory.values(),
+                categories = BookCategory.entries.toTypedArray(),
                 currentCategory,
                 setCurrentCategory,
                 visibleStateAll,

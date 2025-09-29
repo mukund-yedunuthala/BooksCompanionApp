@@ -10,15 +10,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun CustomEntryChipButton(
     onClick: () -> Unit,
-    imageVector: ImageVector,
     contentDescription: String,
     leadText: String,
+    painter: Int,
 ) {
     val contentColor = LocalContentColor.current
 
@@ -36,7 +38,7 @@ fun CustomEntryChipButton(
         },
         leadingIcon = {
             Icon(
-                imageVector = imageVector,
+                painter = painterResource(id = painter),
                 contentDescription = contentDescription,
                 tint = contentColor,
                 modifier = Modifier.size(AssistChipDefaults.IconSize)

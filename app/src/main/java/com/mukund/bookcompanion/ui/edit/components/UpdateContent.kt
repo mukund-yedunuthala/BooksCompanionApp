@@ -3,19 +3,19 @@ package com.mukund.bookcompanion.ui.edit.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.core.Constants
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.home.components.CustomAdditionTextField
+import com.mukund.bookcompanion.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,7 +120,7 @@ fun UpdateContent(
                 contentPadding = PaddingValues(15.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Done,
+                    painter = painterResource(id = R.drawable.check),
                     contentDescription = "Save this book",
                     modifier = Modifier
                         .size(20.dp)

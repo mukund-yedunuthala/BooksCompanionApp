@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SuggestionChip
@@ -31,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.domain.model.Book
 
@@ -122,16 +120,16 @@ fun OverviewContent(
                     ) {
                         CustomEntryChipButton(
                             onClick = { navigateTo.invoke() },
-                            imageVector = Icons.Default.Edit,
                             contentDescription = "Edit button",
                             leadText = "Edit",
+                            painter = R.drawable.edit,
                         )
                         Spacer(modifier = Modifier.width(30.dp))
                         CustomEntryChipButton(
                             onClick = { showDeleteDialog.value = true },
-                            imageVector = Icons.Default.Delete,
                             contentDescription = "Delete button",
                             leadText = "Delete",
+                            painter = R.drawable.delete,
                         )
                     }
 

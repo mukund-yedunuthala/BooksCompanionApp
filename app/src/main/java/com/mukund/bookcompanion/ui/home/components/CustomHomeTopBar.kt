@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -73,7 +71,7 @@ fun CustomHomeTopBar(
                     settings.invoke()
                 }) {
                     Icon(
-                        imageVector = Icons.Default.Settings,
+                        painter = painterResource(id = R.drawable.settings),
                         contentDescription = "Settings",
                         modifier = Modifier.size(25.dp)
                     )
@@ -125,7 +123,7 @@ fun CustomLandscapeHomeTopBar(
                     settings.invoke()
                 }) {
                     Icon(
-                        imageVector = Icons.Default.Settings,
+                        painter = painterResource(id = R.drawable.settings),
                         contentDescription = "Settings",
                         modifier = Modifier.size(25.dp)
                     )

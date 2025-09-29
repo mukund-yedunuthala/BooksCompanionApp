@@ -9,13 +9,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
@@ -30,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -44,7 +44,9 @@ import com.mukund.bookcompanion.core.Constants.Companion.YEAR
 import com.mukund.bookcompanion.core.Constants.Companion.GENRE
 import com.mukund.bookcompanion.core.Constants.Companion.ISBN
 import com.mukund.bookcompanion.domain.model.Book
+import com.mukund.bookcompanion.R
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun BookAdditionDialog(
@@ -77,8 +79,9 @@ fun BookAdditionDialog(
                         navigationIcon = {
                             IconButton(onClick = closeDialog) {
                                 Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Return to home screen"
+                                    painter = painterResource(id = R.drawable.arrow_back),
+                                    contentDescription = "Return to home screen",
+                                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                                 )
                             }
                         }
@@ -179,7 +182,7 @@ fun BookAdditionDialog(
                             contentPadding = PaddingValues(15.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.Done,
+                                painter = painterResource(id = R.drawable.check),
                                 contentDescription = "Save this book",
                                 modifier = Modifier
                                     .size(20.dp)
