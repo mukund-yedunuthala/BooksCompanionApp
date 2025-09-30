@@ -119,6 +119,12 @@ fun CustomBookCard(
                     ) {
                         CustomSuggestionChip( text = book.year.toString().trim())
                         CustomSuggestionChip( text = "Status: ${book.status.trim()}")
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
                         if (book.genre != NO_VALUE) CustomSuggestionChip( text = "Genre: ${book.genre}")
                     }
 
@@ -139,8 +145,7 @@ private fun CustomSuggestionChip(text: String) {
             )
         },
         modifier = Modifier
-            .wrapContentWidth()
-            .padding(10.dp),
+            .wrapContentWidth(),
         shape = ButtonDefaults.shape
     )
 }

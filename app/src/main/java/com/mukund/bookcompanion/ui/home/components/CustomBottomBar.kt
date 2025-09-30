@@ -15,30 +15,37 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import com.mukund.bookcompanion.ui.home.BookCategory
 import com.mukund.bookcompanion.R.drawable.add
+import com.mukund.bookcompanion.ui.home.BookCategory
+import com.mukund.bookcompanion.ui.home.BooksViewModel
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun CustomBottomBar(
-    onFABClick: () -> Unit,
+    viewModel: BooksViewModel,
     haptic: HapticFeedback,
     categories: Array<BookCategory>,
     currentCategory: BookCategory,
     setCurrentCategory: (BookCategory) -> Unit,
     visibleStateAll: MutableTransitionState<Boolean>,
     visibleStateRead: MutableTransitionState<Boolean>,
-    visibleStateUnread: MutableTransitionState<Boolean>
+    visibleStateUnread: MutableTransitionState<Boolean>,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
+        var showSheet by remember { mutableStateOf(false) }
         BottomAppBar(
             actions = {
                 categories.forEach { category ->
@@ -73,7 +80,7 @@ fun CustomBottomBar(
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { onFABClick() },
+                    onClick = { showSheet = true },
                     content = { Icon(
                         painter = painterResource(id = add),
                         contentDescription = "Add Book"
@@ -81,5 +88,16 @@ fun CustomBottomBar(
                 )
             }
         )
+        if (showSheet) {
+            BookAdditionBottomSheet(
+                showSheet = true,
+                onDismiss = { showSheet = false },
+                addBook = { book ->
+                    viewModel.addBook(book)
+                },
+                haptic = LocalHapticFeedback.current,
+                books = viewModel.books,
+            )
+        }
     }
 }

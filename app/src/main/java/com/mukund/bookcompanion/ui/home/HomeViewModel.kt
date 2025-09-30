@@ -3,8 +3,6 @@ package com.mukund.bookcompanion.ui.home
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
@@ -15,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 enum class SortOption( val displayName: String) {
     TITLE("Title"),
     YEAR("Year"),
@@ -37,8 +36,6 @@ class BooksViewModel @Inject constructor(
             status = NO_VALUE)
     )
         private set
-    var openDialog by mutableStateOf(false)
-
     fun getBook(id: Int) = viewModelScope.launch(Dispatchers.IO) {
         book = repository.getBookFromRoom(id)
     }
@@ -85,14 +82,6 @@ class BooksViewModel @Inject constructor(
 
     fun updateStatus(status: String) {
         book = book.copy(status = status.trim())
-    }
-
-    fun openDialog() {
-        openDialog = true
-    }
-
-    fun closeDialog() {
-        openDialog = false
     }
 
     fun insertAllBooks(books: List<Book>) {

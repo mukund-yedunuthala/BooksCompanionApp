@@ -1,75 +1,67 @@
 package com.mukund.bookcompanion.ui.home.components
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun CategoryRow(
-    current: String = "Unread",
-    onCategorySelected: (String) -> Unit
+fun CategoryButtonGroup(
+    currentCategory: String,
+    onCategorySelect: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val categories = listOf<String>("Unread", "Read")
-    val (selectedCat, onCatSelected) = remember { mutableStateOf(current) }
+    val categories = listOf("Unread", "Read")
 
     Row(
-        Modifier
-            .selectableGroup()
-            .wrapContentWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
             text = "Status:",
-            fontSize = 18.sp,
-            modifier = Modifier.padding(20.dp)
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(start = 10.dp)
         )
-        categories.forEach { text ->
-            Column(
-                Modifier
-                    .padding(20.dp)
-                    .selectableGroup(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Row(
-                    Modifier
-                        .wrapContentWidth()
-                        .fillMaxHeight()
-                        .selectable(
-                            selected = (text == selectedCat),
-                            onClick = { onCatSelected(text) },
-                            role = Role.RadioButton
-                        )
-                        .padding(5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = (text == selectedCat),
-                        onClick = { onCatSelected(text) }
-                    )
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(start = 10.dp)
-                    )
-                }
 
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+        ) {
+            categories.forEachIndexed { index, category ->
+                ToggleButton(
+                    checked = currentCategory == category,
+                    onCheckedChange = {
+                        onCategorySelect(category)
+                    },
+                    modifier = Modifier
+                        .weight(1f) // Distribute width evenly among buttons
+                        .semantics { role = Role.RadioButton }, // Keep it accessible
+                    shapes = when (index) {
+                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                        categories.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                    }
+                ) {
+                    Text(text = category)
+                }
             }
         }
     }
-    onCategorySelected(selectedCat)
 }
