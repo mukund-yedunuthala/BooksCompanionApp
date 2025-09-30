@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.core
 
+import com.mukund.bookcompanion.domain.model.Book
+
 
 class Constants {
     companion object {
@@ -34,5 +36,15 @@ class Constants {
         const val NO_VALUE = ""
         const val GENRE = "Enter the genre here"
         const val ISBN = "Enter the ISBN here"
+
+        val testBook: Book = Book(
+            id = 0,
+            title = "Test book",
+            author = "Test book author",
+            year = 2025,
+            status = "Read",
+            genre = "Fiction",
+            isbn = "123456"
+        )
     }
 }

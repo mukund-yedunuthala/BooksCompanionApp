@@ -4,9 +4,6 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +22,7 @@ import com.mukund.bookcompanion.ui.settings.components.CustomEntrySwitch
 import com.mukund.bookcompanion.ui.settings.components.CustomURLDialog
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SettingScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
@@ -47,15 +44,16 @@ fun SettingScreen(
             LargeTopAppBar(
                 title = {
                     Text(
-                        text = "Settings",
+                        text = stringResource(R.string.settingsscreen_toplabel),
                         style = MaterialTheme.typography.headlineLarge
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { backPress.invoke() }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Return to home"
+                            painter = painterResource(R.drawable.arrow_back),
+                            contentDescription = stringResource(R.string.settings_back_button_description),
+                            modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                         )
                     }
                 },
@@ -69,12 +67,12 @@ fun SettingScreen(
         ) {
             item {
                 Text(
-                    text = "General",
+                    text = stringResource(R.string.settings_section_general),
                     modifier = Modifier.padding(20.dp),
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 CustomEntrySwitch(
-                    leadText = "System Theme",
+                    leadText = stringResource(R.string.settings_general_system_theme),
                     boolVal = viewModel.followSystemTheme,
                     onChange = { enabled ->
                         viewModel.saveUserFollowSystemEnabled(enabled)
@@ -82,7 +80,7 @@ fun SettingScreen(
                 )
                 if (!followSystem) {
                     CustomEntrySwitch(
-                        leadText = "Dark Theme",
+                        leadText = stringResource(R.string.settings_general_dark_theme),
                         boolVal = viewModel.hasUserDarkThemeEnabled,
                         onChange = { enabled ->
                             viewModel.saveUserDarkThemeEnabled(enabled)
@@ -91,51 +89,51 @@ fun SettingScreen(
                 }
                 CustomEntryButton(
                     onClick = { backup.invoke() },
-                    leadText = "Backup & Restore",
+                    leadText = stringResource(R.string.settings_general_backup_restore),
                     subText = null
                 )
                 HorizontalDivider()
                 Text(
-                    text = "About",
+                    text = stringResource(R.string.settings_section_about),
                     modifier = Modifier.padding(20.dp),
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 CustomEntryButton(
                     onClick = {
                     },
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = "App version",
-                    leadText = "App Version",
+                    painter = painterResource(R.drawable.info),
+                    contentDescription = stringResource(R.string.settings_about_app_version),
+                    leadText = stringResource(R.string.settings_about_app_version),
                     subText = BuildConfig.VERSION_NAME
                 )
 
                 CustomEntryButton(
                     onClick = { openLicenseDialog.value = true },
                     painter = painterResource(id = R.drawable.attribution),
-                    contentDescription = "License",
-                    leadText = "License",
-                    subText = "GNU General Public License v3.0"
+                    contentDescription = stringResource(R.string.settings_about_license),
+                    leadText = stringResource(R.string.settings_about_license),
+                    subText = stringResource(R.string.settings_about_license_subtext),
                 )
                 CustomEntryButton(
                     onClick = { openSourceDialog.value = true },
                     painter = painterResource(id = R.drawable.code),
-                    contentDescription = "Source Code",
-                    leadText = "Source Code",
+                    contentDescription = stringResource(R.string.settings_about_source_code),
+                    leadText = stringResource(R.string.settings_about_source_code),
                 )
                 CustomEntryButton(
                     onClick = {
                         libraries()
                     },
                     painter = painterResource(id = R.drawable.description),
-                    contentDescription = "Libraries",
-                    leadText = "Libraries",
-                    subText = "Open source libraries"
+                    contentDescription = stringResource(R.string.settings_about_libraries),
+                    leadText = stringResource(R.string.settings_about_libraries),
+                    subText = stringResource(R.string.settings_about_libraries_subtext),
                 )
                 CustomEntryButton(
                     onClick = { openPrivacyDialog.value = true },
                     painter = painterResource(id = R.drawable.policy),
-                    contentDescription = "Privacy Policy",
-                    leadText = "Privacy Policy"
+                    contentDescription = stringResource(R.string.settings_about_privacy_policy),
+                    leadText = stringResource(R.string.settings_about_privacy_policy)
                 )
             }
         }

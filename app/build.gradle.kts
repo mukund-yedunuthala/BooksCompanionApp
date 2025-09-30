@@ -1,27 +1,28 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
-    id("com.mikepenz.aboutlibraries.plugin")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.aboutLibraries)
 }
 android {
     namespace = "com.mukund.bookcompanion"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId="com.mukund.bookcompanion"
         minSdk=29
-        targetSdk=34
-        versionCode=26
-        versionName="0.1.5"
+        targetSdk=36
+        versionCode=27
+        versionName="0.2.0"
 
         vectorDrawables {
             useSupportLibrary = true
         }
         versionNameSuffix = ""
     }
+
 
     buildTypes {
         release {
@@ -41,7 +42,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packaging {
         resources {
@@ -51,46 +52,51 @@ android {
         androidResources {
         generateLocaleConfig = true
     }
+    buildToolsVersion = "36.0.0"
 }
 
 dependencies {
     // AppCompat
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.appcompat:appcompat-resources:1.7.0")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.appcompat.resources)
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.55")
-    ksp("com.google.dagger:hilt-compiler:2.55")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Navigation
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.6")
+    implementation(libs.androidx.navigation.ui.ktx)
 
     // Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.ksp)
+    implementation(libs.androidx.room.ktx)
+    testImplementation(libs.androidx.room.test)
+
+    // Material 3
+    implementation(libs.androidx.material3)
 
     // Compose
-    implementation("androidx.compose.material3:material3:1.3.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.7.7")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.7.7")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.7")
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.runtime)
 
     // AboutLibraries
-    implementation("com.mikepenz:aboutlibraries-core:11.5.0")
-    releaseImplementation("com.mikepenz:aboutlibraries-compose:11.5.0")
+    implementation(libs.aboutlibraries.core)
+    releaseImplementation(libs.aboutlibraries.compose.core)
 
     // backup
-    implementation("com.google.code.gson:gson:2.12.1")
+    implementation(libs.gson)
 
     // DataStore
-    implementation("androidx.datastore:datastore-preferences:1.1.2")
+    implementation(libs.androidx.datastore.preferences)
 
     // Others
-    implementation("androidx.activity:activity-ktx:1.10.0")
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.accompanist.systemuicontroller)
 }

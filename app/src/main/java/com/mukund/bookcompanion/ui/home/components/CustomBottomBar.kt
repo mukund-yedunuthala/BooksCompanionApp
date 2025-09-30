@@ -4,37 +4,48 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
+import com.mukund.bookcompanion.R.drawable.add
 import com.mukund.bookcompanion.ui.home.BookCategory
+import com.mukund.bookcompanion.ui.home.BooksViewModel
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun CustomBottomBar(
-    onFABClick: () -> Unit,
+    viewModel: BooksViewModel,
     haptic: HapticFeedback,
     categories: Array<BookCategory>,
     currentCategory: BookCategory,
     setCurrentCategory: (BookCategory) -> Unit,
     visibleStateAll: MutableTransitionState<Boolean>,
     visibleStateRead: MutableTransitionState<Boolean>,
-    visibleStateUnread: MutableTransitionState<Boolean>
+    visibleStateUnread: MutableTransitionState<Boolean>,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
+        var showSheet by remember { mutableStateOf(false) }
         BottomAppBar(
             actions = {
                 categories.forEach { category ->
@@ -50,9 +61,10 @@ fun CustomBottomBar(
                     }
                     ) {
                         Icon(
-                            imageVector = category.icon,
+                            painter = painterResource(category.icon),
                             contentDescription = category.name,
-                            tint = if (category == currentCategory) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+                            tint = if (category == currentCategory) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.size(IconButtonDefaults.smallIconSize)
                         )
                         Text(
                             text = category.name,
@@ -68,10 +80,24 @@ fun CustomBottomBar(
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { onFABClick() },
-                    content = { Icon(Icons.Filled.Add, contentDescription = "Add Book") }
+                    onClick = { showSheet = true },
+                    content = { Icon(
+                        painter = painterResource(id = add),
+                        contentDescription = "Add Book"
+                    ) }
                 )
             }
         )
+        if (showSheet) {
+            BookAdditionBottomSheet(
+                showSheet = true,
+                onDismiss = { showSheet = false },
+                addBook = { book ->
+                    viewModel.addBook(book)
+                },
+                haptic = LocalHapticFeedback.current,
+                books = viewModel.books,
+            )
+        }
     }
 }

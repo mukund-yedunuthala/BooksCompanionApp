@@ -9,9 +9,8 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import com.mukund.bookcompanion.domain.model.Book
@@ -28,8 +28,9 @@ import java.io.BufferedReader
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.mukund.bookcompanion.R
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun Backup_Screen(
     viewModel: BooksViewModel = hiltViewModel(),
@@ -66,8 +67,9 @@ fun Backup_Screen(
                 navigationIcon = {
                     IconButton(onClick = { backPress.invoke() }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Return to settings"
+                            painter = painterResource(R.drawable.arrow_back),
+                            contentDescription = "Return to settings",
+                            modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                         )
                     }
                 }
