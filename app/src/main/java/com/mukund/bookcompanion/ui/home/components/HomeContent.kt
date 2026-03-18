@@ -16,7 +16,6 @@ import com.mukund.bookcompanion.ui.home.BookCategory
 @Composable
 @ExperimentalMaterial3Api
 fun HomeContent(
-    paddingValues: PaddingValues,
     books: Books,
     navigateTo: (id: Int) -> Unit,
     currentCategory: BookCategory,
@@ -28,7 +27,6 @@ fun HomeContent(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
     ) {
         itemsIndexed(
             items = books.filter {
