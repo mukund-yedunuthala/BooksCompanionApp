@@ -13,8 +13,8 @@ android {
         applicationId="com.mukund.bookcompanion"
         minSdk=29
         targetSdk=36
-        versionCode= 28
-        versionName= "0.2.1"
+        versionCode= 29
+        versionName= "0.2.2"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -87,7 +87,12 @@ dependencies {
 
     // AboutLibraries
     implementation(libs.aboutlibraries.core)
-    releaseImplementation(libs.aboutlibraries.compose.core)
+    implementation(libs.aboutlibraries.compose.m3)
+    aboutLibraries {
+        export {
+            outputFile = file("src/main/res/raw/aboutlibraries.json")
+        }
+    }
 
     // backup
     implementation(libs.gson)
