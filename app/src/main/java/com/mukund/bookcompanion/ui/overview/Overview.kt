@@ -1,8 +1,8 @@
 package com.mukund.bookcompanion.ui.overview
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -12,31 +12,32 @@ import com.mukund.bookcompanion.ui.home.BooksViewModel
 import com.mukund.bookcompanion.ui.overview.components.OverviewContent
 import com.mukund.bookcompanion.ui.overview.components.OverviewTopBar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Overview(
-    viewModel: BooksViewModel = hiltViewModel(),
     bookId: Int,
     backPress: () -> Boolean,
-    navigateTo: () -> Unit
+    navigateTo: () -> Unit,
+    viewModel: BooksViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(bookId) {
         viewModel.getBook(bookId)
     }
+
     Scaffold(
         topBar = {
-            OverviewTopBar(backPress, navigateTo)
-        },
-    ) {
-        Surface(modifier = Modifier.padding(it)) {
-            OverviewContent(
-                viewModel.book,
-                navigateTo,
-                deleteBook = { book: Book ->
-                    viewModel.deleteBook(book)
-                },
-                backPress
+            OverviewTopBar(
+                onBackPress = backPress,
+                onNavigateTo = navigateTo
             )
         }
+    ) { innerPadding ->
+        OverviewContent(
+            modifier = Modifier.padding(innerPadding),
+            book = viewModel.book,
+            onNavigateTo = navigateTo,
+            onDeleteBook = { book: Book -> viewModel.deleteBook(book) },
+            onBackPress = backPress
+        )
     }
 }
-

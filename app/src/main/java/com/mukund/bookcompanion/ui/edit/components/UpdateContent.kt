@@ -1,15 +1,32 @@
 package com.mukund.bookcompanion.ui.edit.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.core.Constants
@@ -17,7 +34,7 @@ import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.home.components.CustomAdditionTextField
 import com.mukund.bookcompanion.R
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun UpdateContent(
     paddingValues: PaddingValues,
@@ -43,6 +60,7 @@ fun UpdateContent(
         readState.value = true
     }
     else { unreadState.value = true }
+    val haptic = LocalHapticFeedback.current
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -110,105 +128,64 @@ fun UpdateContent(
             EditScreenButtonRow(updateStatus, readState, unreadState)
             Button(
                 onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     updateBook(book.copy(status = category))
                     backPress.invoke()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp),
-                shape = RoundedCornerShape(20.dp),
-                contentPadding = PaddingValues(15.dp)
+                    .padding(horizontal = 16.dp, vertical = 24.dp),
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = MaterialTheme.colorScheme.errorContainer,
+                    disabledContentColor = MaterialTheme.colorScheme.onErrorContainer,
+                )
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.check),
-                    contentDescription = "Save this book",
+                    contentDescription = null,
                     modifier = Modifier
-                        .size(20.dp)
-                        .wrapContentWidth()
+                        .padding(end = ButtonDefaults.IconSpacing)
+                        .size(IconButtonDefaults.mediumIconSize)
                 )
                 Text(
                     text = Constants.UPDATE.uppercase(),
-                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .wrapContentWidth(),
-                    fontWeight = FontWeight.Bold
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun EditScreenButtonRow(updateStatus: (String) -> Unit, readState: MutableState<Boolean>, unreadState: MutableState<Boolean>) {
-    Row(
+fun EditScreenButtonRow(
+    updateStatus: (String) -> Unit,
+    readState: MutableState<Boolean>,
+    unreadState: MutableState<Boolean>
+) {
+    val selectedIndex = if (readState.value) 0 else 1
+    val options = listOf("Read", "Unread")
+
+    ButtonGroup(
         modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp),
+        overflowIndicator = {}
     ) {
-        if (readState.value) {
-            EditFilledButton(
-                text = "Read",
-                onClick = {}
-            )
-            EditOutlinedButton(
-                text = "Unread",
-                onClick = {
-                    updateStatus("Unread")
-                    unreadState.value = !unreadState.value
-                    readState.value = !readState.value
-                }
+        options.forEachIndexed { index, label ->
+            toggleableItem(
+                weight = 1f,
+                checked = selectedIndex == index,
+                onCheckedChange = { checked ->
+                    if (checked && selectedIndex != index) {
+                        updateStatus(label)
+                        readState.value = index == 0
+                        unreadState.value = index == 1
+                    }
+                },
+                label = label
             )
         }
-        else {
-            EditOutlinedButton(
-                text = "Read",
-                onClick = {
-                    updateStatus("Read")
-                    readState.value = !readState.value
-                    unreadState.value = !unreadState.value
-                }
-            )
-            EditFilledButton(
-                text = "Unread",
-                onClick = {}
-            )
-        }
-    }
-}
-
-@Composable
-fun EditFilledButton(text: String, onClick: () -> Unit) {
-    FilledTonalButton(
-        onClick = onClick,
-        modifier = Modifier
-            .wrapContentWidth()
-            .padding(8.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = ButtonDefaults.filledTonalButtonColors(),
-        contentPadding = ButtonDefaults.TextButtonContentPadding
-    ) {
-        Text(
-            text = text.uppercase(),
-            style = MaterialTheme.typography.labelLarge,
-        )
-    }
-}
-
-@Composable
-fun EditOutlinedButton(text: String, onClick: () -> Unit) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = Modifier
-            .padding(8.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = ButtonDefaults.outlinedButtonColors(),
-        contentPadding = ButtonDefaults.TextButtonContentPadding
-    ) {
-        Text(
-            text = text.uppercase(),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
     }
 }
