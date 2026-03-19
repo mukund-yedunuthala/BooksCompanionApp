@@ -1,16 +1,27 @@
 package com.mukund.bookcompanion.ui.settings
 
-import android.content.Context
-import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LargeFlexibleTopAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -21,6 +32,10 @@ import com.mukund.bookcompanion.ui.settings.components.CustomEntryButton
 import com.mukund.bookcompanion.ui.settings.components.CustomEntrySwitch
 import com.mukund.bookcompanion.ui.settings.components.CustomURLDialog
 
+private sealed interface DialogState {
+    data object None : DialogState
+    data class Url(val url: String) : DialogState
+}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -29,27 +44,24 @@ fun SettingScreen(
     backPress: () -> Boolean,
     libraries: () -> Unit,
     backup: () -> Unit,
-){
-    val uriHandler = LocalUriHandler.current
-    val attribution = stringResource(id = R.string.Attribution)
-    val source = stringResource(id = R.string.Source)
-    val policy = stringResource(id = R.string.PrivacyPolicy)
-    val context = LocalContext.current
-    val openSourceDialog = remember { mutableStateOf(false) }
-    val openLicenseDialog = remember { mutableStateOf(false) }
-    val openPrivacyDialog = remember { mutableStateOf(value = false) }
+) {
+    val attribution = stringResource(R.string.Attribution)
+    val source      = stringResource(R.string.Source)
+    val policy      = stringResource(R.string.PrivacyPolicy)
+
+    var dialogState by remember { mutableStateOf<DialogState>(DialogState.None) }
     val followSystem = viewModel.followSystemTheme
+
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
     Scaffold(
         topBar = {
-            LargeTopAppBar(
+            LargeFlexibleTopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.settingsscreen_toplabel),
-                        style = MaterialTheme.typography.headlineLarge
-                    )
+                    Text(text = stringResource(R.string.settingsscreen_toplabel))
                 },
                 navigationIcon = {
-                    IconButton(onClick = { backPress.invoke() }) {
+                    IconButton(onClick = { backPress() }) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back),
                             contentDescription = stringResource(R.string.settings_back_button_description),
@@ -57,8 +69,10 @@ fun SettingScreen(
                         )
                     }
                 },
+                scrollBehavior = scrollBehavior,
             )
-        }
+        },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -66,89 +80,78 @@ fun SettingScreen(
                 .padding(paddingValues)
         ) {
             item {
-                Text(
-                    text = stringResource(R.string.settings_section_general),
-                    modifier = Modifier.padding(20.dp),
-                    color = MaterialTheme.colorScheme.onTertiaryContainer
-                )
+                SectionHeader(stringResource(R.string.settings_section_general))
+
                 CustomEntrySwitch(
                     leadText = stringResource(R.string.settings_general_system_theme),
-                    boolVal = viewModel.followSystemTheme,
-                    onChange = { enabled ->
-                        viewModel.saveUserFollowSystemEnabled(enabled)
-                    }
+                    checked = followSystem,
+                    onCheckedChange = { viewModel.saveUserFollowSystemEnabled(it) },
                 )
+
                 if (!followSystem) {
                     CustomEntrySwitch(
                         leadText = stringResource(R.string.settings_general_dark_theme),
-                        boolVal = viewModel.hasUserDarkThemeEnabled,
-                        onChange = { enabled ->
-                            viewModel.saveUserDarkThemeEnabled(enabled)
-                        }
+                        checked = viewModel.hasUserDarkThemeEnabled,
+                        onCheckedChange = { viewModel.saveUserDarkThemeEnabled(it) },
                     )
                 }
-                CustomEntryButton(
-                    onClick = { backup.invoke() },
-                    leadText = stringResource(R.string.settings_general_backup_restore),
-                    subText = null
-                )
-                HorizontalDivider()
-                Text(
-                    text = stringResource(R.string.settings_section_about),
-                    modifier = Modifier.padding(20.dp),
-                    color = MaterialTheme.colorScheme.onTertiaryContainer
-                )
-                CustomEntryButton(
-                    onClick = {
-                    },
-                    painter = painterResource(R.drawable.info),
-                    contentDescription = stringResource(R.string.settings_about_app_version),
-                    leadText = stringResource(R.string.settings_about_app_version),
-                    subText = BuildConfig.VERSION_NAME
-                )
 
                 CustomEntryButton(
-                    onClick = { openLicenseDialog.value = true },
-                    painter = painterResource(id = R.drawable.attribution),
-                    contentDescription = stringResource(R.string.settings_about_license),
+                    onClick = { backup() },
+                    leadText = stringResource(R.string.settings_general_backup_restore),
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+                SectionHeader(stringResource(R.string.settings_section_about))
+
+                // Version entry — no onClick action, so onClick = {}
+                CustomEntryButton(
+                    onClick = {},
+                    leadText = stringResource(R.string.settings_about_app_version),
+                    subText = BuildConfig.VERSION_NAME,
+                    painter = painterResource(R.drawable.info),
+                )
+                CustomEntryButton(
+                    onClick = { dialogState = DialogState.Url(attribution) },
                     leadText = stringResource(R.string.settings_about_license),
                     subText = stringResource(R.string.settings_about_license_subtext),
+                    painter = painterResource(R.drawable.attribution),
                 )
                 CustomEntryButton(
-                    onClick = { openSourceDialog.value = true },
-                    painter = painterResource(id = R.drawable.code),
-                    contentDescription = stringResource(R.string.settings_about_source_code),
+                    onClick = { dialogState = DialogState.Url(source) },
                     leadText = stringResource(R.string.settings_about_source_code),
+                    painter = painterResource(R.drawable.code),
                 )
                 CustomEntryButton(
-                    onClick = {
-                        libraries()
-                    },
-                    painter = painterResource(id = R.drawable.description),
-                    contentDescription = stringResource(R.string.settings_about_libraries),
+                    onClick = { libraries() },
                     leadText = stringResource(R.string.settings_about_libraries),
                     subText = stringResource(R.string.settings_about_libraries_subtext),
+                    painter = painterResource(R.drawable.description),
                 )
                 CustomEntryButton(
-                    onClick = { openPrivacyDialog.value = true },
-                    painter = painterResource(id = R.drawable.policy),
-                    contentDescription = stringResource(R.string.settings_about_privacy_policy),
-                    leadText = stringResource(R.string.settings_about_privacy_policy)
+                    onClick = { dialogState = DialogState.Url(policy) },
+                    leadText = stringResource(R.string.settings_about_privacy_policy),
+                    painter = painterResource(R.drawable.policy),
                 )
             }
         }
     }
-    if (openSourceDialog.value) {
-        CustomURLDialog(openSourceDialog, source, uriHandler)
-    }
-    if (openLicenseDialog.value) {
-        CustomURLDialog(openLicenseDialog, attribution, uriHandler)
-    }
-    if (openPrivacyDialog.value) {
-        CustomURLDialog(openPrivacyDialog, policy, uriHandler)
-    }
 
+    if (dialogState is DialogState.Url) {
+        CustomURLDialog(
+            source = (dialogState as DialogState.Url).url,
+            onDismiss = { dialogState = DialogState.None },
+        )
+    }
 }
-fun mToast(context: Context, text : String){
-    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+
+@Composable
+private fun SectionHeader(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelMedium,
+        color = MaterialTheme.colorScheme.secondary,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+    )
 }
