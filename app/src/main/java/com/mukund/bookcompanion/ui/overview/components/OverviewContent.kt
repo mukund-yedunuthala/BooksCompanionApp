@@ -2,29 +2,36 @@ package com.mukund.bookcompanion.ui.overview.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ElevatedFilterChip
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,121 +39,150 @@ import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.domain.model.Book
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun OverviewContent(
+    modifier: Modifier = Modifier,
     book: Book,
-    navigateTo: () -> Unit,
-    deleteBook: (book: Book) -> Unit,
-    backPress: () -> Boolean
+    onNavigateTo: () -> Unit,
+    onDeleteBook: (Book) -> Unit,
+    onBackPress: () -> Boolean
 ) {
-    val showDeleteDialog = remember { mutableStateOf(false) }
-    Surface(modifier = Modifier.fillMaxSize()) {
-        OutlinedCard(
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ElevatedCard(
             modifier = Modifier
-                .padding(20.dp)
+                .fillMaxWidth()
+                .height(400.dp),
+            shape = MaterialTheme.shapes.extraLarge
         ) {
-            LazyColumn(
-                contentPadding = PaddingValues(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                items(1) {
-                    Text(
-                        text = book.title,
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier
-                            .padding(10.dp, top = 5.dp, bottom = 5.dp)
-
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                Text(
+                    text = book.title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = book.author,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontStyle = FontStyle.Italic,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = book.year.toString(),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (book.genre != NO_VALUE) {
+                    LabeledDetailRow(
+                        label = stringResource(R.string.genre_label),
+                        value = book.genre
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = book.author,
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .padding(10.dp, top = 5.dp, bottom = 5.dp)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.W400
+                }
+                if (book.isbn != NO_VALUE) {
+                    LabeledDetailRow(
+                        label = stringResource(R.string.isbn_label),
+                        value = book.isbn
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = book.year.toString(),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .padding(10.dp, top = 5.dp, bottom = 5.dp)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.W300
-                    )
-                    if (book.genre != NO_VALUE) {
-                        Text(
-                            text = "Genre: ${book.genre}",
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier
-                                .padding(10.dp, top = 5.dp, bottom = 5.dp)
-                                .fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.W300
-                        )
-                    }
-                    if (book.isbn != NO_VALUE) {
-                        Text(
-                            text = "ISBN: ${book.isbn}",
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier
-                                .padding(10.dp, top = 5.dp, bottom = 5.dp)
-                                .fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.W300
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(200.dp))
-                    SuggestionChip(
-                        onClick = { },
-                        modifier = Modifier
-                            .padding(10.dp, top = 5.dp, bottom = 5.dp)
-                            .wrapContentWidth()
-                            .wrapContentHeight(),
-                        label = {
-                            Text(text = book.status.toString().uppercase())
-                        },
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        CustomEntryChipButton(
-                            onClick = { navigateTo.invoke() },
-                            contentDescription = "Edit button",
-                            leadText = "Edit",
-                            painter = R.drawable.edit,
-                        )
-                        Spacer(modifier = Modifier.width(30.dp))
-                        CustomEntryChipButton(
-                            onClick = { showDeleteDialog.value = true },
-                            contentDescription = "Delete button",
-                            leadText = "Delete",
-                            painter = R.drawable.delete,
-                        )
-                    }
-
                 }
             }
         }
+
+        Spacer(Modifier.height(24.dp))
+
+        ElevatedFilterChip(
+            selected = false,
+            onClick = {},
+            label = { Text(book.status.uppercase()) },
+            enabled = false // display-only, not interactive
+        )
+
+        Spacer(Modifier.height(24.dp))
+        val editLabel = stringResource(R.string.edit)
+        val deleteLabel = stringResource(R.string.delete)
+        ButtonGroup(
+            overflowIndicator = {},
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            toggleableItem(
+                weight = 1f,
+                checked = false,
+                onCheckedChange = { onNavigateTo() },
+                label = editLabel,
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.edit),
+                        contentDescription = null,
+                        modifier = Modifier.size(IconButtonDefaults.smallIconSize)
+                    )
+                }
+            )
+            toggleableItem(
+                weight = 1f,
+                checked = false,
+                onCheckedChange = { showDeleteDialog = true },
+                label = deleteLabel,
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.delete),
+                        contentDescription = null,
+                        modifier = Modifier.size(IconButtonDefaults.smallIconSize)
+                    )
+                }
+            )
+        }
     }
-    if (showDeleteDialog.value) {
+
+    if (showDeleteDialog) {
         OverviewConfirmDelete(
-            showDeleteDialog,
-            deleteBook,
-            book,
-            backPress
+            onDismiss = { showDeleteDialog = false },
+            onConfirm = {
+                onDeleteBook(book)
+                onBackPress()
+            },
+            book = book
         )
     }
 }
 
+@Composable
+private fun LabeledDetailRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "$label ",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
 @Composable
 @Preview(
     uiMode = UI_MODE_NIGHT_YES
@@ -161,6 +197,6 @@ fun PreviewOverview() {
         genre = "Something",
         isbn = "901908000"
     )
-    OverviewContent(book = book, navigateTo = { }, deleteBook = {
-    }, backPress = { false })
+    OverviewContent(book = book, onNavigateTo = { }, onDeleteBook = {
+    }, onBackPress = { false }, modifier = Modifier)
 }

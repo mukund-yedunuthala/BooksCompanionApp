@@ -4,19 +4,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
-
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -25,6 +22,7 @@ fun CategoryButtonGroup(
     onCategorySelect: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val haptic = LocalHapticFeedback.current
     val categories = listOf("Unread", "Read")
 
     Row(
@@ -40,27 +38,22 @@ fun CategoryButtonGroup(
             modifier = Modifier.padding(start = 10.dp)
         )
 
-        Row(
+        ButtonGroup(
             modifier = Modifier.weight(1f),
-            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
+            overflowIndicator = {}
         ) {
-            categories.forEachIndexed { index, category ->
-                ToggleButton(
+            categories.forEach { category ->
+                toggleableItem(
                     checked = currentCategory == category,
-                    onCheckedChange = {
-                        onCategorySelect(category)
+                    onCheckedChange = { checked ->
+                        if (checked) {
+                            haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                            onCategorySelect(category)
+                        }
                     },
-                    modifier = Modifier
-                        .weight(1f) // Distribute width evenly among buttons
-                        .semantics { role = Role.RadioButton }, // Keep it accessible
-                    shapes = when (index) {
-                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                        categories.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                    }
-                ) {
-                    Text(text = category)
-                }
+                    weight = 1f,
+                    label = category,
+                )
             }
         }
     }

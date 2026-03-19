@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.hilt.android)
@@ -14,8 +13,8 @@ android {
         applicationId="com.mukund.bookcompanion"
         minSdk=29
         targetSdk=36
-        versionCode=27
-        versionName="0.2.0"
+        versionCode= 29
+        versionName= "0.2.2"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -34,16 +33,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
+
     packaging {
         resources {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
@@ -54,7 +49,11 @@ android {
     }
     buildToolsVersion = "36.0.0"
 }
-
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+}
 dependencies {
     // AppCompat
     implementation(libs.androidx.appcompat)
@@ -88,7 +87,12 @@ dependencies {
 
     // AboutLibraries
     implementation(libs.aboutlibraries.core)
-    releaseImplementation(libs.aboutlibraries.compose.core)
+    implementation(libs.aboutlibraries.compose.m3)
+    aboutLibraries {
+        export {
+            outputFile = file("src/main/res/raw/aboutlibraries.json")
+        }
+    }
 
     // backup
     implementation(libs.gson)

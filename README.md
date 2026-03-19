@@ -17,21 +17,21 @@ Hobby project, built entirely on Jetpack compose.
 ## Screenshots
 ### Portrait Mode Screenshots
 <div align="center">
-  <img src="./assets/screenshot1.png" alt="Screenshot 1" width="300">
-  <img src="./assets/screenshot2.png" alt="Screenshot 2" width="300">
-  <img src="./assets/screenshot3.png" alt="Screenshot 3" width="300">
-  <img src="./assets/screenshot4.png" alt="Screenshot 4" width="300"> 
+  <img src="./assets/screenshot1.png" alt="Screenshot 1" width="25%">
+  <img src="./assets/screenshot2.png" alt="Screenshot 2" width="25%">
+  <img src="./assets/screenshot3.png" alt="Screenshot 3" width="25%">
+  <img src="./assets/screenshot4.png" alt="Screenshot 4" width="25%"> 
 </div>
 
 ### Landscape Mode Screenshots
 <div align="center">
-  <img src="assets/landscape1.png" alt="Landscape 1" width="500">
-  <img src="assets/landscape2.png" alt="Landscape 2" width="500">
+  <img src="assets/landscape1.png" alt="Landscape 1" width="50%">
+  <img src="assets/landscape2.png" alt="Landscape 2" width="50%">
 </div>
 
 ## Installation
 
-Currently no public releases are available. Pre-release versions are available [here](https://github.com/mukund-yedunuthala/BooksCompanionApp/releases).
+Currently, no public releases are available. 
 
 ## What works
 - CRUD operations
@@ -41,7 +41,7 @@ Currently no public releases are available. Pre-release versions are available [
 - Written entirely using Jetpack Compose and Kotlin.
 - Hilt for dependency injection.
 - AndroidX Room, Lifecycle, Navigation architecture components are being used.
-- Material 3 (You) theming.
+- Material 3 Expressive theming.
 
 ## Roadmap
 - More theming options.
@@ -50,7 +50,7 @@ Currently no public releases are available. Pre-release versions are available [
 - Tablet optimization
 ## License
 ``` 
-Copyright (C) 2023  Mukund Yedunuthala
+Copyright (C) 2026  Mukund Yedunuthala
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

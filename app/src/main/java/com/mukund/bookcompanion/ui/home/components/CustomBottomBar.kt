@@ -2,29 +2,38 @@ package com.mukund.bookcompanion.ui.home.components
 
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import com.mukund.bookcompanion.R.drawable.add
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.ui.home.BookCategory
 import com.mukund.bookcompanion.ui.home.BooksViewModel
 
@@ -33,7 +42,6 @@ import com.mukund.bookcompanion.ui.home.BooksViewModel
 @Composable
 fun CustomBottomBar(
     viewModel: BooksViewModel,
-    haptic: HapticFeedback,
     categories: Array<BookCategory>,
     currentCategory: BookCategory,
     setCurrentCategory: (BookCategory) -> Unit,
@@ -41,63 +49,69 @@ fun CustomBottomBar(
     visibleStateRead: MutableTransitionState<Boolean>,
     visibleStateUnread: MutableTransitionState<Boolean>,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        var showSheet by remember { mutableStateOf(false) }
-        BottomAppBar(
-            actions = {
+    val haptic = LocalHapticFeedback.current
+    var showSheet by remember { mutableStateOf(false) }
+
+    BottomAppBar(
+        actions = {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.padding(start = 15.dp)
+            ) {
                 categories.forEach { category ->
-                    val selected = currentCategory == category
-                    TextButton(onClick = {
-                        if (category != currentCategory) {
-                            setCurrentCategory(category)
-                            visibleStateAll.targetState = false
-                            visibleStateRead.targetState = false
-                            visibleStateUnread.targetState = false
-                        }
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    }
+                    ToggleButton(
+                        checked = currentCategory == category,
+                        onCheckedChange = { selected ->
+                            if (selected && category != currentCategory) {
+                                haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                                setCurrentCategory(category)
+                                visibleStateAll.targetState = false
+                                visibleStateRead.targetState = false
+                                visibleStateUnread.targetState = false
+                            }
+                        },
+                        modifier = Modifier.semantics { role = Role.RadioButton }
                     ) {
                         Icon(
                             painter = painterResource(category.icon),
                             contentDescription = category.name,
-                            tint = if (category == currentCategory) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.size(IconButtonDefaults.smallIconSize)
                         )
+                        Spacer(Modifier.size(ButtonDefaults.iconSpacingFor(ButtonDefaults.MinHeight)))
                         Text(
                             text = category.name,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = if (selected) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            }
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = { showSheet = true },
-                    content = { Icon(
-                        painter = painterResource(id = add),
-                        contentDescription = "Add Book"
-                    ) }
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                    showSheet = true
+                },
+                containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
+                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.add),
+                    contentDescription = "Add Book",
+                    modifier = Modifier.size(FloatingActionButtonDefaults.MediumIconSize)
                 )
             }
-        )
-        if (showSheet) {
-            BookAdditionBottomSheet(
-                showSheet = true,
-                onDismiss = { showSheet = false },
-                addBook = { book ->
-                    viewModel.addBook(book)
-                },
-                haptic = LocalHapticFeedback.current,
-                books = viewModel.books,
-            )
         }
+    )
+
+    if (showSheet) {
+        BookAdditionBottomSheet(
+            onDismiss = { showSheet = false },
+            addBook = { book -> viewModel.addBook(book) },
+            books = viewModel.books,
+        )
     }
 }

@@ -2,7 +2,7 @@
     <string name="app_name">Book Companion</string>
     <string name="Attribution">https://www.gnu.org/licenses/gpl-3.0.en.html</string>
     <string name="Source">https://github.com/mukund-yedunuthala/BooksCompanionApp</string>
-    <string name="PrivacyPolicy">https://mukund-yedunuthala.de/books-companion-privacy-policy/</string>
+    <string name="PrivacyPolicy">https://mukundyedunuthala.page/books-companion-privacy-policy/</string>
     <string name="settingsscreen_toplabel">Settings</string>
     <string name="settings_section_general">General</string>
     <string name="settings_general_system_theme">System Theme</string>
@@ -17,4 +17,14 @@
     <string name="settings_about_libraries_subtext">Open source libraries</string>
     <string name="settings_about_privacy_policy">Privacy Policy</string>
     <string name="settings_back_button_description">Return to home</string>
+    <string name="overview_title">Overview</string>
+    <string name="edit">Edit</string>
+    <string name="back">Back to home</string>
+    <string name="genre_label">Genre:</string>
+    <string name="isbn_label">ISBN</string>
+    <string name="delete">Delete</string>
+    <string name="delete_dialog_title">Delete this book?</string>
+    <string name="delete_dialog_body">This will remove the entry permanently.</string>
+    <string name="delete_confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

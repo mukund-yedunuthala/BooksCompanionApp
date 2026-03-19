@@ -1,108 +1,54 @@
 package com.mukund.bookcompanion.ui.settings.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 
-val BUTTON_HEIGHT = 75.dp
-val ICON_SIZE = 25.dp
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun CustomEntryButton (
-    onClick: () -> Unit = {},
-    painter : Painter,
-    contentDescription : String,
-    leadText : String,
-    subText : String? = null
+fun CustomEntryButton(
+    onClick: () -> Unit,
+    leadText: String,
+    subText: String? = null,
+    painter: Painter? = null,
+    contentDescription: String? = null,
 ) {
-    TextButton(
-        onClick = onClick,
-        modifier = Modifier
-            .height(BUTTON_HEIGHT),
-        shape = RectangleShape,
-    ) {
-        Icon(
-            painter = painter,
-            contentDescription = contentDescription,
-            tint = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier
-                .size(ICON_SIZE)
-                .align(Alignment.CenterVertically)
-        )
-        Column(
-            Modifier
-                .align(Alignment.CenterVertically)
-                .fillMaxWidth()
-        ) {
+    ListItem(
+        headlineContent = {
             Text(
                 text = leadText,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-                    .padding(20.dp, bottom = 2.dp),
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Left
+                style = MaterialTheme.typography.titleMedium,
             )
-            if (subText != null) {
-                Text(
-                    text = subText,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                        .padding(20.dp, top = 3.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Left
+        },
+        supportingContent = subText?.let {
+            { Text(text = it) }
+        },
+        leadingContent = painter?.let {
+            {
+                Icon(
+                    painter = it,
+                    contentDescription = contentDescription,
+                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                 )
             }
-        }
-    }
-}
-@Composable
-fun CustomEntryButton (
-    onClick: () -> Unit = {},
-    leadText : String,
-    subText : String? = null
-) {
-    TextButton(
-        onClick = onClick,
+        },
+        colors = ListItemDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
         modifier = Modifier
-            .height(BUTTON_HEIGHT),
-        shape = RectangleShape,
-    ) {
-        Column(
-            Modifier
-                .align(Alignment.CenterVertically)
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = leadText,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-                    .padding(20.dp, bottom = 2.dp),
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Left
-            )
-            if (subText != null) {
-                Text(
-                    text = subText,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                        .padding(20.dp, top = 3.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Left
-                )
-            }
-        }
-    }
+            .clickable(onClick = onClick)
+            .semantics { role = Role.Button },
+    )
 }

@@ -1,20 +1,25 @@
 package com.mukund.bookcompanion.ui.home
 
-import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.hapticfeedback.HapticFeedback
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.ui.home.components.CustomBottomBar
@@ -27,168 +32,68 @@ enum class BookCategory(val icon: Int) {
     Unread(R.drawable.check_circle_unread);
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(
     viewModel: BooksViewModel = hiltViewModel(),
     navigateTo: (id: Int) -> Unit,
-    settings: () -> Unit
+    settings: () -> Unit,
 ) {
-
-    // viewModel
     LaunchedEffect(Unit) {
         viewModel.getBooks()
     }
-    // Haptic
-    val haptic = LocalHapticFeedback.current
 
-    // Bottom bar
-    val visibilityState = remember { MutableTransitionState(false) }
-    visibilityState.targetState = true
-    val (currentCategory, setCurrentCategory) = remember { mutableStateOf(BookCategory.All) }
-    val updateKey = rememberUpdatedState(currentCategory)
-    val visibleStateAll = remember { MutableTransitionState(false) }
-    val visibleStateRead = remember { MutableTransitionState(false) }
-    val visibleStateUnread = remember { MutableTransitionState(false) }
-    LaunchedEffect(updateKey.value) {
-        when (currentCategory) {
-            BookCategory.All -> visibleStateAll.targetState = true
-            BookCategory.Read -> visibleStateRead.targetState = true
-            BookCategory.Unread -> visibleStateUnread.targetState = true
-        }
+    var currentCategory by remember { mutableStateOf(BookCategory.All) }
+
+    val visibleStateAll     = remember { MutableTransitionState(false) }
+    val visibleStateRead    = remember { MutableTransitionState(false) }
+    val visibleStateUnread  = remember { MutableTransitionState(false) }
+
+    LaunchedEffect(currentCategory) {
+        visibleStateAll.targetState    = currentCategory == BookCategory.All
+        visibleStateRead.targetState   = currentCategory == BookCategory.Read
+        visibleStateUnread.targetState = currentCategory == BookCategory.Unread
     }
 
-    // Orientation
-    val currentConfiguration = LocalConfiguration.current
-//    val screenOrientation = currentConfiguration.orientation
-    val screenOrientation = Configuration.ORIENTATION_PORTRAIT
-    if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
-        PortraitLayout(viewModel, navigateTo, settings,
-            haptic, visibilityState, currentCategory, setCurrentCategory,
-            visibleStateAll, visibleStateRead, visibleStateUnread,
-        )
-    }
-    else {
-//        LandscapeLayout(viewModel, navigateTo, settings,
-//            haptic, onFabClick, visibilityState, currentCategory, setCurrentCategory,
-//            visibleStateAll, visibleStateRead, visibleStateUnread,
-//            sortedBy, selectedIndex, expandSortDropDown
-//        )
-    }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-
-}
-
-@ExperimentalMaterial3Api
-@Composable
-fun PortraitLayout(
-    viewModel: BooksViewModel,
-    navigateTo: (id: Int) -> Unit,
-    settings: () -> Unit,
-    haptic: HapticFeedback,
-    visibilityState: MutableTransitionState<Boolean>,
-    currentCategory: BookCategory,
-    setCurrentCategory: (BookCategory) -> Unit,
-    visibleStateAll: MutableTransitionState<Boolean>,
-    visibleStateRead: MutableTransitionState<Boolean>,
-    visibleStateUnread: MutableTransitionState<Boolean>,
-) {
     Scaffold(
         topBar = {
             CustomHomeTopBar(
                 settings = settings,
-                haptic = haptic,
+                scrollBehavior = scrollBehavior,
             )
         },
         bottomBar = {
             CustomBottomBar(
                 viewModel = viewModel,
-                haptic,
                 categories = BookCategory.entries.toTypedArray(),
-                currentCategory,
-                setCurrentCategory,
-                visibleStateAll,
-                visibleStateRead,
-                visibleStateUnread,
+                currentCategory = currentCategory,
+                setCurrentCategory = { currentCategory = it },
+                visibleStateAll = visibleStateAll,
+                visibleStateRead = visibleStateRead,
+                visibleStateUnread = visibleStateUnread,
             )
         },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
-        AnimatedVisibility(
-            visibleState = visibilityState,
-            enter = fadeIn(
-                initialAlpha = 0.0f,
-                animationSpec = tween(durationMillis = 1000)
-            )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
         ) {
             HomeContent(
-                paddingValues = paddingValues,
                 books = viewModel.books,
                 navigateTo = navigateTo,
-                currentCategory,
-                visibleStateAll, visibleStateRead, visibleStateUnread
+                currentCategory = currentCategory,
+                visibleStateAll = visibleStateAll,
+                visibleStateRead = visibleStateRead,
+                visibleStateUnread = visibleStateUnread,
             )
         }
     }
 }
-//
-//@ExperimentalMaterial3Api
-//@Composable
-//fun LandscapeLayout(
-//    viewModel: BooksViewModel,
-//    navigateTo: (id: Int) -> Unit,
-//    settings: () -> Unit,
-//    haptic: HapticFeedback,
-//    onFabClick: () -> Unit,
-//    visibilityState: MutableTransitionState<Boolean>,
-//    currentCategory: BookCategory,
-//    setCurrentCategory: (BookCategory) -> Unit,
-//    visibleStateAll: MutableTransitionState<Boolean>,
-//    visibleStateRead: MutableTransitionState<Boolean>,
-//    visibleStateUnread: MutableTransitionState<Boolean>,
-//    sortedBy: MutableState<String>,
-//    selectedIndex: MutableState<Int>,
-//    expandSortDropDown: MutableState<Boolean>,
-//) {
-//    Scaffold(
-//        topBar = {
-//            CustomLandscapeHomeTopBar(
-//                settings = settings,
-//                haptic = haptic,
-//                onSortSelected = { selectedOption ->
-//                    sortedBy.value = selectedOption
-//                    // Call your sorting function here with the selectedOption
-//                },
-//                sortingOptions = listOf("Title", "Year"),
-//                selectedIndex = selectedIndex.value,
-//                onRadioSelected = { index ->
-//                    selectedIndex.value = index
-//                },
-//                expandSortDropDown = expandSortDropDown
-//            ) // Move the top bar outside the Scaffold
-//        }
-//    ) { paddingValues ->
-//        Row(Modifier.fillMaxSize()) {
-//            CustomNavigationRail(
-//                currentCategory = currentCategory,
-//                setCurrentCategory = setCurrentCategory,
-//                onFabClick = onFabClick
-//            )
-//            AnimatedVisibility(
-//                visibleState = visibilityState,
-//                enter = fadeIn(
-//                    initialAlpha = 0.0f,
-//                    animationSpec = tween(durationMillis = 1000)
-//                )
-//            ) {
-//                HomeContent(
-//                    paddingValues = paddingValues,
-//                    books = viewModel.books,
-//                    navigateTo = navigateTo,
-//                    currentCategory,
-//                    visibleStateAll, visibleStateRead, visibleStateUnread
-//                )
-//            }
-//        }
-//    }
-//}
-

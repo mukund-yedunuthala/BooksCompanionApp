@@ -1,49 +1,53 @@
 package com.mukund.bookcompanion.ui.overview.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.domain.model.Book
 
 @Composable
 fun OverviewConfirmDelete(
-    showDeleteDialog: MutableState<Boolean>,
-    deleteBook: (book: Book) -> Unit,
-    book: Book,
-    backPress: () -> Boolean
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    book: Book
 ) {
     AlertDialog(
-        onDismissRequest = { showDeleteDialog.value = false },
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.delete),
+                contentDescription = null
+            )
+        },
         title = {
-            Text("Remove?")
+            Text(stringResource(R.string.delete_dialog_title, book.title))
         },
         text = {
-            Text("Book will be deleted")
+            Text(stringResource(R.string.delete_dialog_body))
         },
         confirmButton = {
-            TextButton(
-                onClick = {
-                    showDeleteDialog.value = false
-                    backPress.invoke()
-                    deleteBook(book)
-                }
+            FilledTonalButton(
+                onClick = onConfirm,
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                )
             ) {
-                Text("Confirm".uppercase())
+                Text(stringResource(R.string.delete_confirm))
             }
         },
         dismissButton = {
-            TextButton(
-                onClick = {
-                    showDeleteDialog.value = false
-                }
-            ) {
-                Text("Dismiss".uppercase())
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
             }
-        },
-        modifier = Modifier.fillMaxWidth()
+        }
     )
 }
