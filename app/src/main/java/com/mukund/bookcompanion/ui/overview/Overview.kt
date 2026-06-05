@@ -28,7 +28,6 @@ fun Overview(
         topBar = {
             OverviewTopBar(
                 onBackPress = backPress,
-                onNavigateTo = navigateTo
             )
         }
     ) { innerPadding ->
@@ -37,7 +36,8 @@ fun Overview(
             book = viewModel.book,
             onNavigateTo = navigateTo,
             onDeleteBook = { book: Book -> viewModel.deleteBook(book) },
-            onBackPress = backPress
+            onUpdateBook = { book: Book -> viewModel.updateBook(book) },
+            onBackPress = backPress,
         )
     }
 }
