@@ -2,7 +2,6 @@ package com.mukund.bookcompanion.ui.settings.backup
 
 import android.app.Activity
 import android.content.ContentResolver
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -85,7 +84,12 @@ fun Backup_Screen(
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data
                 uri?.let { backupUri ->
-                    performBackup(context, resolver, viewModel.books, backupUri)
+                    scope.launch(Dispatchers.IO) {
+                        performBackup(resolver, viewModel.books, backupUri)
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Export successful", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
         }
@@ -187,13 +191,10 @@ fun createBackupIntent(): Intent {
 
     return intent
 }
-fun performBackup(context: Context, resolver: ContentResolver, books: List<Book>, backupUri: Uri) {
+fun performBackup(resolver: ContentResolver, books: List<Book>, backupUri: Uri) {
     resolver.openOutputStream(backupUri)?.use { outputStream ->
         val gson = Gson()
         val backupData = gson.toJson(books)
         outputStream.write(backupData.toByteArray())
     }
-    // success toast
-    Toast.makeText(context, "Export successful", Toast.LENGTH_SHORT).show()
-
 }
