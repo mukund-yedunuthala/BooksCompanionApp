@@ -7,12 +7,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.sync.Mutex
-import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 @Module
@@ -23,18 +17,6 @@ class AppModule {
     @Singleton
     fun provideBooksDatabaseProvider(application: Application): BookDbProvider =
         BookDbProvider(application)
-
-    @Provides
-    @Singleton
-    fun provideCoroutineScope(): CoroutineScope = CoroutineScope(SupervisorJob())
-
-    @Provides
-    fun provideMutex(): Mutex = Mutex()
-
-    @Provides
-    @Singleton
-    fun provideExecutorCoroutineDispatcher(): ExecutorCoroutineDispatcher =
-        Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
     @Provides
     @Singleton
