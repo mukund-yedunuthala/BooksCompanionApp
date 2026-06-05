@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId="com.mukund.bookcompanion"
-        minSdk=29
+        minSdk=31
         targetSdk=36
         versionCode= 32
         versionName= "1.0.0"
@@ -102,5 +102,4 @@ dependencies {
 
     // Others
     implementation(libs.androidx.activity.ktx)
-    implementation(libs.accompanist.systemuicontroller)
 }

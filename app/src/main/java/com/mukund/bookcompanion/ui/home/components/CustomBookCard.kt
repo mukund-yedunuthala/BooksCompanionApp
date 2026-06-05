@@ -1,7 +1,5 @@
 package com.mukund.bookcompanion.ui.home.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
@@ -179,7 +177,6 @@ private fun BookChip(text: String) {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalLayoutApi::class)
 @ExperimentalMaterial3Api
 @Preview(showBackground = true)
