@@ -3,9 +3,7 @@ package com.mukund.bookcompanion.design
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 // ─── Color Palette ──────────────────────────────────────────
 /**
@@ -80,110 +78,6 @@ val DarkColorScheme = BookCompanionColorScheme(
 
 // CompositionLocal so any composable can access the current scheme
 val LocalBookCompanionColors = compositionLocalOf { LightColorScheme }
-// ─── Typography ─────────────────────────────────────────────
-/**
- * Typefaces for Book Companion.
- * Fonts must be downloaded from Google Fonts and placed in res/font/
- */
-object BookCompanionFonts {
-    // Font family names (match res/font filenames)
-    const val SERIF_FAMILY = "cormorant_garamond"      // Google Fonts: Cormorant Garamond
-    const val SANS_FAMILY = "ibm_plex_sans"            // Google Fonts: IBM Plex Sans
-    const val MONO_FAMILY = "jetbrains_mono"           // Google Fonts: JetBrains Mono
-}
-
-/**
- * Typographic scale and styles for Book Companion.
- * Uses serif for display/headers, sans for UI, mono for metadata.
- */
-object BookCompanionTypography {
-    // Display & Headers
-    data class DisplayStyle(
-        val fontSize: TextUnit = 52.sp,
-        val lineHeight: TextUnit = 48.sp,
-        val fontFamily: String = BookCompanionFonts.SERIF_FAMILY,
-        val fontWeight: Int = 500,  // medium
-        val letterSpacing: TextUnit = (-0.02).sp,
-    )
-
-    data class HeadingLargeStyle(
-        val fontSize: TextUnit = 26.sp,
-        val lineHeight: TextUnit = 27.sp,
-        val fontFamily: String = BookCompanionFonts.SERIF_FAMILY,
-        val fontWeight: Int = 500,  // medium
-        val letterSpacing: TextUnit = (-0.01).sp,
-    )
-
-    data class HeadingMediumStyle(
-        val fontSize: TextUnit = 22.sp,
-        val lineHeight: TextUnit = 20.sp,
-        val fontFamily: String = BookCompanionFonts.SERIF_FAMILY,
-        val fontWeight: Int = 500,  // medium
-        val letterSpacing: TextUnit = 0.sp,
-    )
-
-    data class BodyLargeStyle(
-        val fontSize: TextUnit = 17.sp,
-        val lineHeight: TextUnit = 26.sp,
-        val fontFamily: String = BookCompanionFonts.SERIF_FAMILY,
-        val fontWeight: Int = 400,  // normal
-        val letterSpacing: TextUnit = 0.sp,
-        val fontStyle: String = "italic",  // body serif text is italicized
-    )
-
-    data class BodyStyle(
-        val fontSize: TextUnit = 15.sp,
-        val lineHeight: TextUnit = 22.sp,
-        val fontFamily: String = BookCompanionFonts.SANS_FAMILY,
-        val fontWeight: Int = 400,  // normal
-        val letterSpacing: TextUnit = 0.02.sp,
-    )
-
-    data class BodySmallStyle(
-        val fontSize: TextUnit = 13.sp,
-        val lineHeight: TextUnit = 20.sp,
-        val fontFamily: String = BookCompanionFonts.SANS_FAMILY,
-        val fontWeight: Int = 400,  // normal
-        val letterSpacing: TextUnit = 0.02.sp,
-    )
-
-    data class LabelSmallStyle(
-        val fontSize: TextUnit = 12.sp,
-        val lineHeight: TextUnit = 16.sp,
-        val fontFamily: String = BookCompanionFonts.SANS_FAMILY,
-        val fontWeight: Int = 500,  // medium
-        val letterSpacing: TextUnit = 0.04.sp,
-    )
-
-    data class LabelTinyStyle(
-        val fontSize: TextUnit = 10.sp,
-        val lineHeight: TextUnit = 14.sp,
-        val fontFamily: String = BookCompanionFonts.MONO_FAMILY,
-        val fontWeight: Int = 400,  // normal
-        val letterSpacing: TextUnit = 0.14.sp,
-        val textTransform: String = "uppercase",
-    )
-
-    data class CaptionStyle(
-        val fontSize: TextUnit = 11.sp,
-        val lineHeight: TextUnit = 16.sp,
-        val fontFamily: String = BookCompanionFonts.SANS_FAMILY,
-        val fontWeight: Int = 400,  // normal
-        val letterSpacing: TextUnit = 0.02.sp,
-    )
-
-    // Pre-instantiated style objects
-    val display = DisplayStyle()
-    val headingLarge = HeadingLargeStyle()
-    val headingMedium = HeadingMediumStyle()
-    val bodyLarge = BodyLargeStyle()
-    val body = BodyStyle()
-    val bodySmall = BodySmallStyle()
-    val labelSmall = LabelSmallStyle()
-    val labelTiny = LabelTinyStyle()
-    val caption = CaptionStyle()
-}
-
 // ─── Spacing ────────────────────────────────────────────────
 /**
  * Spacing scale for consistent rhythm.

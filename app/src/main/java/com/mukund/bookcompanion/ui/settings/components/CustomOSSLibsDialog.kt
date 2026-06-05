@@ -17,15 +17,14 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mukund.bookcompanion.design.CormorantGaramond
 import com.mukund.bookcompanion.design.IBMPlexSans
 import com.mukund.bookcompanion.design.JetBrainsMono
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 @Composable
@@ -42,10 +41,7 @@ fun CustomURLDialog(
         title = {
             Text(
                 text = "Open link?",
-                fontFamily = CormorantGaramond,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Medium,
-                fontStyle = FontStyle.Italic,
+                style = AppType.headingSerif.copy(fontStyle = FontStyle.Italic),
                 color = bookColors.ink,
             )
         },
@@ -88,9 +84,7 @@ fun CustomURLDialog(
             ) {
                 Text(
                     text = "Open",
-                    fontFamily = JetBrainsMono,
-                    fontSize = 10.sp,
-                    letterSpacing = 0.14.sp,
+                    style = AppType.labelTinyMono,
                     color = bookColors.paper,
                 )
             }
@@ -105,9 +99,7 @@ fun CustomURLDialog(
             ) {
                 Text(
                     text = "Cancel",
-                    fontFamily = JetBrainsMono,
-                    fontSize = 10.sp,
-                    letterSpacing = 0.14.sp,
+                    style = AppType.labelTinyMono,
                     color = bookColors.inkSoft,
                 )
             }

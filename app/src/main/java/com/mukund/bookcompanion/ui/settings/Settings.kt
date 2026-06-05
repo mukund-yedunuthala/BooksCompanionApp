@@ -37,19 +37,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.BuildConfig
 import com.mukund.bookcompanion.R
-import com.mukund.bookcompanion.design.CormorantGaramond
-import com.mukund.bookcompanion.design.IBMPlexSans
-import com.mukund.bookcompanion.design.JetBrainsMono
 import com.mukund.bookcompanion.ui.settings.components.CustomEntryButton
 import com.mukund.bookcompanion.ui.settings.components.CustomEntrySwitch
 import com.mukund.bookcompanion.ui.settings.components.CustomURLDialog
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 private sealed interface DialogState {
@@ -104,9 +99,7 @@ fun SettingScreen(
                         )
                         Text(
                             text = "Library",
-                            fontFamily = IBMPlexSans,
-                            fontSize = 13.sp,
-                            letterSpacing = 0.02.sp,
+                            style = AppType.bodySmall,
                             color = bookColors.inkSoft,
                         )
                     }
@@ -114,12 +107,7 @@ fun SettingScreen(
                     // ── Wordmark ──────────────────────────────
                     Text(
                         text = stringResource(R.string.settingsscreen_toplabel),
-                        fontFamily = CormorantGaramond,
-                        fontSize = 52.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontStyle = FontStyle.Italic,
-                        lineHeight = 48.sp,
-                        letterSpacing = (-0.02).sp,
+                        style = AppType.displaySerifItalic,
                         color = bookColors.ink,
                         modifier = Modifier.padding(bottom = 20.dp)
                     )
@@ -215,9 +203,7 @@ fun SettingScreen(
 private fun SectionHeader(text: String) {
     Text(
         text = text.uppercase(),
-        fontFamily = JetBrainsMono,
-        fontSize = 9.sp,
-        letterSpacing = 0.14.sp,
+        style = AppType.labelMicroMono,
         color = bookColors.inkFaint,
         modifier = Modifier.padding(horizontal = 28.dp, vertical = 12.dp)
     )

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.mukund.bookcompanion.design.CormorantGaramond
 import com.mukund.bookcompanion.design.IBMPlexSans
 import com.mukund.bookcompanion.design.JetBrainsMono
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 @Composable
@@ -86,9 +87,7 @@ fun EditorialTextField(
     Column(modifier = modifier.padding(bottom = 18.dp)) {
         Text(
             text = label,
-            fontFamily = JetBrainsMono,
-            fontSize = 9.sp,
-            letterSpacing = 0.16.sp,
+            style = AppType.labelMicroMono,
             color = bookColors.inkFaint,
             modifier = Modifier.padding(bottom = 6.dp)
         )

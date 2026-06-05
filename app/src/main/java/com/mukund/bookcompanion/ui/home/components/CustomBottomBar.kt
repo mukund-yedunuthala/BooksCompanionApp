@@ -30,14 +30,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mukund.bookcompanion.R
-import com.mukund.bookcompanion.design.CormorantGaramond
-import com.mukund.bookcompanion.design.JetBrainsMono
 import com.mukund.bookcompanion.ui.home.BooksViewModel
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 
@@ -71,9 +67,7 @@ fun CustomBottomBar(
             // Wordmark — left-anchored, replaces filter buttons
             Text(
                 text = "Library",
-                fontFamily = JetBrainsMono,
-                fontSize = 9.sp,
-                letterSpacing = 0.18.sp,
+                style = AppType.labelMicroMono,
                 color = bookColors.inkFaint,
             )
         },
@@ -96,11 +90,7 @@ fun CustomBottomBar(
                 text = {
                     Text(
                         text = "New entry",
-                        fontFamily = CormorantGaramond,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontStyle = FontStyle.Italic,
-                        letterSpacing = 0.01.sp,
+                        style = AppType.fabLabelSerif,
                     )
                 }
             )

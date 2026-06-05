@@ -34,21 +34,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.design.CormorantGaramond
-import com.mukund.bookcompanion.design.IBMPlexSans
-import com.mukund.bookcompanion.design.JetBrainsMono
 import com.mukund.bookcompanion.domain.model.Book
-import com.mukund.bookcompanion.ui.home.BooksViewModel
 import com.mukund.bookcompanion.ui.home.components.BookAdditionBottomSheet
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,9 +72,7 @@ fun OverviewContent(
         if (book.genre != NO_VALUE) {
             Text(
                 text = book.genre.trim().uppercase(),
-                fontFamily = JetBrainsMono,
-                fontSize = 9.sp,
-                letterSpacing = 0.14.sp,
+                style = AppType.labelMicroMono,
                 color = bookColors.inkFaint,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 10.dp)
@@ -86,20 +80,14 @@ fun OverviewContent(
         }
         Text(
             text = book.title.trim(),
-            fontFamily = CormorantGaramond,
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Medium,
-            lineHeight = 33.sp,
-            letterSpacing = (-0.01).sp,
+            style = AppType.titleSerifLarge,
             color = bookColors.ink,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
             text = "by ${book.author.trim()}",
-            fontFamily = CormorantGaramond,
-            fontSize = 17.sp,
-            fontStyle = FontStyle.Italic,
+            style = AppType.authorSerifItalicLarge,
             color = bookColors.inkSoft,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 24.dp)
@@ -180,9 +168,7 @@ fun OverviewContent(
                     )
                     Text(
                         text = "Edit",
-                        fontFamily = JetBrainsMono,
-                        fontSize = 10.sp,
-                        letterSpacing = 0.14.sp,
+                        style = AppType.labelMicroMono,
                         color = bookColors.paper,
                     )
                 }
@@ -209,9 +195,7 @@ fun OverviewContent(
                     )
                     Text(
                         text = "Delete",
-                        fontFamily = JetBrainsMono,
-                        fontSize = 10.sp,
-                        letterSpacing = 0.14.sp,
+                        style = AppType.labelMicroMono,
                         color = bookColors.inkSoft,
                     )
                 }
@@ -244,9 +228,7 @@ fun OverviewContent(
                         ) { append(book.title.trim()) }
                         append(" from your library?")
                     },
-                    fontFamily = IBMPlexSans,
-                    fontSize = 13.sp,
-                    lineHeight = 19.sp,
+                    style = AppType.bodySmall,
                     color = bookColors.inkSoft,
                 )
                 Row(
@@ -266,9 +248,7 @@ fun OverviewContent(
                     ) {
                         Text(
                             text = "Confirm",
-                            fontFamily = JetBrainsMono,
-                            fontSize = 10.sp,
-                            letterSpacing = 0.14.sp,
+                            style = AppType.labelMicroMono,
                             color = bookColors.paper,
                         )
                     }
@@ -282,9 +262,7 @@ fun OverviewContent(
                     ) {
                         Text(
                             text = "Cancel",
-                            fontFamily = JetBrainsMono,
-                            fontSize = 10.sp,
-                            letterSpacing = 0.14.sp,
+                            style = AppType.labelMicroMono,
                             color = bookColors.inkSoft,
                         )
                     }
@@ -339,9 +317,7 @@ private fun OverviewStatusBadge(
         )
         Text(
             text = status.trim().uppercase(),
-            fontFamily = JetBrainsMono,
-            fontSize = 9.sp,
-            letterSpacing = 0.16.sp,
+            style = AppType.labelMicroMono,
             color = if (isUnread) bookColors.inkSoft else bookColors.ink,
         )
     }
@@ -363,16 +339,12 @@ private fun MetaRow(
     ) {
         Text(
             text = label.uppercase(),
-            fontFamily = JetBrainsMono,
-            fontSize = 9.sp,
-            letterSpacing = 0.14.sp,
+            style = AppType.labelMicroMono,
             color = bookColors.inkFaint,
         )
         Text(
             text = value,
-            fontFamily = if (mono) JetBrainsMono else IBMPlexSans,
-            fontSize = if (mono) 12.sp else 14.sp,
-            letterSpacing = if (mono) 0.04.sp else 0.sp,
+            style = if (mono) AppType.labelSmall else AppType.body,
             color = bookColors.inkSoft,
         )
     }

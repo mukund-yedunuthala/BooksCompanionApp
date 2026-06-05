@@ -32,10 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import com.mukund.bookcompanion.domain.model.Book
@@ -49,8 +46,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import com.mukund.bookcompanion.R
-import com.mukund.bookcompanion.design.CormorantGaramond
-import com.mukund.bookcompanion.design.IBMPlexSans
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -124,21 +120,14 @@ fun Backup_Screen(
                         )
                         Text(
                             text = "Settings",
-                            fontFamily = IBMPlexSans,
-                            fontSize = 13.sp,
-                            letterSpacing = 0.02.sp,
+                            style = AppType.bodySmall,
                             color = bookColors.inkSoft,
                         )
                     }
 
                     Text(
                         text = "Backup &\nRestore",
-                        fontFamily = CormorantGaramond,
-                        fontSize = 52.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontStyle = FontStyle.Italic,
-                        lineHeight = 48.sp,
-                        letterSpacing = (-0.02).sp,
+                        style = AppType.displaySerifItalic,
                         color = bookColors.ink,
                         modifier = Modifier.padding(bottom = 20.dp)
                     )

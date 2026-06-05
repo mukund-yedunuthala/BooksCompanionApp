@@ -36,16 +36,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mukund.bookcompanion.R
-import com.mukund.bookcompanion.design.CormorantGaramond
-import com.mukund.bookcompanion.design.IBMPlexSans
-import com.mukund.bookcompanion.design.JetBrainsMono
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.home.BookCategory
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -128,9 +123,7 @@ fun CustomHomeTopBarNew(
             ) {
                 Text(
                     text = monthYear,
-                    fontFamily = JetBrainsMono,
-                    fontSize = 10.sp,
-                    letterSpacing = 0.12.sp,
+                    style = AppType.labelTinyMono,
                     color = bookColors.inkFaint,
                 )
                 IconButton(
@@ -152,22 +145,12 @@ fun CustomHomeTopBarNew(
             // ── Wordmark ──────────────────────────────────────────
             Text(
                 text = "Book",
-                fontFamily = CormorantGaramond,
-                fontSize = 52.sp,
-                fontWeight = FontWeight.Medium,
-                fontStyle = FontStyle.Italic,
-                lineHeight = 48.sp,
-                letterSpacing = (-0.02).sp,
+                style = AppType.displaySerifItalic,
                 color = bookColors.ink,
             )
             Text(
                 text = "Companion",
-                fontFamily = CormorantGaramond,
-                fontSize = 52.sp,
-                fontWeight = FontWeight.Normal,
-                fontStyle = FontStyle.Normal,
-                lineHeight = 48.sp,
-                letterSpacing = (-0.02).sp,
+                style = AppType.displaySerif,
                 color = bookColors.ink,
                 modifier = Modifier.padding(bottom = 20.dp)
             )
@@ -196,9 +179,7 @@ fun CustomHomeTopBarNew(
                 Column {
                     Text(
                         text = "PROGRESS, ALL TIME",
-                        fontFamily = JetBrainsMono,
-                        fontSize = 9.sp,
-                        letterSpacing = 0.14.sp,
+                        style = AppType.labelMicroMono,
                         color = bookColors.inkFaint,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
@@ -208,30 +189,22 @@ fun CustomHomeTopBarNew(
                     ) {
                         Text(
                             text = readCount.toString(),
-                            fontFamily = CormorantGaramond,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Medium,
-                            fontStyle = FontStyle.Normal,
+                            style = AppType.headingSerif,
                             color = bookColors.ink,
                         )
                         Text(
                             text = "of",
-                            fontFamily = CormorantGaramond,
-                            fontSize = 22.sp,
+                            style = AppType.headingSerifLight,
                             color = bookColors.inkFaint,
                         )
                         Text(
                             text = totalCount.toString(),
-                            fontFamily = CormorantGaramond,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Medium,
-                            fontStyle = FontStyle.Normal,
+                            style = AppType.headingSerif,
                             color = bookColors.ink,
                         )
                         Text(
                             text = "read",
-                            fontFamily = IBMPlexSans,
-                            fontSize = 13.sp,
+                            style = AppType.bodySmall,
                             color = bookColors.inkFaint,
                             modifier = Modifier.padding(bottom = 2.dp)
                         )
@@ -308,18 +281,13 @@ fun FilterTabs(
                 ) {
                     Text(
                         text = category.name,
-                        fontFamily = IBMPlexSans,
-                        fontSize = 12.sp,
-                        letterSpacing = 0.04.sp,
-                        fontWeight = if (isActive) FontWeight.Medium else FontWeight.Normal,
+                        style = if (isActive) AppType.labelSmall else AppType.labelSmallLight,
                         color = if (isActive) bookColors.ink else bookColors.inkFaint,
                     )
                     Text(
                         text = count.toString().padStart(2, '0'),
-                        fontFamily = JetBrainsMono,
-                        fontSize = 9.sp,
-                        color = if (isActive) bookColors.terracotta
-                        else bookColors.inkFaint,
+                        style = AppType.labelMicroMono,
+                        color = if (isActive) bookColors.terracotta else bookColors.inkFaint,
                     )
                 }
                 Box(

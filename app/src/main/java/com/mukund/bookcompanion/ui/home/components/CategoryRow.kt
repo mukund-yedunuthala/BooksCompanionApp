@@ -20,10 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.mukund.bookcompanion.design.IBMPlexSans
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -129,12 +127,8 @@ fun CategoryButtonGroupNew(
                     )
                     Text(
                         text = category,
-                        fontFamily = IBMPlexSans,
-                        fontSize = 12.sp,
-                        letterSpacing = 0.03.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = if (isActive) bookColors.paper
-                        else bookColors.inkSoft,
+                        style = AppType.labelSmallLight,
+                        color = if (isActive) bookColors.paper else bookColors.inkSoft,
                     )
                 }
             }

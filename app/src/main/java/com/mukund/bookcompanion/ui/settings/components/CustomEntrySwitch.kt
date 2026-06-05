@@ -27,12 +27,9 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.state.ToggleableState
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mukund.bookcompanion.R
-import com.mukund.bookcompanion.design.IBMPlexSans
-import com.mukund.bookcompanion.design.JetBrainsMono
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 @Composable
@@ -67,17 +64,13 @@ fun CustomEntrySwitch(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = leadText,
-                fontFamily = IBMPlexSans,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
+                style = AppType.body,
                 color = bookColors.ink,
             )
             subText?.let {
                 Text(
                     text = it,
-                    fontFamily = JetBrainsMono,
-                    fontSize = 9.sp,
-                    letterSpacing = 0.12.sp,
+                    style = AppType.labelMicroMono,
                     color = bookColors.inkFaint,
                     modifier = Modifier.padding(top = 3.dp)
                 )

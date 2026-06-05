@@ -32,15 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.mukund.bookcompanion.design.CormorantGaramond
-import com.mukund.bookcompanion.design.IBMPlexSans
-import com.mukund.bookcompanion.design.JetBrainsMono
 import com.mukund.bookcompanion.domain.model.Book
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
@@ -121,19 +116,13 @@ fun BookAdditionBottomSheet(
                     Column {
                         Text(
                             text = if (isEditMode) "EDIT ENTRY" else "NEW ENTRY",
-                            fontFamily = JetBrainsMono,
-                            fontSize = 9.sp,
-                            letterSpacing = 0.16.sp,
+                            style = AppType.labelMicroMono,
                             color = bookColors.inkFaint,
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
                             text = if (isEditMode) "Revise details" else "Shelve a book",
-                            fontFamily = CormorantGaramond,
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Medium,
-                            fontStyle = FontStyle.Italic,
-                            letterSpacing = (-0.01).sp,
+                            style = AppType.titleSerif,
                             color = bookColors.ink,
                         )
                     }
@@ -192,9 +181,7 @@ fun BookAdditionBottomSheet(
                 // ── Status ────────────────────────────────────
                 Text(
                     text = "STATUS",
-                    fontFamily = JetBrainsMono,
-                    fontSize = 9.sp,
-                    letterSpacing = 0.16.sp,
+                    style = AppType.labelMicroMono,
                     color = bookColors.inkFaint,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
@@ -210,9 +197,7 @@ fun BookAdditionBottomSheet(
                 Text(
                     text = if (isDuplicate) "$title already exists!"
                     else "Fields marked with * are required.",
-                    fontFamily = IBMPlexSans,
-                    fontSize = 12.sp,
-                    letterSpacing = 0.02.sp,
+                    style = AppType.labelSmallLight,
                     color = if (isDuplicate) MaterialTheme.colorScheme.error
                     else bookColors.inkFaint,
                     modifier = Modifier.padding(bottom = 4.dp)
@@ -261,10 +246,7 @@ fun BookAdditionBottomSheet(
                 ) {
                     Text(
                         text = if (isEditMode) "Save changes →" else "Add to library →",
-                        fontFamily = CormorantGaramond,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontStyle = FontStyle.Italic,
+                        style = AppType.sheetActionSerif,
                         color = if (isValid) bookColors.paper else bookColors.inkFaint,
                     )
                 }

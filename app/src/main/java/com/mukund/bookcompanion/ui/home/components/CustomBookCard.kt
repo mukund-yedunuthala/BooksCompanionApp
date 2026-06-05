@@ -30,16 +30,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
-import com.mukund.bookcompanion.design.CormorantGaramond
-import com.mukund.bookcompanion.design.IBMPlexSans
-import com.mukund.bookcompanion.design.JetBrainsMono
 import com.mukund.bookcompanion.domain.model.Book
+import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 import com.mukund.bookcompanion.ui.theme.bookColors
 
@@ -82,9 +77,7 @@ fun CustomBookCardNew(
                 if (book.genre != NO_VALUE) {
                     Text(
                         text = book.genre.trim().uppercase(),
-                        fontFamily = JetBrainsMono,
-                        fontSize = 9.sp,
-                        letterSpacing = 0.14.sp,
+                        style = AppType.labelMicroMono,
                         color = bookColors.inkFaint,
                     )
                 } else {
@@ -115,9 +108,7 @@ fun CustomBookCardNew(
                     )
                     Text(
                         text = book.status.trim(),
-                        fontFamily = JetBrainsMono,
-                        fontSize = 9.sp,
-                        letterSpacing = 0.12.sp,
+                        style = AppType.labelMicroMono,
                         color = bookColors.inkSoft,
                     )
                 }
@@ -126,11 +117,7 @@ fun CustomBookCardNew(
             // ── Title ─────────────────────────────────────────────
             Text(
                 text = book.title.trim(),
-                fontFamily = CormorantGaramond,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 27.sp,
-                letterSpacing = (-0.01).sp,
+                style = AppType.titleSerif,
                 color = bookColors.ink,
                 modifier = Modifier.padding(bottom = 6.dp)
             )
@@ -138,9 +125,7 @@ fun CustomBookCardNew(
             // ── Author ────────────────────────────────────────────
             Text(
                 text = "by ${book.author.trim()}",
-                fontFamily = CormorantGaramond,
-                fontSize = 15.sp,
-                fontStyle = FontStyle.Italic,
+                style = AppType.authorSerifItalic,
                 color = bookColors.inkSoft,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
@@ -153,9 +138,7 @@ fun CustomBookCardNew(
             if (metaParts.isNotEmpty()) {
                 Text(
                     text = metaParts.joinToString(" · "),
-                    fontFamily = IBMPlexSans,
-                    fontSize = 11.sp,
-                    letterSpacing = 0.02.sp,
+                    style = AppType.caption,
                     color = bookColors.inkFaint,
                 )
             }
