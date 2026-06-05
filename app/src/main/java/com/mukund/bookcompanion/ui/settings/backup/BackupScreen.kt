@@ -8,17 +8,34 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import com.mukund.bookcompanion.domain.model.Book
@@ -29,6 +46,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import com.mukund.bookcompanion.R
+import com.mukund.bookcompanion.design.CormorantGaramond
+import com.mukund.bookcompanion.design.IBMPlexSans
+import com.mukund.bookcompanion.ui.theme.bookColors
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -44,56 +64,99 @@ fun Backup_Screen(
 
 
     val importUriState = remember { mutableStateOf<Uri?>(null) }
-    val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        if (uri != null) {
-            importUriState.value = uri
-            importBackupFile(viewModel, context.contentResolver, uri)
-            // Show a success message or perform any additional operations
-            Toast.makeText(context, "Import successful", Toast.LENGTH_SHORT).show()
-        }
-    }
-    val activityResultLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri = result.data?.data
-            uri?.let { backupUri ->
-                performBackup(context, resolver, viewModel.books, backupUri)
+    val importLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            if (uri != null) {
+                importUriState.value = uri
+                importBackupFile(viewModel, context.contentResolver, uri)
+                // Show a success message or perform any additional operations
+                Toast.makeText(context, "Import successful", Toast.LENGTH_SHORT).show()
             }
         }
-    }
+    val activityResultLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.data
+                uri?.let { backupUri ->
+                    performBackup(context, resolver, viewModel.books, backupUri)
+                }
+            }
+        }
     Scaffold(
+        containerColor = bookColors.paper,
         topBar = {
-            TopAppBar(
-                title = { Text(text = "Backup & Restore") },
-                navigationIcon = {
-                    IconButton(onClick = { backPress.invoke() }) {
+            Surface(
+                color = bookColors.paper,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                        .padding(horizontal = 28.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { backPress.invoke() }
+                            .padding(top = 12.dp, bottom = 18.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back),
                             contentDescription = "Return to settings",
-                            modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
+                            tint = bookColors.inkSoft,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Text(
+                            text = "Settings",
+                            fontFamily = IBMPlexSans,
+                            fontSize = 13.sp,
+                            letterSpacing = 0.02.sp,
+                            color = bookColors.inkSoft,
                         )
                     }
+
+                    Text(
+                        text = "Backup &\nRestore",
+                        fontFamily = CormorantGaramond,
+                        fontSize = 52.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontStyle = FontStyle.Italic,
+                        lineHeight = 48.sp,
+                        letterSpacing = (-0.02).sp,
+                        color = bookColors.ink,
+                        modifier = Modifier.padding(bottom = 20.dp)
+                    )
+
+                    HorizontalDivider(
+                        color = bookColors.rule,
+                        thickness = 0.5.dp,
+                    )
                 }
-            )
+            }
         }
     ) { paddingValues ->
-        Surface(Modifier.padding(paddingValues)) {
-            LazyColumn() {
-                item {
-                    CustomEntryButton(
-                        onClick = {
-                            activityResultLauncher.launch(createBackupIntent())
-                        },
-                        leadText = "Create local backup",
-                        subText = "Data is stored locally, will be deleted upon uninstallation"
-                    )
-                    CustomEntryButton(
-                        onClick = {
-                            importLauncher.launch("application/json")
-                        },
-                        leadText = "Restore from file",
-                        subText = "Restore from compatible file"
-                    )
-                }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            item {
+                Spacer(Modifier.height(8.dp))
+                CustomEntryButton(
+                    onClick = { activityResultLauncher.launch(createBackupIntent()) },
+                    leadText = "Create local backup",
+                    subText = "Data is stored locally, will be deleted upon uninstallation"
+                )
+                CustomEntryButton(
+                    onClick = { importLauncher.launch("application/json") },
+                    leadText = "Restore from file",
+                    subText = "Restore from compatible file"
+                )
             }
         }
     }
