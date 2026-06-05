@@ -35,7 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mukund.bookcompanion.R
-import com.mukund.bookcompanion.design.BookCompanionColors
 import com.mukund.bookcompanion.design.CormorantGaramond
 import com.mukund.bookcompanion.design.JetBrainsMono
 import com.mukund.bookcompanion.ui.home.BooksViewModel
@@ -51,6 +50,7 @@ fun CustomBottomBar(
 ) {
     val haptic = LocalHapticFeedback.current
     var showSheet by remember { mutableStateOf(false) }
+    val borderColor = bookColors.rule
 
     BottomAppBar(
         containerColor = bookColors.paper,
@@ -61,7 +61,7 @@ fun CustomBottomBar(
             .drawBehind {
                 // Hairline top border replacing Material's default elevation shadow
                 drawLine(
-                    color = BookCompanionColors.rule,
+                    color = borderColor,
                     start = Offset(0f, 0f),
                     end = Offset(size.width, 0f),
                     strokeWidth = 0.5.dp.toPx()

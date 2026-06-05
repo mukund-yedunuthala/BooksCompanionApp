@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +40,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import com.mukund.bookcompanion.domain.model.Book
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.mukund.bookcompanion.ui.home.BooksViewModel
 import com.mukund.bookcompanion.ui.settings.components.CustomEntryButton
 import java.io.BufferedReader
@@ -58,19 +62,22 @@ fun Backup_Screen(
 ) {
     val context = LocalContext.current
     val resolver = context.contentResolver
+    val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.getBooks()
     }
-
 
     val importUriState = remember { mutableStateOf<Uri?>(null) }
     val importLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
                 importUriState.value = uri
-                importBackupFile(viewModel, context.contentResolver, uri)
-                // Show a success message or perform any additional operations
-                Toast.makeText(context, "Import successful", Toast.LENGTH_SHORT).show()
+                scope.launch(Dispatchers.IO) {
+                    importBackupFile(viewModel, context.contentResolver, uri)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Import successful", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     val activityResultLauncher =
@@ -163,11 +170,10 @@ fun Backup_Screen(
 }
 
 fun importBackupFile(viewModel: BooksViewModel, contentResolver: ContentResolver, uri: Uri) {
-    val inputStream = contentResolver.openInputStream(uri)
-    inputStream?.use { stream ->
+    val inputStream = contentResolver.openInputStream(uri) ?: return
+    inputStream.use { stream ->
         val backupData = stream.bufferedReader().use(BufferedReader::readText)
-        val gson = Gson()
-        val books = gson.fromJson(backupData, Array<Book>::class.java)
+        val books = Gson().fromJson(backupData, Array<Book>::class.java) ?: return
         viewModel.insertAllBooks(books.toList())
     }
 }

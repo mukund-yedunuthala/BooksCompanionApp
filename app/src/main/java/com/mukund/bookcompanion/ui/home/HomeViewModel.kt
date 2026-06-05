@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 enum class SortOption( val displayName: String) {
@@ -36,12 +37,12 @@ class BooksViewModel @Inject constructor(
             status = NO_VALUE)
     )
         private set
-    fun getBook(id: Int) = viewModelScope.launch(Dispatchers.IO) {
-        book = repository.getBookFromRoom(id)
+    fun getBook(id: Int) = viewModelScope.launch {
+        book = withContext(Dispatchers.IO) { repository.getBookFromRoom(id) }
     }
 
-    fun getBooks() = viewModelScope.launch(Dispatchers.IO) {
-        repository.getBooksFromRoom().collectLatest {books ->
+    fun getBooks() = viewModelScope.launch {
+        repository.getBooksFromRoom().collectLatest { books ->
             this@BooksViewModel.books = books
         }
     }

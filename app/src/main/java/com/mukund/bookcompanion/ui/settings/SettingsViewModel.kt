@@ -27,7 +27,7 @@ class SettingsViewModel @Inject constructor(
     private val context: Context = getApplication()
     var hasUserDarkThemeEnabled by mutableStateOf(false)
         private set
-    var followSystemTheme by mutableStateOf(true)
+    var followSystemTheme by mutableStateOf(false)
         private set
     init {
         readThemePreferences()
