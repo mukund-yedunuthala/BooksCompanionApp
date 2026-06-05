@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 enum class SortOption( val displayName: String) {
@@ -38,7 +37,7 @@ class BooksViewModel @Inject constructor(
     )
         private set
     fun getBook(id: Int) = viewModelScope.launch {
-        book = withContext(Dispatchers.IO) { repository.getBookFromRoom(id) }
+        repository.getBookFromRoom(id).collectLatest { it?.let { book = it } }
     }
 
     fun getBooks() = viewModelScope.launch {
