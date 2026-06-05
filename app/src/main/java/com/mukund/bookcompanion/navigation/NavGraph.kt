@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.mukund.bookcompanion.core.Constants.Companion.BOOK_ID
 import com.mukund.bookcompanion.navigation.Screen.*
-import com.mukund.bookcompanion.ui.edit.EditScreen
 import com.mukund.bookcompanion.ui.home.HomeScreen
 import com.mukund.bookcompanion.ui.overview.Overview
 import com.mukund.bookcompanion.ui.settings.SettingScreen
@@ -52,25 +51,6 @@ fun NavGraph(
                         },
                         settings = {
                             navController.navigate(SettingsScreen.route)
-                        }
-                    )
-                }
-                // UPDATE
-                composable(
-                    route = "${UpdateBookScreen.route}/{$BOOK_ID}",
-                    arguments = listOf(
-                        navArgument(BOOK_ID) {
-                            type = IntType
-                        },
-                    ),
-                    enterTransition = customEnterTransition(),
-                    popExitTransition = customPopExitTransition()
-                ) { navBackStackEntry ->
-                    val bookId = navBackStackEntry.arguments?.getInt(BOOK_ID) ?: 0
-                    EditScreen(
-                        bookId = bookId,
-                        backPress = {
-                            navController.popBackStack()
                         }
                     )
                 }
@@ -115,9 +95,6 @@ fun NavGraph(
                     Overview(
                         bookId = bookId,
                         backPress = { navController.popBackStack() },
-                        navigateTo = {
-                            navController.navigate("${UpdateBookScreen.route}/${bookId}")
-                        }
                     )
                 }
                 // BACKUP

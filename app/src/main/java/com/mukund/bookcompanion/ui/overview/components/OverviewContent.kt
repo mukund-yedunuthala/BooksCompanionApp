@@ -56,7 +56,6 @@ import com.mukund.bookcompanion.ui.theme.bookColors
 fun OverviewContent(
     modifier: Modifier = Modifier,
     book: Book,
-    onNavigateTo: () -> Unit,
     onDeleteBook: (Book) -> Unit,
     onBackPress: () -> Boolean,
     onUpdateBook: (Book) -> Unit,
@@ -394,8 +393,10 @@ fun PreviewOverview() {
         isbn = "901908000"
     )
     OverviewContent(
-        book = book, onNavigateTo = { }, onDeleteBook = {
-    }, onBackPress = { false }, modifier = Modifier,
-        onUpdateBook = { }
+        book = book,
+        onDeleteBook = {},
+        onBackPress = { false },
+        modifier = Modifier,
+        onUpdateBook = {}
     )
 }

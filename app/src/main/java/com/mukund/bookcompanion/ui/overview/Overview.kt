@@ -17,7 +17,6 @@ import com.mukund.bookcompanion.ui.overview.components.OverviewTopBar
 fun Overview(
     bookId: Int,
     backPress: () -> Boolean,
-    navigateTo: () -> Unit,
     viewModel: BooksViewModel = hiltViewModel()
 ) {
     LaunchedEffect(bookId) {
@@ -34,7 +33,6 @@ fun Overview(
         OverviewContent(
             modifier = Modifier.padding(innerPadding),
             book = viewModel.book,
-            onNavigateTo = navigateTo,
             onDeleteBook = { book: Book -> viewModel.deleteBook(book) },
             onUpdateBook = { book: Book -> viewModel.updateBook(book) },
             onBackPress = backPress,
