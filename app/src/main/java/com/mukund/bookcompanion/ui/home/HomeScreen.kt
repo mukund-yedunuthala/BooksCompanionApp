@@ -15,18 +15,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.mukund.bookcompanion.R
-import com.mukund.bookcompanion.design.BookCompanionColors
 import com.mukund.bookcompanion.ui.home.components.CustomBottomBar
 import com.mukund.bookcompanion.ui.home.components.CustomHomeTopBarNew
 import com.mukund.bookcompanion.ui.home.components.HomeContent
 import com.mukund.bookcompanion.ui.theme.bookColors
-
-enum class BookCategory(val icon: Int, val statusLabel: String?) {
-    All(R.drawable.list_alt, null),          // null = no filter, show all
-    Read(R.drawable.check_circle, "Read"),
-    Unread(R.drawable.check_circle_unread, "Unread");
-}
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(
