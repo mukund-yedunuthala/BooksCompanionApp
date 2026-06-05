@@ -13,13 +13,13 @@ android {
         applicationId="com.mukund.bookcompanion"
         minSdk=29
         targetSdk=36
-        versionCode= 29
-        versionName= "0.2.2"
+        versionCode= 32
+        versionName= "1.0.0"
 
         vectorDrawables {
             useSupportLibrary = true
         }
-        versionNameSuffix = ""
+        versionNameSuffix = "-alpha02"
     }
 
 
