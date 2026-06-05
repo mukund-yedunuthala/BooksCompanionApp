@@ -22,11 +22,11 @@ fun HomeContent(
     visibleStateAll: MutableTransitionState<Boolean>,
     visibleStateRead: MutableTransitionState<Boolean>,
     visibleStateUnread: MutableTransitionState<Boolean>,
+    modifier: Modifier,
 ) {
 
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = modifier
     ) {
         itemsIndexed(
             items = books.filter {
@@ -40,7 +40,7 @@ fun HomeContent(
             val modifier = Modifier.animateItem(
                 fadeInSpec = null, fadeOutSpec = null, placementSpec = tween(400)
             )
-            CustomBookCard(
+            CustomBookCardNew(
                 book = book,
                 navigateTo = navigateTo,
                 modifier = modifier,
