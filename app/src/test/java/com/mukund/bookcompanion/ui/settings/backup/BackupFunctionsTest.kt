@@ -3,8 +3,8 @@ package com.mukund.bookcompanion.ui.settings.backup
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
-import com.mukund.bookcompanion.core.Constants
 import com.mukund.bookcompanion.data.FakeBooksRepository
+import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.home.BooksViewModel
 import com.mukund.bookcompanion.util.MainDispatcherRule
@@ -39,7 +39,7 @@ class BackupFunctionsTest {
 
     @Test
     fun importBackupFile_withValidJson_insertsCorrectBooks() = runTest {
-        val book = Constants.testBook
+        val book = testBook
         val json = """[{"id":0,"title":"Test book","author":"Test book author","year":2025,"status":"Read","genre":"Fiction","isbn":"123456"}]"""
         every { mockResolver.openInputStream(mockUri) } returns json.byteInputStream()
         importBackupFile(vm, mockResolver, mockUri)
@@ -74,7 +74,7 @@ class BackupFunctionsTest {
 
     @Test
     fun performBackup_withValidOutputStream_writesJsonBytes() {
-        val books = listOf(Constants.testBook)
+        val books = listOf(testBook)
         val outputStream = ByteArrayOutputStream()
         every { mockResolver.openOutputStream(mockUri) } returns outputStream
         performBackup(mockResolver, books, mockUri)
@@ -93,7 +93,7 @@ class BackupFunctionsTest {
     @Test
     fun performBackup_withNullOutputStream_doesNotCrash() {
         every { mockResolver.openOutputStream(mockUri) } returns null
-        performBackup(mockResolver, listOf(Constants.testBook), mockUri)
+        performBackup(mockResolver, listOf(testBook), mockUri)
         // no assertion — test passes if no exception is thrown
     }
 

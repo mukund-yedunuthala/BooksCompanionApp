@@ -1,7 +1,7 @@
 package com.mukund.bookcompanion.ui.home
 
-import com.mukund.bookcompanion.core.Constants
 import com.mukund.bookcompanion.data.FakeBooksRepository
+import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.util.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -16,7 +16,7 @@ class BooksViewModelCrudTest {
     private val fakeRepo = FakeBooksRepository()
     private val vm = BooksViewModel(fakeRepo)
 
-    private val book = Constants.testBook
+    private val book = testBook
 
     @Test
     fun addBook_callsRepositoryAddBook_withCorrectBook() = runTest {

@@ -1,7 +1,7 @@
 package com.mukund.bookcompanion.ui.home
 
-import com.mukund.bookcompanion.core.Constants
 import com.mukund.bookcompanion.data.FakeBooksRepository
+import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.util.MainDispatcherRule
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -23,7 +23,7 @@ class BooksViewModelGetBooksTest {
 
     @Test
     fun getBooks_afterRepositoryEmission_booksMatchesEmittedList() {
-        val bookList = listOf(Constants.testBook)
+        val bookList = listOf(testBook)
         fakeRepo.emitBooks(bookList)
         vm.getBooks()
         assertEquals(bookList, vm.books)

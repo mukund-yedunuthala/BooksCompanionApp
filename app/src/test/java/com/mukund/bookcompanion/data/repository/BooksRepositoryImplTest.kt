@@ -1,7 +1,7 @@
 package com.mukund.bookcompanion.data.repository
 
-import com.mukund.bookcompanion.core.Constants
 import com.mukund.bookcompanion.data.network.BookDbProvider
+import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.data.network.BooksDao
 import io.mockk.every
 import io.mockk.mockk
@@ -15,7 +15,7 @@ class BooksRepositoryImplTest {
     private val mockProvider = mockk<BookDbProvider>(relaxed = true)
     private val mockDao = mockk<BooksDao>(relaxed = true)
     private val repo = BooksRepositoryImpl(mockProvider)
-    private val book = Constants.testBook
+    private val book = testBook
 
     @Before
     fun setUp() {

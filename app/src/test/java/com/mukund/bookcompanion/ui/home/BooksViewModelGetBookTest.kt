@@ -1,7 +1,7 @@
 package com.mukund.bookcompanion.ui.home
 
-import com.mukund.bookcompanion.core.Constants
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
+import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.data.FakeBooksRepository
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.util.MainDispatcherRule
@@ -24,17 +24,17 @@ class BooksViewModelGetBookTest {
 
     @Test
     fun getBook_withValidId_updatesBookState() {
-        fakeRepo.emitBook(Constants.testBook)
-        vm.getBook(Constants.testBook.id)
-        assertEquals(Constants.testBook, vm.book)
+        fakeRepo.emitBook(testBook)
+        vm.getBook(testBook.id)
+        assertEquals(testBook, vm.book)
     }
 
     @Test
     fun getBook_withNullEmission_doesNotOverwriteExistingState() {
-        fakeRepo.emitBook(Constants.testBook)
-        vm.getBook(Constants.testBook.id)
+        fakeRepo.emitBook(testBook)
+        vm.getBook(testBook.id)
         fakeRepo.emitBook(null)
-        assertEquals(Constants.testBook, vm.book)
+        assertEquals(testBook, vm.book)
     }
 
     @Test
