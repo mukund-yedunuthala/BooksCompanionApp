@@ -48,6 +48,11 @@ android {
         generateLocaleConfig = true
     }
     buildToolsVersion = "36.0.0"
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 kotlin {
     compilerOptions {
@@ -102,4 +107,11 @@ dependencies {
 
     // Others
     implementation(libs.androidx.activity.ktx)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.mockk)
+    testImplementation(libs.robolectric)
 }
