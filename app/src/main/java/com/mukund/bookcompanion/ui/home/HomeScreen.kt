@@ -19,6 +19,7 @@ import com.mukund.bookcompanion.ui.home.components.CustomBottomBar
 import com.mukund.bookcompanion.ui.home.components.CustomHomeTopBarNew
 import com.mukund.bookcompanion.ui.home.components.HomeContent
 import com.mukund.bookcompanion.ui.theme.bookColors
+import com.mukund.bookcompanion.ui.home.SortOption
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(
@@ -57,7 +58,13 @@ fun HomeScreen(
                 visibleStateAll = visibleStateAll,
                 visibleStateRead = visibleStateRead,
                 visibleStateUnread = visibleStateUnread,
-                books = viewModel.books
+                visibleStateReading = visibleStateReading,
+                books = viewModel.books,
+                sortOption = viewModel.sortOption,
+                onSortClick = {
+                    val next = SortOption.entries[(viewModel.sortOption.ordinal + 1) % SortOption.entries.size]
+                    viewModel.updateSortOption(next)
+                },
             )
         },
         bottomBar = {

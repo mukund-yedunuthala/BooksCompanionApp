@@ -10,6 +10,10 @@ class BooksRepositoryImpl(
 ) : BooksRepository {
     override fun getBooksFromRoom() = provider.BooksDao().getBooks()
 
+    override fun getBooksSortedByTitle() = provider.BooksDao().getBooksSortedByTitle()
+
+    override fun getBooksSortedByYear() = provider.BooksDao().getBooksSortedByYear()
+
     override fun getBookFromRoom(id: Int): Flow<Book?> = provider.BooksDao().getBook(id)
 
     override fun addBookToRoom(book: Book) = provider.BooksDao().addBook(book)

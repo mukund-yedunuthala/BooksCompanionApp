@@ -22,6 +22,8 @@ class FakeBooksRepository : BooksRepository {
     fun emitBook(book: Book?) { bookFlow.value = book }
 
     override fun getBooksFromRoom(): Flow<List<Book>> = booksFlow
+    override fun getBooksSortedByTitle(): Flow<List<Book>> = booksFlow
+    override fun getBooksSortedByYear(): Flow<List<Book>> = booksFlow
     override fun getBookFromRoom(id: Int): Flow<Book?> = bookFlow
     override fun addBookToRoom(book: Book) { lastAdded = book }
     override fun updateBookInRoom(book: Book) { lastUpdated = book }

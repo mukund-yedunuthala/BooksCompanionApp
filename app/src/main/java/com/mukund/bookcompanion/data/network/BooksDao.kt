@@ -12,6 +12,12 @@ interface BooksDao {
     @Query("SELECT * FROM $BOOK_TABLE ORDER BY id ASC")
     fun getBooks(): Flow<Books>
 
+    @Query("SELECT * FROM $BOOK_TABLE ORDER BY title ASC")
+    fun getBooksSortedByTitle(): Flow<Books>
+
+    @Query("SELECT * FROM $BOOK_TABLE ORDER BY year DESC")
+    fun getBooksSortedByYear(): Flow<Books>
+
     @Query("SELECT * FROM $BOOK_TABLE WHERE id = :id")
     fun getBook(id: Int): Flow<Book?>
 

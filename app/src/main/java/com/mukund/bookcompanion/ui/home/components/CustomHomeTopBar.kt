@@ -22,12 +22,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LargeFlexibleTopAppBar
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,48 +36,9 @@ import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.home.BookCategory
+import com.mukund.bookcompanion.ui.home.SortOption
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun CustomHomeTopBar(
-    settings: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
-) {
-    val haptic = LocalHapticFeedback.current
-
-    LargeFlexibleTopAppBar(
-        title = {
-            Text(
-                text = "Book Companion",
-            )
-        },
-        subtitle = {
-            Text(text = "A minimal reading list tracker")
-        },
-        actions = {
-            IconButton(
-                onClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                    settings()
-                }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.settings),
-                    contentDescription = "Settings",
-                    modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
-                )
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-        ),
-        scrollBehavior = scrollBehavior,
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -129,19 +86,38 @@ fun CustomHomeTopBarNew(
                     style = AppType.labelTinyMono,
                     color = bookColors.inkFaint,
                 )
-                IconButton(
-                    onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                        settings()
-                    },
-                    modifier = Modifier.size(24.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.settings),
-                        contentDescription = "Settings",
-                        tint = bookColors.inkFaint,
-                        modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
-                    )
+                    IconButton(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                            onSortClick()
+                        },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.sort),
+                            contentDescription = "Sort by ${sortOption.displayName}",
+                            tint = bookColors.inkFaint,
+                            modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.Confirm)
+                            settings()
+                        },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.settings),
+                            contentDescription = "Settings",
+                            tint = bookColors.inkFaint,
+                            modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
+                        )
+                    }
                 }
             }
 

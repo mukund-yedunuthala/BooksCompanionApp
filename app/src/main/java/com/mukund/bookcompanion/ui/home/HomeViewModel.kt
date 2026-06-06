@@ -10,14 +10,14 @@ import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.domain.repository.BooksRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class SortOption( val displayName: String) {
+enum class SortOption(val displayName: String) {
     TITLE("Title"),
     YEAR("Year"),
-    // Add more sort options as needed
 }
 
 @HiltViewModel
@@ -36,13 +36,28 @@ class BooksViewModel @Inject constructor(
             status = NO_VALUE)
     )
         private set
+
+    var sortOption by mutableStateOf(SortOption.TITLE)
+        private set
+
+    private var booksFetchJob: Job? = null
+
+    fun updateSortOption(option: SortOption) {
+        sortOption = option
+        getBooks()
+    }
+
     fun getBook(id: Int) = viewModelScope.launch {
         repository.getBookFromRoom(id).collectLatest { it?.let { book = it } }
     }
 
-    fun getBooks() = viewModelScope.launch {
-        repository.getBooksFromRoom().collectLatest { books ->
-            this@BooksViewModel.books = books
+    fun getBooks() {
+        booksFetchJob?.cancel()
+        booksFetchJob = viewModelScope.launch {
+            when (sortOption) {
+                SortOption.TITLE -> repository.getBooksSortedByTitle()
+                SortOption.YEAR  -> repository.getBooksSortedByYear()
+            }.collectLatest { this@BooksViewModel.books = it }
         }
     }
 

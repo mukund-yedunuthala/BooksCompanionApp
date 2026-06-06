@@ -8,6 +8,10 @@ typealias Books = List<Book>
 interface BooksRepository {
     fun getBooksFromRoom(): Flow<Books>
 
+    fun getBooksSortedByTitle(): Flow<Books>
+
+    fun getBooksSortedByYear(): Flow<Books>
+
     fun getBookFromRoom(id: Int): Flow<Book?>
 
     fun addBookToRoom(book: Book)
@@ -15,5 +19,6 @@ interface BooksRepository {
     fun updateBookInRoom(book: Book)
 
     fun deleteBookFromRoom(book: Book)
+
     fun insertAllBooks(books: List<Book>)
 }
