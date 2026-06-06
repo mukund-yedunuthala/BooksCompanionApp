@@ -99,20 +99,19 @@ fun OverviewContent(
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
-        // ── Rating placeholder ────────────────────────────────
-        // TODO: Render star row once Book model has a rating field
-        //       Reference: 5-star row using bookColors.terracotta,
-        //       only rendered if rating != null
+        // ── Rating ────────────────────────────────────────────
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.padding(bottom = 28.dp)
         ) {
-            repeat(5) {
+            (1..5).forEach { star ->
                 Icon(
                     painter = painterResource(R.drawable.star),
                     contentDescription = null,
-                    tint = bookColors.rule,
-                    modifier = Modifier.size(14.dp)
+                    tint = if ((book.rating ?: 0) >= star) bookColors.terracotta else bookColors.rule,
+                    modifier = Modifier
+                        .size(14.dp)
+                        .clickable { onUpdateBook(book.copy(rating = star)) }
                 )
             }
         }

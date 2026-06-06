@@ -14,4 +14,5 @@ data class Book(
     val status: String,
     val genre: String,
     val isbn: String,
+    val rating: Int? = null,
 )
