@@ -32,14 +32,16 @@ fun HomeScreen(
 
     var currentCategory by remember { mutableStateOf(BookCategory.All) }
 
-    val visibleStateAll    = remember { MutableTransitionState(false) }
-    val visibleStateRead   = remember { MutableTransitionState(false) }
-    val visibleStateUnread = remember { MutableTransitionState(false) }
+    val visibleStateAll     = remember { MutableTransitionState(false) }
+    val visibleStateRead    = remember { MutableTransitionState(false) }
+    val visibleStateUnread  = remember { MutableTransitionState(false) }
+    val visibleStateReading = remember { MutableTransitionState(false) }
 
     LaunchedEffect(currentCategory) {
-        visibleStateAll.targetState    = currentCategory == BookCategory.All
-        visibleStateRead.targetState   = currentCategory == BookCategory.Read
-        visibleStateUnread.targetState = currentCategory == BookCategory.Unread
+        visibleStateAll.targetState     = currentCategory == BookCategory.All
+        visibleStateRead.targetState    = currentCategory == BookCategory.Read
+        visibleStateUnread.targetState  = currentCategory == BookCategory.Unread
+        visibleStateReading.targetState = currentCategory == BookCategory.Reading
     }
 
 
@@ -73,6 +75,7 @@ fun HomeScreen(
             visibleStateAll = visibleStateAll,
             visibleStateRead = visibleStateRead,
             visibleStateUnread = visibleStateUnread,
+            visibleStateReading = visibleStateReading,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),

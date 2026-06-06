@@ -93,7 +93,10 @@ fun CustomHomeTopBarNew(
     visibleStateAll: MutableTransitionState<Boolean>,
     visibleStateRead: MutableTransitionState<Boolean>,
     visibleStateUnread: MutableTransitionState<Boolean>,
-    books: List<Book>
+    visibleStateReading: MutableTransitionState<Boolean>,
+    books: List<Book>,
+    sortOption: SortOption,
+    onSortClick: () -> Unit,
 ) {
     val haptic = LocalHapticFeedback.current
 
@@ -227,6 +230,7 @@ fun CustomHomeTopBarNew(
                     visibleStateAll.targetState = false
                     visibleStateRead.targetState = false
                     visibleStateUnread.targetState = false
+                    visibleStateReading.targetState = false
                 },
                 modifier = Modifier.padding(vertical = 4.dp),
                 books = books

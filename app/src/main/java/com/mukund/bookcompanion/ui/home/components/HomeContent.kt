@@ -22,6 +22,7 @@ fun HomeContent(
     visibleStateAll: MutableTransitionState<Boolean>,
     visibleStateRead: MutableTransitionState<Boolean>,
     visibleStateUnread: MutableTransitionState<Boolean>,
+    visibleStateReading: MutableTransitionState<Boolean>,
     modifier: Modifier,
 ) {
 
@@ -33,7 +34,8 @@ fun HomeContent(
                 when(currentCategory) {
                     BookCategory.Read -> (it.status == "Read")
                     BookCategory.Unread -> (it.status == "Unread")
-                    else -> {true}
+                    BookCategory.Reading -> (it.status == "Reading")
+                    else -> true
                 }
             }
         ) { index, book ->
@@ -49,6 +51,7 @@ fun HomeContent(
                     BookCategory.All -> visibleStateAll
                     BookCategory.Read -> visibleStateRead
                     BookCategory.Unread -> visibleStateUnread
+                    BookCategory.Reading -> visibleStateReading
                 },
             )
         }
