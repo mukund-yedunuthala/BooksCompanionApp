@@ -36,11 +36,12 @@ fun CustomEntryButton(
     subText: String? = null,
     painter: Painter? = null,
     contentDescription: String? = null,
+    showArrow: Boolean = true,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .then(if (showArrow) Modifier.clickable(onClick = onClick) else Modifier)
             .semantics { role = Role.Button }
             .padding(horizontal = 28.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -69,14 +70,16 @@ fun CustomEntryButton(
                 )
             }
         }
-        Icon(
-            painter = painterResource(R.drawable.arrow_back),
-            contentDescription = null,
-            tint = bookColors.rule,
-            modifier = Modifier
-                .size(14.dp)
-                .rotate(180f)
-        )
+        if (showArrow) {
+            Icon(
+                painter = painterResource(R.drawable.arrow_back),
+                contentDescription = null,
+                tint = bookColors.rule,
+                modifier = Modifier
+                    .size(14.dp)
+                    .rotate(180f)
+            )
+        }
     }
     HorizontalDivider(color = bookColors.ruleSoft, thickness = 0.5.dp)
 }

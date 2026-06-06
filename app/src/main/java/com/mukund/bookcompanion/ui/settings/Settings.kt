@@ -164,6 +164,7 @@ fun SettingScreen(
                     leadText = stringResource(R.string.settings_about_app_version),
                     subText = BuildConfig.VERSION_NAME,
                     painter = painterResource(R.drawable.info),
+                    showArrow = false,
                 )
                 CustomEntryButton(
                     onClick = { dialogState = DialogState.Url(attribution) },
