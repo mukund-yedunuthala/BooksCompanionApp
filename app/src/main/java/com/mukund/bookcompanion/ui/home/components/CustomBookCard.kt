@@ -22,8 +22,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -149,15 +147,6 @@ fun CustomBookCardNew(
             thickness = 0.5.dp,
         )
     }
-}
-
-@Composable
-private fun BookChip(text: String) {
-    SuggestionChip(
-        onClick = {},
-        label = { Text(text = text) },
-        shape = SuggestionChipDefaults.shape,
-    )
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalLayoutApi::class)

@@ -5,11 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,57 +18,15 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mukund.bookcompanion.design.CormorantGaramond
 import com.mukund.bookcompanion.design.IBMPlexSans
-import com.mukund.bookcompanion.design.JetBrainsMono
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
-@Composable
-fun CustomAdditionTextField(
-    modifier: Modifier = Modifier,
-    text: String,
-    placeholder: String,
-    label: String,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    onChange: (String) -> Unit = {},
-    imeAction: ImeAction = ImeAction.Next,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    keyboardActions: KeyboardActions = KeyboardActions(),
-) {
-    OutlinedTextField(
-        value = text,
-        onValueChange = onChange,
-        label = { Text(label) },
-        placeholder = {
-            Text(
-                text = placeholder,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-            )
-        },
-        leadingIcon = leadingIcon,
-        textStyle = MaterialTheme.typography.bodyLarge,
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Words,
-            autoCorrectEnabled = false,
-            keyboardType = keyboardType,
-            imeAction = imeAction,
-        ),
-        keyboardActions = keyboardActions,
-        shape = MaterialTheme.shapes.large,
-        modifier = modifier,
-        singleLine = true,
-    )
-}
-
-
 // ── Editorial text field ──────────────────────────────────────────────────────
-// Replaces CustomAdditionTextField with the hairline-underline style from the design
 @Composable
 fun EditorialTextField(
     value: String,
