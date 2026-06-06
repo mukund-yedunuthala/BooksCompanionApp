@@ -19,6 +19,13 @@ import com.mukund.bookcompanion.ui.settings.LibsScreen
 import com.mukund.bookcompanion.ui.settings.SettingsViewModel
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 
+/**
+ * Pure function extracted from NavGraph so it can be tested without Compose.
+ * Returns true when dark mode should be active.
+ */
+fun resolveTheme(followSystem: Boolean, userDark: Boolean, isSystemDark: Boolean): Boolean =
+    if (followSystem) isSystemDark else userDark
+
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -26,12 +33,7 @@ fun NavGraph(
 ) {
     val darkTheme = viewModel.hasUserDarkThemeEnabled
     val systemTheme = viewModel.followSystemTheme
-    val darkSetting = if (systemTheme) {
-        isSystemInDarkTheme()
-    }
-    else {
-        darkTheme
-    }
+    val darkSetting = resolveTheme(systemTheme, darkTheme, isSystemInDarkTheme())
     BooksCompanionTheme(darkTheme = darkSetting) {
         Surface {
             NavHost(

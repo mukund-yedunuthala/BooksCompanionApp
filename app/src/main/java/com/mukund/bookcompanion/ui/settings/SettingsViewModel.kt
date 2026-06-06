@@ -1,5 +1,5 @@
 package com.mukund.bookcompanion.ui.settings
-import android.app.Application
+
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,7 +9,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
@@ -22,9 +22,8 @@ val SYSTEM_THEME = booleanPreferencesKey(name = "follow_system")
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    application: Application
-) : AndroidViewModel(application) {
-    private val context: Context = getApplication()
+    private val dataStore: DataStore<Preferences>
+) : ViewModel() {
     var hasUserDarkThemeEnabled by mutableStateOf(false)
         private set
     var followSystemTheme by mutableStateOf(false)
@@ -34,7 +33,7 @@ class SettingsViewModel @Inject constructor(
     }
     private fun readThemePreferences() {
         viewModelScope.launch {
-            context.dataStore.data
+            dataStore.data
                 .map { preferences ->
                     val darkTheme = preferences[DARK_THEME_KEY] ?: false
                     val systemTheme = preferences[SYSTEM_THEME] ?: false
@@ -47,14 +46,14 @@ class SettingsViewModel @Inject constructor(
     }
     fun saveUserDarkThemeEnabled(enabled: Boolean) {
         viewModelScope.launch {
-            context.dataStore.edit { preferences ->
+            dataStore.edit { preferences ->
                 preferences[DARK_THEME_KEY] = enabled
             }
         }
     }
     fun saveUserFollowSystemEnabled(enabled: Boolean) {
         viewModelScope.launch {
-            context.dataStore.edit { preferences ->
+            dataStore.edit { preferences ->
                 preferences[SYSTEM_THEME] = enabled
             }
         }

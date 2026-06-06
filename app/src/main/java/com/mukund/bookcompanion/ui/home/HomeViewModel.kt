@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
-import com.mukund.bookcompanion.data.repository.BooksRepositoryImpl
 import com.mukund.bookcompanion.domain.model.Book
+import com.mukund.bookcompanion.domain.repository.BooksRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -22,7 +22,7 @@ enum class SortOption( val displayName: String) {
 
 @HiltViewModel
 class BooksViewModel @Inject constructor(
-    private val repository: BooksRepositoryImpl,
+    private val repository: BooksRepository,
 ) : ViewModel() {
 
     var books: List<Book> by mutableStateOf(emptyList())
@@ -75,8 +75,9 @@ class BooksViewModel @Inject constructor(
     }
 
     fun updateYear(year: String) {
-        if (year.isNotEmpty()) {
-            book = book.copy(year = year.toLong())
+        val parsed = year.toLongOrNull()
+        if (parsed != null) {
+            book = book.copy(year = parsed)
         }
     }
 
