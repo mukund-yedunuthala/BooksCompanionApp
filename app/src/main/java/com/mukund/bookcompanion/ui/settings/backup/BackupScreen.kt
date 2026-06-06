@@ -41,7 +41,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.mukund.bookcompanion.ui.home.BooksViewModel
 import com.mukund.bookcompanion.ui.settings.components.CustomEntryButton
-import java.io.BufferedReader
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -162,11 +161,19 @@ fun Backup_Screen(
     }
 }
 
+private const val MAX_IMPORT_BYTES = 10 * 1024 * 1024  // 10 MB
+
 fun importBackupFile(viewModel: BooksViewModel, contentResolver: ContentResolver, uri: Uri) {
     val inputStream = contentResolver.openInputStream(uri) ?: return
     inputStream.use { stream ->
-        val backupData = stream.bufferedReader().use(BufferedReader::readText)
-        val books = Gson().fromJson(backupData, Array<Book>::class.java) ?: return
+        val bytes = stream.readBytes()
+        if (bytes.size > MAX_IMPORT_BYTES) return
+        val backupData = bytes.decodeToString()
+        val books = try {
+            Gson().fromJson(backupData, Array<Book>::class.java) ?: return
+        } catch (e: com.google.gson.JsonSyntaxException) {
+            return
+        }
         viewModel.insertAllBooks(books.toList())
     }
 }
