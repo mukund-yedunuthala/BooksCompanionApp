@@ -7,7 +7,7 @@ plugins {
 }
 android {
     namespace = "com.mukund.bookcompanion"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId="com.mukund.bookcompanion"
@@ -61,6 +61,11 @@ kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
+}
+configurations.configureEach {
+    // Hilt 2.59.2 bundles kotlin-metadata-jvm:2.2.20 (max metadata 2.3.0).
+    // Kotlin 2.3.x generates metadata 2.4.0, so force the matching version.
+    resolutionStrategy.force("org.jetbrains.kotlin:kotlin-metadata-jvm:${libs.versions.kotlin.get()}")
 }
 dependencies {
     // AppCompat
