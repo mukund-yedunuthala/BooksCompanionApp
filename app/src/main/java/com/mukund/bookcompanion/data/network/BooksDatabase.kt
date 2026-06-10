@@ -7,7 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.mukund.bookcompanion.core.Constants.Companion.BOOK_TABLE
 import com.mukund.bookcompanion.domain.model.Book
 
-@Database(entities = [Book::class], version = 4, exportSchema = false)
+@Database(entities = [Book::class], version = 5, exportSchema = false)
 abstract class BooksDatabase : RoomDatabase() {
     abstract fun booksDao(): BooksDao
         companion object {
@@ -21,6 +21,15 @@ abstract class BooksDatabase : RoomDatabase() {
         val MIGRATION_3_4: Migration = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE $BOOK_TABLE ADD COLUMN rating INTEGER")
+            }
+        }
+
+        val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE $BOOK_TABLE ADD COLUMN notes TEXT")
+                database.execSQL("ALTER TABLE $BOOK_TABLE ADD COLUMN dateStarted TEXT")
+                database.execSQL("ALTER TABLE $BOOK_TABLE ADD COLUMN dateFinished TEXT")
+                database.execSQL("ALTER TABLE $BOOK_TABLE ADD COLUMN language TEXT")
             }
         }
     }

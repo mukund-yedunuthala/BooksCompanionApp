@@ -9,7 +9,7 @@ class BookDbProvider(
 ) {
     private val database: BooksDatabase by lazy {
         Room.databaseBuilder(application, BooksDatabase::class.java, BOOK_TABLE)
-            .addMigrations(BooksDatabase.MIGRATION_2_3, BooksDatabase.MIGRATION_3_4)
+            .addMigrations(BooksDatabase.MIGRATION_2_3, BooksDatabase.MIGRATION_3_4, BooksDatabase.MIGRATION_4_5)
             .build()
     }
 
