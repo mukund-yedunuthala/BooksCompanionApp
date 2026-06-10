@@ -7,13 +7,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -127,17 +130,41 @@ fun OverviewContent(
         if (book.year != 0L) {
             MetaRow(label = "Year", value = book.year.toString())
         }
-        // TODO: add MetaRow for pages once Book model supports it
+        if (!book.language.isNullOrBlank()) {
+            MetaRow(label = "Language", value = book.language)
+        }
         if (book.isbn != NO_VALUE) {
             MetaRow(label = "ISBN", value = book.isbn, mono = true)
         }
-        // TODO: add MetaRow for dateAdded / dateFinished
-        //       once Book model has those fields
+        if (!book.dateStarted.isNullOrBlank()) {
+            MetaRow(label = "Started", value = book.dateStarted)
+        }
+        if (!book.dateFinished.isNullOrBlank()) {
+            MetaRow(label = "Finished", value = book.dateFinished)
+        }
 
-        // ── Marginalia / Notes ────────────────────────────────
-        // TODO: Render once Book model has a notes field
-        //       Reference: serif italic blockquote with
-        //       1.5dp left border in bookColors.rule
+        // ── Notes ─────────────────────────────────────────────
+        if (!book.notes.isNullOrBlank()) {
+            Spacer(Modifier.height(20.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(1.5.dp)
+                        .fillMaxHeight()
+                        .background(bookColors.rule)
+                )
+                Text(
+                    text = book.notes,
+                    style = AppType.authorSerifItalicLarge,
+                    color = bookColors.inkSoft,
+                    modifier = Modifier.padding(start = 14.dp)
+                )
+            }
+        }
 
         Spacer(Modifier.height(36.dp))
 
