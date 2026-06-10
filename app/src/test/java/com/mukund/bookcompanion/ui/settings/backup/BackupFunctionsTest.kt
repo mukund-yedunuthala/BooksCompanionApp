@@ -3,6 +3,7 @@ package com.mukund.bookcompanion.ui.settings.backup
 import android.content.ContentResolver
 import android.content.Intent
 import android.net.Uri
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import com.mukund.bookcompanion.data.FakeBooksRepository
 import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.domain.model.Book
@@ -10,19 +11,24 @@ import com.mukund.bookcompanion.ui.home.BooksViewModel
 import com.mukund.bookcompanion.util.MainDispatcherRule
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
 class BackupFunctionsTest {
@@ -30,10 +36,24 @@ class BackupFunctionsTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
+    @get:Rule
+    val tempFolder = TemporaryFolder()
+
     private val mockResolver = mockk<ContentResolver>(relaxed = true)
     private val mockUri = mockk<Uri>()
     private val fakeRepo = FakeBooksRepository()
-    private val vm = BooksViewModel(fakeRepo)
+    private lateinit var vm: BooksViewModel
+
+    @Before
+    fun setUp() {
+        vm = BooksViewModel(
+            fakeRepo,
+            PreferenceDataStoreFactory.create(
+                scope = CoroutineScope(mainDispatcherRule.testDispatcher),
+                produceFile = { tempFolder.newFile("prefs_${System.nanoTime()}.preferences_pb") }
+            )
+        )
+    }
 
     // ─── C-3: importBackupFile ───────────────────────────────────────────────
 

@@ -1,22 +1,42 @@
 package com.mukund.bookcompanion.ui.home
 
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import com.mukund.bookcompanion.data.FakeBooksRepository
 import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.util.MainDispatcherRule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class BooksViewModelCrudTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
+    @get:Rule
+    val tempFolder = TemporaryFolder()
+
     private val fakeRepo = FakeBooksRepository()
-    private val vm = BooksViewModel(fakeRepo)
+    private lateinit var vm: BooksViewModel
 
     private val book = testBook
+
+    @Before
+    fun setUp() {
+        vm = BooksViewModel(
+            fakeRepo,
+            PreferenceDataStoreFactory.create(
+                scope = CoroutineScope(mainDispatcherRule.testDispatcher),
+                produceFile = { tempFolder.newFile("prefs_${System.nanoTime()}.preferences_pb") }
+            )
+        )
+    }
 
     @Test
     fun addBook_callsRepositoryAddBook_withCorrectBook() = runTest {
