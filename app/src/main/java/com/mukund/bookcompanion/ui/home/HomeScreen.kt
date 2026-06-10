@@ -27,10 +27,6 @@ fun HomeScreen(
     navigateTo: (id: Int) -> Unit,
     settings: () -> Unit,
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.getBooks()
-    }
-
     var currentCategory by remember { mutableStateOf(BookCategory.All) }
 
     val visibleStateAll     = remember { MutableTransitionState(false) }
