@@ -9,9 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BooksDao {
-    @Query("SELECT * FROM $BOOK_TABLE ORDER BY id ASC")
-    fun getBooks(): Flow<Books>
-
     @Query("SELECT * FROM $BOOK_TABLE ORDER BY title ASC")
     fun getBooksSortedByTitle(): Flow<Books>
 

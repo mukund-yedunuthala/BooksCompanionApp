@@ -5,6 +5,7 @@ import com.mukund.bookcompanion.domain.repository.BooksRepository
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 
 class FakeBooksRepository : BooksRepository {
     var lastAdded: Book? = null
@@ -21,9 +22,11 @@ class FakeBooksRepository : BooksRepository {
     fun emitBooks(books: List<Book>) { booksFlow.value = books }
     fun emitBook(book: Book?) { bookFlow.value = book }
 
-    override fun getBooksFromRoom(): Flow<List<Book>> = booksFlow
-    override fun getBooksSortedByTitle(): Flow<List<Book>> = booksFlow
-    override fun getBooksSortedByYear(): Flow<List<Book>> = booksFlow
+    override fun getBooksSortedByTitle(): Flow<List<Book>> =
+        booksFlow.map { it.sortedBy { b -> b.title } }
+
+    override fun getBooksSortedByYear(): Flow<List<Book>> =
+        booksFlow.map { it.sortedByDescending { b -> b.year } }
     override fun getBookFromRoom(id: Int): Flow<Book?> = bookFlow
     override fun addBookToRoom(book: Book) { lastAdded = book }
     override fun updateBookInRoom(book: Book) { lastUpdated = book }

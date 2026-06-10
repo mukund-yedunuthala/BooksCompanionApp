@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 typealias Books = List<Book>
 
 interface BooksRepository {
-    fun getBooksFromRoom(): Flow<Books>
-
     fun getBooksSortedByTitle(): Flow<Books>
 
     fun getBooksSortedByYear(): Flow<Books>

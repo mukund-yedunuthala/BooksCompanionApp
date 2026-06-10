@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.Flow
 class BooksRepositoryImpl(
     private val provider: BookDbProvider
 ) : BooksRepository {
-    override fun getBooksFromRoom() = provider.BooksDao().getBooks()
-
     override fun getBooksSortedByTitle() = provider.BooksDao().getBooksSortedByTitle()
 
     override fun getBooksSortedByYear() = provider.BooksDao().getBooksSortedByYear()

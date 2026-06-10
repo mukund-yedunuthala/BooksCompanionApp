@@ -21,14 +21,21 @@ class BooksRepositoryImplTest {
     fun setUp() {
         // BooksRepositoryImpl calls provider.BooksDao() on every operation (note capital B)
         every { mockProvider.BooksDao() } returns mockDao
-        every { mockDao.getBooks() } returns flowOf(emptyList())
+        every { mockDao.getBooksSortedByTitle() } returns flowOf(emptyList())
+        every { mockDao.getBooksSortedByYear() } returns flowOf(emptyList())
         every { mockDao.getBook(any()) } returns flowOf(null)
     }
 
     @Test
-    fun getBooksFromRoom_delegatesToDaoGetBooks() {
-        repo.getBooksFromRoom()
-        verify { mockDao.getBooks() }
+    fun getBooksSortedByTitle_delegatesToDao() {
+        repo.getBooksSortedByTitle()
+        verify { mockDao.getBooksSortedByTitle() }
+    }
+
+    @Test
+    fun getBooksSortedByYear_delegatesToDao() {
+        repo.getBooksSortedByYear()
+        verify { mockDao.getBooksSortedByYear() }
     }
 
     @Test
