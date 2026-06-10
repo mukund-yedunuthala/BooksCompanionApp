@@ -36,6 +36,7 @@ fun EditorialTextField(
     modifier: Modifier = Modifier,
     keyboardType: KeyboardType = KeyboardType.Text,
     useSerif: Boolean = false,
+    singleLine: Boolean = true,
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
@@ -56,7 +57,8 @@ fun EditorialTextField(
                 color = bookColors.ink,
             ),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            singleLine = true,
+            singleLine = singleLine,
+            minLines = if (singleLine) 1 else 3,
             cursorBrush = SolidColor(bookColors.ink),
             modifier = Modifier
                 .fillMaxWidth()

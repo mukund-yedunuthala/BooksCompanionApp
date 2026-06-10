@@ -52,12 +52,16 @@ fun BookAdditionBottomSheet(
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    var title    by rememberSaveable { mutableStateOf(bookToEdit?.title   ?: "") }
-    var author   by rememberSaveable { mutableStateOf(bookToEdit?.author  ?: "") }
-    var year     by rememberSaveable { mutableStateOf(bookToEdit?.year?.toString() ?: "") }
-    var genre    by rememberSaveable { mutableStateOf(bookToEdit?.genre   ?: "") }
-    var isbn     by rememberSaveable { mutableStateOf(bookToEdit?.isbn    ?: "") }
-    var category by rememberSaveable { mutableStateOf(bookToEdit?.status  ?: "Unread") }
+    var title       by rememberSaveable { mutableStateOf(bookToEdit?.title        ?: "") }
+    var author      by rememberSaveable { mutableStateOf(bookToEdit?.author       ?: "") }
+    var year        by rememberSaveable { mutableStateOf(bookToEdit?.year?.toString() ?: "") }
+    var genre       by rememberSaveable { mutableStateOf(bookToEdit?.genre        ?: "") }
+    var isbn        by rememberSaveable { mutableStateOf(bookToEdit?.isbn         ?: "") }
+    var category    by rememberSaveable { mutableStateOf(bookToEdit?.status       ?: "Unread") }
+    var language    by rememberSaveable { mutableStateOf(bookToEdit?.language     ?: "") }
+    var notes       by rememberSaveable { mutableStateOf(bookToEdit?.notes        ?: "") }
+    var dateStarted by rememberSaveable { mutableStateOf(bookToEdit?.dateStarted  ?: "") }
+    var dateFinished by rememberSaveable { mutableStateOf(bookToEdit?.dateFinished ?: "") }
 
     val isDuplicate by remember {
         derivedStateOf {
@@ -175,6 +179,38 @@ fun BookAdditionBottomSheet(
                     onChange = { isbn = it },
                     keyboardType = KeyboardType.Number,
                 )
+                EditorialTextField(
+                    value = language,
+                    label = "LANGUAGE",
+                    placeholder = "English",
+                    onChange = { language = it },
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    EditorialTextField(
+                        value = dateStarted,
+                        label = "STARTED",
+                        placeholder = "YYYY-MM-DD",
+                        onChange = { dateStarted = it },
+                        modifier = Modifier.weight(1f)
+                    )
+                    EditorialTextField(
+                        value = dateFinished,
+                        label = "FINISHED",
+                        placeholder = "YYYY-MM-DD",
+                        onChange = { dateFinished = it },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                EditorialTextField(
+                    value = notes,
+                    label = "NOTES",
+                    placeholder = "Thoughts, quotes, marginalia…",
+                    onChange = { notes = it },
+                    singleLine = false,
+                )
 
                 Spacer(Modifier.height(8.dp))
 
@@ -218,24 +254,32 @@ fun BookAdditionBottomSheet(
                             if (isEditMode) {
                                 updateBook(
                                     bookToEdit!!.copy(
-                                        title  = title,
-                                        author = author,
-                                        genre  = genre,
-                                        isbn   = isbn,
-                                        year   = year.toLongOrNull() ?: bookToEdit.year,
-                                        status = category,
+                                        title        = title,
+                                        author       = author,
+                                        genre        = genre,
+                                        isbn         = isbn,
+                                        year         = year.toLongOrNull() ?: bookToEdit.year,
+                                        status       = category,
+                                        language     = language.trimToNull(),
+                                        notes        = notes.trimToNull(),
+                                        dateStarted  = dateStarted.trimToNull(),
+                                        dateFinished = dateFinished.trimToNull(),
                                     )
                                 )
                             } else {
                                 addBook(
                                     Book(
-                                        id     = 0,
-                                        title  = title,
-                                        author = author,
-                                        genre  = genre,
-                                        isbn   = isbn,
-                                        year   = year.toLongOrNull() ?: 0L,
-                                        status = category,
+                                        id           = 0,
+                                        title        = title,
+                                        author       = author,
+                                        genre        = genre,
+                                        isbn         = isbn,
+                                        year         = year.toLongOrNull() ?: 0L,
+                                        status       = category,
+                                        language     = language.trimToNull(),
+                                        notes        = notes.trimToNull(),
+                                        dateStarted  = dateStarted.trimToNull(),
+                                        dateFinished = dateFinished.trimToNull(),
                                     )
                                 )
                             }
@@ -254,3 +298,5 @@ fun BookAdditionBottomSheet(
         }
     }
 }
+
+private fun String.trimToNull(): String? = trim().ifBlank { null }
