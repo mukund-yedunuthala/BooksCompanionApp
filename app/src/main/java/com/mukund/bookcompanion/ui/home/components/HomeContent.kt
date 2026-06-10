@@ -31,11 +31,9 @@ fun HomeContent(
     ) {
         itemsIndexed(
             items = books.filter {
-                when(currentCategory) {
-                    BookCategory.Read -> (it.status == "Read")
-                    BookCategory.Unread -> (it.status == "Unread")
-                    BookCategory.Reading -> (it.status == "Reading")
-                    else -> true
+                when (currentCategory.statusLabel) {
+                    null -> true
+                    else -> it.status == currentCategory.statusLabel
                 }
             }
         ) { index, book ->

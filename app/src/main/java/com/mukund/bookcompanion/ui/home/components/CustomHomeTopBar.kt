@@ -90,6 +90,12 @@ fun CustomHomeTopBarNew(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
+                    val nextSortOption = SortOption.entries[(sortOption.ordinal + 1) % SortOption.entries.size]
+                    Text(
+                        text = sortOption.displayName.uppercase(),
+                        style = AppType.labelTinyMono,
+                        color = bookColors.inkFaint,
+                    )
                     IconButton(
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.Confirm)
@@ -99,7 +105,7 @@ fun CustomHomeTopBarNew(
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.sort),
-                            contentDescription = "Sort by ${sortOption.displayName}",
+                            contentDescription = "Sort by ${nextSortOption.displayName}",
                             tint = bookColors.inkFaint,
                             modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                         )
