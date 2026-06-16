@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.ui.home.components
 
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionSpacing
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -32,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.domain.model.Book
@@ -65,13 +69,14 @@ fun CustomHomeTopBarNew(
             modifier = Modifier
                 .fillMaxWidth()
                 .windowInsetsPadding(WindowInsets.statusBars)
-                .padding(horizontal = 28.dp)
+                .padding(horizontal = BookCompanionSpacing.gutter)
         ) {
 
             // ── Month/year micro bar ──────────────────────────────
-            val monthYear = remember {
+            val monthYearPattern = stringResource(R.string.home_month_year_pattern)
+            val monthYear = remember(monthYearPattern) {
                 java.time.LocalDate.now()
-                    .format(java.time.format.DateTimeFormatter.ofPattern("MMMM · yy"))
+                    .format(java.time.format.DateTimeFormatter.ofPattern(monthYearPattern))
                     .uppercase()
             }
             Row(
@@ -92,20 +97,23 @@ fun CustomHomeTopBarNew(
                 ) {
                     val nextSortOption = SortOption.entries[(sortOption.ordinal + 1) % SortOption.entries.size]
                     Text(
-                        text = sortOption.displayName.uppercase(),
+                        text = stringResource(sortOption.labelRes).uppercase(),
                         style = AppType.labelTinyMono,
                         color = bookColors.inkFaint,
                     )
+                    // No explicit size() — IconButton keeps its 48dp minimum touch target;
+                    // only the inner Icon glyph is sized down.
                     IconButton(
                         onClick = {
                             haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                             onSortClick()
                         },
-                        modifier = Modifier.size(24.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.sort),
-                            contentDescription = "Sort by ${nextSortOption.displayName}",
+                            contentDescription = stringResource(
+                                R.string.home_sort_by, stringResource(nextSortOption.labelRes)
+                            ),
                             tint = bookColors.inkFaint,
                             modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                         )
@@ -115,11 +123,10 @@ fun CustomHomeTopBarNew(
                             haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                             settings()
                         },
-                        modifier = Modifier.size(24.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.settings),
-                            contentDescription = "Settings",
+                            contentDescription = stringResource(R.string.settingsscreen_toplabel),
                             tint = bookColors.inkFaint,
                             modifier = Modifier.size(IconButtonDefaults.mediumIconSize)
                         )
@@ -129,12 +136,12 @@ fun CustomHomeTopBarNew(
 
             // ── Wordmark ──────────────────────────────────────────
             Text(
-                text = "Book",
+                text = stringResource(R.string.home_wordmark_line1),
                 style = AppType.displaySerifItalic,
                 color = bookColors.ink,
             )
             Text(
-                text = "Companion",
+                text = stringResource(R.string.home_wordmark_line2),
                 style = AppType.displaySerif,
                 color = bookColors.ink,
                 modifier = Modifier.padding(bottom = 20.dp)
@@ -147,7 +154,7 @@ fun CustomHomeTopBarNew(
             //       Data should come from viewModel.books.
             HorizontalDivider(
                 color = bookColors.rule,
-                thickness = 0.5.dp,
+                thickness = BookCompanionBorders.hairline,
             )
             Row(
                 modifier = Modifier
@@ -163,7 +170,7 @@ fun CustomHomeTopBarNew(
 
                 Column {
                     Text(
-                        text = "PROGRESS, ALL TIME",
+                        text = stringResource(R.string.home_progress_label).uppercase(),
                         style = AppType.labelMicroMono,
                         color = bookColors.inkFaint,
                         modifier = Modifier.padding(bottom = 4.dp)
@@ -178,7 +185,7 @@ fun CustomHomeTopBarNew(
                             color = bookColors.ink,
                         )
                         Text(
-                            text = "of",
+                            text = stringResource(R.string.home_progress_of),
                             style = AppType.headingSerifLight,
                             color = bookColors.inkFaint,
                         )
@@ -188,7 +195,7 @@ fun CustomHomeTopBarNew(
                             color = bookColors.ink,
                         )
                         Text(
-                            text = "read",
+                            text = stringResource(R.string.home_progress_read),
                             style = AppType.bodySmall,
                             color = bookColors.inkFaint,
                             modifier = Modifier.padding(bottom = 2.dp)
@@ -200,7 +207,7 @@ fun CustomHomeTopBarNew(
             // ── Hairline divider ──────────────────────────────────
             HorizontalDivider(
                 color = bookColors.rule,
-                thickness = 0.5.dp,
+                thickness = BookCompanionBorders.hairline,
             )
 
             // ── Filter tabs ───────────────────────────────────────
@@ -258,15 +265,17 @@ fun FilterTabs(
                             setCurrentCategory(category)
                         }
                     }
+                    .heightIn(min = 48.dp)
                     .padding(end = 20.dp, top = 4.dp, bottom = 4.dp),
                 horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Center,
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Text(
-                        text = category.name,
+                        text = stringResource(category.labelRes),
                         style = if (isActive) AppType.labelSmall else AppType.labelSmallLight,
                         color = if (isActive) bookColors.ink else bookColors.inkFaint,
                     )

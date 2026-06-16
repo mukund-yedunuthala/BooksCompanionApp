@@ -1,5 +1,8 @@
 package com.mukund.bookcompanion.ui.home.components
 
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionRadius
+import com.mukund.bookcompanion.design.BookCompanionSpacing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +33,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.ui.home.BooksViewModel
@@ -50,7 +54,7 @@ fun CustomBottomBar(
 
     BottomAppBar(
         containerColor = bookColors.paper,
-        contentPadding = PaddingValues(horizontal = 28.dp, vertical = 0.dp),
+        contentPadding = PaddingValues(horizontal = BookCompanionSpacing.gutter, vertical = 0.dp),
         modifier = Modifier
             .height(76.dp)
             .windowInsetsPadding(WindowInsets.navigationBars)
@@ -60,13 +64,13 @@ fun CustomBottomBar(
                     color = borderColor,
                     start = Offset(0f, 0f),
                     end = Offset(size.width, 0f),
-                    strokeWidth = 0.5.dp.toPx()
+                    strokeWidth = BookCompanionBorders.hairline.toPx()
                 )
             },
         actions = {
             // Wordmark — left-anchored, replaces filter buttons
             Text(
-                text = "Library",
+                text = stringResource(R.string.home_library),
                 style = AppType.labelMicroMono,
                 color = bookColors.inkFaint,
             )
@@ -79,7 +83,7 @@ fun CustomBottomBar(
                 },
                 containerColor = bookColors.ink,
                 contentColor = bookColors.paper,
-                shape = RoundedCornerShape(999.dp),
+                shape = RoundedCornerShape(BookCompanionRadius.pill),
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.add),
@@ -89,7 +93,7 @@ fun CustomBottomBar(
                 },
                 text = {
                     Text(
-                        text = "New entry",
+                        text = stringResource(R.string.home_new_entry),
                         style = AppType.fabLabelSerif,
                     )
                 }

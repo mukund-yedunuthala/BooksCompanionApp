@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.ui.home.components
 
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionSpacing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -32,8 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
@@ -75,7 +80,7 @@ fun BookAdditionBottomSheet(
     }
     val isValid by remember {
         derivedStateOf {
-            title.isNotBlank() && author.isNotBlank() && year.isNotBlank() && !isDuplicate
+            title.isNotBlank() && author.isNotBlank() && !isDuplicate
         }
     }
 
@@ -104,7 +109,8 @@ fun BookAdditionBottomSheet(
     ) {
         LazyColumn(
             modifier = Modifier
-                .padding(horizontal = 28.dp)
+                .imePadding()
+                .padding(horizontal = BookCompanionSpacing.gutter)
                 .padding(bottom = 32.dp)
         ) {
             item {
@@ -119,13 +125,19 @@ fun BookAdditionBottomSheet(
                 ) {
                     Column {
                         Text(
-                            text = if (isEditMode) "EDIT ENTRY" else "NEW ENTRY",
+                            text = stringResource(
+                                if (isEditMode) R.string.sheet_edit_eyebrow
+                                else R.string.sheet_new_eyebrow
+                            ).uppercase(),
                             style = AppType.labelMicroMono,
                             color = bookColors.inkFaint,
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            text = if (isEditMode) "Revise details" else "Shelve a book",
+                            text = stringResource(
+                                if (isEditMode) R.string.sheet_edit_title
+                                else R.string.sheet_new_title
+                            ),
                             style = AppType.titleSerif,
                             color = bookColors.ink,
                         )
@@ -134,23 +146,25 @@ fun BookAdditionBottomSheet(
 
                 HorizontalDivider(
                     color = bookColors.rule,
-                    thickness = 0.5.dp,
+                    thickness = BookCompanionBorders.hairline,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
 
                 // ── Fields ────────────────────────────────────
                 EditorialTextField(
                     value = title,
-                    label = "TITLE",
-                    placeholder = "The Overstory",
+                    label = stringResource(R.string.sheet_field_title).uppercase(),
+                    placeholder = stringResource(R.string.sheet_placeholder_title),
                     onChange = { title = it },
                     useSerif = true,
+                    required = true,
                 )
                 EditorialTextField(
                     value = author,
-                    label = "AUTHOR",
-                    placeholder = "Richard Powers",
+                    label = stringResource(R.string.sheet_field_author).uppercase(),
+                    placeholder = stringResource(R.string.sheet_placeholder_author),
                     onChange = { author = it },
+                    required = true,
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -158,56 +172,56 @@ fun BookAdditionBottomSheet(
                 ) {
                     EditorialTextField(
                         value = year,
-                        label = "YEAR",
-                        placeholder = "2018",
+                        label = stringResource(R.string.sheet_field_year).uppercase(),
+                        placeholder = stringResource(R.string.sheet_placeholder_year),
                         onChange = { year = it },
                         keyboardType = KeyboardType.Number,
                         modifier = Modifier.weight(1f)
                     )
                     EditorialTextField(
                         value = genre,
-                        label = "GENRE",
-                        placeholder = "Literary Fiction",
+                        label = stringResource(R.string.sheet_field_genre).uppercase(),
+                        placeholder = stringResource(R.string.sheet_placeholder_genre),
                         onChange = { genre = it },
                         modifier = Modifier.weight(2f)
                     )
                 }
                 EditorialTextField(
                     value = isbn,
-                    label = "ISBN",
-                    placeholder = "978-3-16-148410-0",
+                    label = stringResource(R.string.sheet_field_isbn).uppercase(),
+                    placeholder = stringResource(R.string.sheet_placeholder_isbn),
                     onChange = { isbn = it },
-                    keyboardType = KeyboardType.Number,
+                    keyboardType = KeyboardType.Ascii,
                 )
                 EditorialTextField(
                     value = language,
-                    label = "LANGUAGE",
-                    placeholder = "English",
+                    label = stringResource(R.string.sheet_field_language).uppercase(),
+                    placeholder = stringResource(R.string.sheet_placeholder_language),
                     onChange = { language = it },
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    EditorialTextField(
+                    EditorialDateField(
                         value = dateStarted,
-                        label = "STARTED",
-                        placeholder = "YYYY-MM-DD",
+                        label = stringResource(R.string.sheet_field_started).uppercase(),
+                        placeholder = stringResource(R.string.sheet_placeholder_date),
                         onChange = { dateStarted = it },
                         modifier = Modifier.weight(1f)
                     )
-                    EditorialTextField(
+                    EditorialDateField(
                         value = dateFinished,
-                        label = "FINISHED",
-                        placeholder = "YYYY-MM-DD",
+                        label = stringResource(R.string.sheet_field_finished).uppercase(),
+                        placeholder = stringResource(R.string.sheet_placeholder_date),
                         onChange = { dateFinished = it },
                         modifier = Modifier.weight(1f)
                     )
                 }
                 EditorialTextField(
                     value = notes,
-                    label = "NOTES",
-                    placeholder = "Thoughts, quotes, marginalia…",
+                    label = stringResource(R.string.sheet_field_notes).uppercase(),
+                    placeholder = stringResource(R.string.sheet_placeholder_notes),
                     onChange = { notes = it },
                     singleLine = false,
                 )
@@ -216,7 +230,7 @@ fun BookAdditionBottomSheet(
 
                 // ── Status ────────────────────────────────────
                 Text(
-                    text = "STATUS",
+                    text = stringResource(R.string.sheet_field_status).uppercase(),
                     style = AppType.labelMicroMono,
                     color = bookColors.inkFaint,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -231,10 +245,10 @@ fun BookAdditionBottomSheet(
 
                 // ── Validation message ────────────────────────
                 Text(
-                    text = if (isDuplicate) "$title already exists!"
-                    else "Fields marked with * are required.",
+                    text = if (isDuplicate) stringResource(R.string.sheet_duplicate, title)
+                    else stringResource(R.string.sheet_required_hint),
                     style = AppType.labelSmallLight,
-                    color = if (isDuplicate) MaterialTheme.colorScheme.error
+                    color = if (isDuplicate) bookColors.terracotta
                     else bookColors.inkFaint,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
@@ -249,7 +263,7 @@ fun BookAdditionBottomSheet(
                         .background(
                             color = if (isValid) bookColors.ink else bookColors.rule
                         )
-                        .clickable(enabled = isValid) {
+                        .clickable(enabled = isValid, role = Role.Button) {
                             haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                             if (isEditMode) {
                                 updateBook(
@@ -289,7 +303,10 @@ fun BookAdditionBottomSheet(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = if (isEditMode) "Save changes →" else "Add to library →",
+                        text = stringResource(
+                            if (isEditMode) R.string.sheet_submit_save
+                            else R.string.sheet_submit_add
+                        ),
                         style = AppType.sheetActionSerif,
                         color = if (isValid) bookColors.paper else bookColors.inkFaint,
                     )

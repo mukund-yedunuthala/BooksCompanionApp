@@ -1,13 +1,20 @@
 package com.mukund.bookcompanion.ui.home.components
 
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,8 +23,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,6 +36,10 @@ import com.mukund.bookcompanion.design.CormorantGaramond
 import com.mukund.bookcompanion.design.IBMPlexSans
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeParseException
 
 // ── Editorial text field ──────────────────────────────────────────────────────
 @Composable
@@ -37,12 +52,18 @@ fun EditorialTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     useSerif: Boolean = false,
     singleLine: Boolean = true,
+    required: Boolean = false,
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.padding(bottom = 18.dp)) {
         Text(
-            text = label,
+            text = buildAnnotatedString {
+                append(label)
+                if (required) {
+                    withStyle(SpanStyle(color = bookColors.terracotta)) { append(" *") }
+                }
+            },
             style = AppType.labelMicroMono,
             color = bookColors.inkFaint,
             modifier = Modifier.padding(bottom = 6.dp)
@@ -80,10 +101,79 @@ fun EditorialTextField(
                     HorizontalDivider(
                         color = if (isFocused) bookColors.ink
                         else bookColors.rule,
-                        thickness = 0.5.dp
+                        thickness = BookCompanionBorders.hairline
                     )
                 }
             }
         )
     }
 }
+
+// ── Editorial date field ───────────────────────────────────────────────────────
+// Same visual language as EditorialTextField, but tapping opens a date picker so
+// the stored value is always a valid ISO (yyyy-MM-dd) string.
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditorialDateField(
+    value: String,
+    label: String,
+    placeholder: String,
+    onChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var showPicker by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier.padding(bottom = 18.dp)) {
+        Text(
+            text = label,
+            style = AppType.labelMicroMono,
+            color = bookColors.inkFaint,
+            modifier = Modifier.padding(bottom = 6.dp)
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { showPicker = true }
+        ) {
+            Box(modifier = Modifier.padding(bottom = 8.dp)) {
+                Text(
+                    text = value.ifEmpty { placeholder },
+                    fontFamily = IBMPlexSans,
+                    fontSize = 15.sp,
+                    color = if (value.isEmpty()) bookColors.inkFaint else bookColors.ink,
+                )
+            }
+            HorizontalDivider(color = bookColors.rule, thickness = BookCompanionBorders.hairline)
+        }
+    }
+
+    if (showPicker) {
+        val state = rememberDatePickerState(initialSelectedDateMillis = parseIsoDateToMillis(value))
+        DatePickerDialog(
+            onDismissRequest = { showPicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    state.selectedDateMillis?.let { onChange(millisToIsoDate(it)) }
+                    showPicker = false
+                }) { Text(stringResource(android.R.string.ok)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPicker = false }) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+            }
+        ) {
+            DatePicker(state = state)
+        }
+    }
+}
+
+private fun parseIsoDateToMillis(value: String): Long? = try {
+    if (value.isBlank()) null
+    else LocalDate.parse(value).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+} catch (e: DateTimeParseException) {
+    null
+}
+
+private fun millisToIsoDate(millis: Long): String =
+    Instant.ofEpochMilli(millis).atZone(ZoneOffset.UTC).toLocalDate().toString()

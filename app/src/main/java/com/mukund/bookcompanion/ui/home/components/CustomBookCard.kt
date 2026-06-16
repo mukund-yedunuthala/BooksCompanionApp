@@ -28,9 +28,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionSpacing
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
@@ -45,22 +51,29 @@ fun CustomBookCardNew(
     index: Int,
     visibleState: MutableTransitionState<Boolean>,
 ) {
+    // Cap the per-item entrance stagger so long lists don't take seconds to settle.
+    val staggerDelay = minOf(index, 6) * 60
+
     AnimatedVisibility(
         visibleState = visibleState,
         enter = slideInHorizontally(
             initialOffsetX = { -it },
-            animationSpec = tween(durationMillis = 300, delayMillis = index * 100)
+            animationSpec = tween(durationMillis = 300, delayMillis = staggerDelay)
         ),
         exit = slideOutHorizontally(
             targetOffsetX = { it },
-            animationSpec = tween(durationMillis = 300, delayMillis = index * 100)
+            animationSpec = tween(durationMillis = 300, delayMillis = staggerDelay)
         )
     ) {
+        // Single column so the hairline divider sits *below* the card. (Previously the divider
+        // was a second child of AnimatedVisibility, which stacks children like a Box and drew the
+        // rule on top of the card's top edge.)
+        Column(modifier = modifier.fillMaxWidth()) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .clickable { navigateTo(book.id) }
-                .padding(horizontal = 28.dp, vertical = 22.dp)
+                .clickable(role = Role.Button) { navigateTo(book.id) }
+                .padding(horizontal = BookCompanionSpacing.gutter, vertical = 22.dp)
         ) {
 
             // ── Genre + status row ────────────────────────────────
@@ -77,6 +90,9 @@ fun CustomBookCardNew(
                         text = book.genre.trim().uppercase(),
                         style = AppType.labelMicroMono,
                         color = bookColors.inkFaint,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
                     )
                 } else {
                     Spacer(Modifier.width(0.dp))
@@ -94,7 +110,7 @@ fun CustomBookCardNew(
                     }
                     Box(
                         modifier = Modifier
-                            .size(7.dp)
+                            .size(BookCompanionSpacing.statusDot)
                             .border(
                                 width = 1.dp,
                                 color = if (book.status.lowercase() == "unread")
@@ -122,7 +138,7 @@ fun CustomBookCardNew(
 
             // ── Author ────────────────────────────────────────────
             Text(
-                text = "by ${book.author.trim()}",
+                text = stringResource(R.string.overview_by_author, book.author.trim()),
                 style = AppType.authorSerifItalic,
                 color = bookColors.inkSoft,
                 modifier = Modifier.padding(bottom = 12.dp)
@@ -144,8 +160,9 @@ fun CustomBookCardNew(
 
         HorizontalDivider(
             color = bookColors.ruleSoft,
-            thickness = 0.5.dp,
+            thickness = BookCompanionBorders.hairline,
         )
+        }
     }
 }
 
