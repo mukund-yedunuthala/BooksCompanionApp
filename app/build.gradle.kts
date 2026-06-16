@@ -21,8 +21,8 @@ android {
         applicationId="com.mukund.bookcompanion"
         minSdk=31
         targetSdk=36
-        versionCode= 32
-        versionName= "1.0.0"
+        versionCode= 33
+        versionName= "1.0.1"
 
     }
 
@@ -38,6 +38,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
