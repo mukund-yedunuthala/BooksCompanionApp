@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -5,6 +7,12 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.aboutLibraries)
 }
+
+val keystorePropsFile = rootProject.file("keystore.properties")
+val signingProps: Properties? = if (keystorePropsFile.exists()) {
+    Properties().apply { load(keystorePropsFile.inputStream()) }
+} else null
+
 android {
     namespace = "com.mukund.bookcompanion"
     compileSdk = 37
@@ -16,16 +24,21 @@ android {
         versionCode= 32
         versionName= "1.0.0"
 
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-        versionNameSuffix = "-alpha02"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile     = signingProps?.getProperty("storeFile")?.takeIf { it.isNotBlank() }?.let { rootProject.file(it) }
+            storePassword = signingProps?.getProperty("storePassword")?.takeIf { it.isNotBlank() }
+            keyAlias      = signingProps?.getProperty("keyAlias")?.takeIf { it.isNotBlank() }
+            keyPassword   = signingProps?.getProperty("keyPassword")?.takeIf { it.isNotBlank() }
+        }
+    }
 
     buildTypes {
         release {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
