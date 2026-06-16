@@ -1,17 +1,13 @@
 package com.mukund.bookcompanion.ui.settings.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -20,8 +16,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.design.IBMPlexSans
 import com.mukund.bookcompanion.design.JetBrainsMono
 import com.mukund.bookcompanion.ui.theme.AppType
@@ -40,7 +36,7 @@ fun CustomURLDialog(
         shape = RectangleShape,
         title = {
             Text(
-                text = "Open link?",
+                text = stringResource(R.string.oss_dialog_title),
                 style = AppType.headingSerif.copy(fontStyle = FontStyle.Italic),
                 color = bookColors.ink,
             )
@@ -52,7 +48,7 @@ fun CustomURLDialog(
                         fontFamily = IBMPlexSans,
                         fontSize = 13.sp,
                         color = bookColors.inkSoft,
-                    )) { append("This will open:\n") }
+                    )) { append(stringResource(R.string.oss_dialog_intro)) }
                     withLink(
                         LinkAnnotation.Url(
                             url = source,
@@ -72,35 +68,23 @@ fun CustomURLDialog(
             )
         },
         confirmButton = {
-            Box(
-                modifier = Modifier
-                    .background(bookColors.ink)
-                    .clickable {
-                        uriHandler.openUri(source)
-                        onDismiss()
-                    }
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
-                contentAlignment = Alignment.Center
+            Button(
+                onClick = {
+                    uriHandler.openUri(source)
+                    onDismiss()
+                }
             ) {
                 Text(
-                    text = "Open",
+                    text = stringResource(R.string.oss_dialog_open),
                     style = AppType.labelTinyMono,
-                    color = bookColors.paper,
                 )
             }
         },
         dismissButton = {
-            Box(
-                modifier = Modifier
-                    .border(width = 0.5.dp, color = bookColors.rule)
-                    .clickable { onDismiss() }
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
-                contentAlignment = Alignment.Center
-            ) {
+            TextButton(onClick = onDismiss) {
                 Text(
-                    text = "Cancel",
+                    text = stringResource(R.string.cancel),
                     style = AppType.labelTinyMono,
-                    color = bookColors.inkSoft,
                 )
             }
         },

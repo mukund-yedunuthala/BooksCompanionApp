@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.ui.settings.components
 
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionSpacing
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,7 +51,7 @@ fun CustomEntrySwitch(
                 role = Role.Switch
                 toggleableState = if (checked) ToggleableState.On else ToggleableState.Off
             }
-            .padding(horizontal = 28.dp, vertical = 16.dp),
+            .padding(horizontal = BookCompanionSpacing.gutter, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -98,5 +100,5 @@ fun CustomEntrySwitch(
             } else null,
         )
     }
-    HorizontalDivider(color = bookColors.ruleSoft, thickness = 0.5.dp)
+    HorizontalDivider(color = bookColors.ruleSoft, thickness = BookCompanionBorders.hairline)
 }

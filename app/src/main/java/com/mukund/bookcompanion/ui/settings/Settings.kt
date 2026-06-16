@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.ui.settings
 
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionSpacing
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -37,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mukund.bookcompanion.BuildConfig
@@ -78,15 +82,17 @@ fun SettingScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .windowInsetsPadding(WindowInsets.statusBars)
-                        .padding(horizontal = 28.dp)
+                        .padding(horizontal = BookCompanionSpacing.gutter)
                 ) {
                     // ── Back nav ──────────────────────────────
                     Row(
                         modifier = Modifier
                             .clickable(
                                 indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
+                                interactionSource = remember { MutableInteractionSource() },
+                                role = Role.Button
                             ) { backPress() }
+                            .heightIn(min = 48.dp)
                             .padding(top = 12.dp, bottom = 18.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -98,7 +104,7 @@ fun SettingScreen(
                             modifier = Modifier.size(18.dp)
                         )
                         Text(
-                            text = "Library",
+                            text = stringResource(R.string.home_library),
                             style = AppType.bodySmall,
                             color = bookColors.inkSoft,
                         )
@@ -114,7 +120,7 @@ fun SettingScreen(
 
                     HorizontalDivider(
                         color = bookColors.rule,
-                        thickness = 0.5.dp,
+                        thickness = BookCompanionBorders.hairline,
                     )
                 }
             }
@@ -152,8 +158,8 @@ fun SettingScreen(
                 Spacer(Modifier.height(8.dp))
                 HorizontalDivider(
                     color = bookColors.rule,
-                    thickness = 0.5.dp,
-                    modifier = Modifier.padding(horizontal = 28.dp)
+                    thickness = BookCompanionBorders.hairline,
+                    modifier = Modifier.padding(horizontal = BookCompanionSpacing.gutter)
                 )
                 Spacer(Modifier.height(8.dp))
 
@@ -206,6 +212,6 @@ private fun SectionHeader(text: String) {
         text = text.uppercase(),
         style = AppType.labelMicroMono,
         color = bookColors.inkFaint,
-        modifier = Modifier.padding(horizontal = 28.dp, vertical = 12.dp)
+        modifier = Modifier.padding(horizontal = BookCompanionSpacing.gutter, vertical = 12.dp)
     )
 }

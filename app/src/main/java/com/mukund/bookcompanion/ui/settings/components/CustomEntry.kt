@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.ui.settings.components
 
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionSpacing
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,9 +43,14 @@ fun CustomEntryButton(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (showArrow) Modifier.clickable(onClick = onClick) else Modifier)
-            .semantics { role = Role.Button }
-            .padding(horizontal = 28.dp, vertical = 16.dp),
+            // Only mark the row as an actionable button when it actually has an action.
+            .then(
+                if (showArrow) Modifier
+                    .clickable(onClick = onClick)
+                    .semantics { role = Role.Button }
+                else Modifier
+            )
+            .padding(horizontal = BookCompanionSpacing.gutter, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -81,5 +88,5 @@ fun CustomEntryButton(
             )
         }
     }
-    HorizontalDivider(color = bookColors.ruleSoft, thickness = 0.5.dp)
+    HorizontalDivider(color = bookColors.ruleSoft, thickness = BookCompanionBorders.hairline)
 }
