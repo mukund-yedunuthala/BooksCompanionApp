@@ -81,10 +81,6 @@ configurations.configureEach {
     resolutionStrategy.force("org.jetbrains.kotlin:kotlin-metadata-jvm:${libs.versions.kotlin.get()}")
 }
 dependencies {
-    // AppCompat
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.appcompat.resources)
-
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -93,9 +89,6 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-    // Navigation
-    implementation(libs.androidx.navigation.ui.ktx)
 
     // Room
     implementation(libs.androidx.room.runtime)
@@ -109,7 +102,6 @@ dependencies {
     // Compose
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.runtime)
 
     // AboutLibraries
     implementation(libs.aboutlibraries.core)
@@ -132,7 +124,6 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.turbine)
     testImplementation(libs.mockk)
     testImplementation(libs.robolectric)
 }
