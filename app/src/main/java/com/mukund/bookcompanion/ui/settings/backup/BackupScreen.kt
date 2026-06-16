@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.ui.settings.backup
 
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionSpacing
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.Intent
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
@@ -32,6 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
@@ -67,9 +72,19 @@ fun Backup_Screen(
             if (uri != null) {
                 importUriState.value = uri
                 scope.launch(Dispatchers.IO) {
-                    importBackupFile(viewModel, context.contentResolver, uri)
+                    val result = importBackupFile(viewModel, context.contentResolver, uri)
+                    val message = when (result) {
+                        is ImportResult.Success ->
+                            context.getString(R.string.backup_import_success, result.count)
+                        ImportResult.EmptyStream ->
+                            context.getString(R.string.backup_import_error_unreadable)
+                        ImportResult.FileTooLarge ->
+                            context.getString(R.string.backup_import_error_too_large)
+                        ImportResult.Malformed ->
+                            context.getString(R.string.backup_import_error_invalid)
+                    }
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Import successful", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -80,9 +95,15 @@ fun Backup_Screen(
                 val uri = result.data?.data
                 uri?.let { backupUri ->
                     scope.launch(Dispatchers.IO) {
-                        performBackup(resolver, viewModel.books, backupUri)
+                        val result = performBackup(resolver, viewModel.books, backupUri)
+                        val message = when (result) {
+                            ExportResult.Success ->
+                                context.getString(R.string.backup_export_success)
+                            ExportResult.NoOutputStream ->
+                                context.getString(R.string.backup_export_error)
+                        }
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(context, "Export successful", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -99,33 +120,35 @@ fun Backup_Screen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .windowInsetsPadding(WindowInsets.statusBars)
-                        .padding(horizontal = 28.dp)
+                        .padding(horizontal = BookCompanionSpacing.gutter)
                 ) {
                     Row(
                         modifier = Modifier
                             .clickable(
                                 indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
+                                interactionSource = remember { MutableInteractionSource() },
+                                role = Role.Button
                             ) { backPress.invoke() }
+                            .heightIn(min = 48.dp)
                             .padding(top = 12.dp, bottom = 18.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.arrow_back),
-                            contentDescription = "Return to settings",
+                            contentDescription = stringResource(R.string.backup_back_description),
                             tint = bookColors.inkSoft,
                             modifier = Modifier.size(18.dp)
                         )
                         Text(
-                            text = "Settings",
+                            text = stringResource(R.string.backup_back_to_settings),
                             style = AppType.bodySmall,
                             color = bookColors.inkSoft,
                         )
                     }
 
                     Text(
-                        text = "Backup &\nRestore",
+                        text = stringResource(R.string.backup_title),
                         style = AppType.displaySerifItalic,
                         color = bookColors.ink,
                         modifier = Modifier.padding(bottom = 20.dp)
@@ -133,7 +156,7 @@ fun Backup_Screen(
 
                     HorizontalDivider(
                         color = bookColors.rule,
-                        thickness = 0.5.dp,
+                        thickness = BookCompanionBorders.hairline,
                     )
                 }
             }
@@ -148,13 +171,13 @@ fun Backup_Screen(
                 Spacer(Modifier.height(8.dp))
                 CustomEntryButton(
                     onClick = { activityResultLauncher.launch(createBackupIntent()) },
-                    leadText = "Create local backup",
-                    subText = "Data is stored locally, will be deleted upon uninstallation"
+                    leadText = stringResource(R.string.backup_create),
+                    subText = stringResource(R.string.backup_create_subtext)
                 )
                 CustomEntryButton(
                     onClick = { importLauncher.launch("application/json") },
-                    leadText = "Restore from file",
-                    subText = "Restore from compatible file"
+                    leadText = stringResource(R.string.backup_restore),
+                    subText = stringResource(R.string.backup_restore_subtext)
                 )
             }
         }
@@ -163,18 +186,37 @@ fun Backup_Screen(
 
 private const val MAX_IMPORT_BYTES = 10 * 1024 * 1024  // 10 MB
 
-fun importBackupFile(viewModel: BooksViewModel, contentResolver: ContentResolver, uri: Uri) {
-    val inputStream = contentResolver.openInputStream(uri) ?: return
+/** Outcome of a restore so the caller can give the user honest feedback. */
+sealed interface ImportResult {
+    data class Success(val count: Int) : ImportResult
+    data object EmptyStream : ImportResult
+    data object FileTooLarge : ImportResult
+    data object Malformed : ImportResult
+}
+
+/** Outcome of an export. */
+sealed interface ExportResult {
+    data object Success : ExportResult
+    data object NoOutputStream : ExportResult
+}
+
+fun importBackupFile(
+    viewModel: BooksViewModel,
+    contentResolver: ContentResolver,
+    uri: Uri,
+): ImportResult {
+    val inputStream = contentResolver.openInputStream(uri) ?: return ImportResult.EmptyStream
     inputStream.use { stream ->
         val bytes = stream.readBytes()
-        if (bytes.size > MAX_IMPORT_BYTES) return
+        if (bytes.size > MAX_IMPORT_BYTES) return ImportResult.FileTooLarge
         val backupData = bytes.decodeToString()
         val books = try {
-            Gson().fromJson(backupData, Array<Book>::class.java) ?: return
+            Gson().fromJson(backupData, Array<Book>::class.java) ?: return ImportResult.Malformed
         } catch (e: com.google.gson.JsonSyntaxException) {
-            return
+            return ImportResult.Malformed
         }
         viewModel.insertAllBooks(books.toList())
+        return ImportResult.Success(books.size)
     }
 }
 fun createBackupIntent(): Intent {
@@ -187,10 +229,12 @@ fun createBackupIntent(): Intent {
 
     return intent
 }
-fun performBackup(resolver: ContentResolver, books: List<Book>, backupUri: Uri) {
-    resolver.openOutputStream(backupUri)?.use { outputStream ->
+fun performBackup(resolver: ContentResolver, books: List<Book>, backupUri: Uri): ExportResult {
+    val outputStream = resolver.openOutputStream(backupUri) ?: return ExportResult.NoOutputStream
+    outputStream.use { stream ->
         val gson = Gson()
         val backupData = gson.toJson(books)
-        outputStream.write(backupData.toByteArray())
+        stream.write(backupData.toByteArray())
     }
+    return ExportResult.Success
 }
