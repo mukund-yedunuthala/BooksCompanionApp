@@ -1,5 +1,8 @@
 package com.mukund.bookcompanion.design
 
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -78,6 +81,44 @@ val DarkColorScheme = BookCompanionColorScheme(
 
 // CompositionLocal so any composable can access the current scheme
 val LocalBookCompanionColors = compositionLocalOf { LightColorScheme }
+
+// ─── Material3 bridge ───────────────────────────────────────
+/**
+ * Material3 [ColorScheme]s derived from the editorial palette so that anything that falls back to
+ * `MaterialTheme.colorScheme` (ripples, text-selection handles, component defaults, the validation
+ * `error` color) stays on-brand instead of pulling wallpaper-derived dynamic colors.
+ */
+fun editorialLightColorScheme(): ColorScheme = LightColorScheme.toMaterialColorScheme(dark = false)
+fun editorialDarkColorScheme(): ColorScheme = DarkColorScheme.toMaterialColorScheme(dark = true)
+
+private fun BookCompanionColorScheme.toMaterialColorScheme(dark: Boolean): ColorScheme {
+    val base = if (dark) darkColorScheme() else lightColorScheme()
+    return base.copy(
+        primary            = ink,
+        onPrimary          = paper,
+        primaryContainer   = paperDeep,
+        onPrimaryContainer = ink,
+        secondary          = sage,
+        onSecondary        = paper,
+        tertiary           = ochre,
+        onTertiary         = paper,
+        background         = paper,
+        onBackground       = ink,
+        surface            = paper,
+        onSurface          = ink,
+        surfaceVariant     = paperDeep,
+        onSurfaceVariant   = inkSoft,
+        surfaceContainer       = paperDeep,
+        surfaceContainerLow    = paper,
+        surfaceContainerHigh   = paperDeep,
+        outline            = rule,
+        outlineVariant     = ruleSoft,
+        error              = terracotta,
+        onError            = paper,
+        errorContainer     = terracotta.copy(alpha = 0.12f),
+        onErrorContainer   = terracotta,
+    )
+}
 // ─── Spacing ────────────────────────────────────────────────
 /**
  * Spacing scale for consistent rhythm.
@@ -91,6 +132,12 @@ object BookCompanionSpacing {
     val lg: Dp = 16.dp         // 16dp — larger gaps
     val xl: Dp = 24.dp         // 24dp — section separator
     val xxl: Dp = 32.dp        // 32dp — major section padding
+
+    // Screen gutter — the standard horizontal page inset used by every screen/header/card.
+    val gutter: Dp = 28.dp
+
+    // Status indicator dot diameter (Unread/Reading/Read).
+    val statusDot: Dp = 7.dp
 
     // Padding presets (for cards, screens)
     val paddingSmall: Dp = 12.dp
@@ -130,25 +177,9 @@ object BookCompanionRadius {
 }
 
 // ─── Elevation & Shadows ────────────────────────────────────
-/**
- * Shadows for depth and emphasis (editorial aesthetic — used sparingly).
- */
-object BookCompanionElevation {
-    /**
-     * Subtle card shadow — used for elevated surfaces like bottom sheet.
-     */
-    val cardShadow = "0 4px 14px rgba(28, 24, 20, 0.18)"
-
-    /**
-     * Deep modal shadow — used for backdrop and modal elevation.
-     */
-    val modalShadow = "0 20px 60px rgba(28, 24, 20, 0.15)"
-
-    /**
-     * Button press shadow — when button is activated.
-     */
-    val pressedShadow = "0 2px 8px rgba(28, 24, 20, 0.12)"
-}
+// Intentionally omitted: the editorial design uses hairline borders (see BookCompanionBorders),
+// not drop shadows. The previous CSS-string "elevation" tokens were copied from a web prototype
+// and could never be consumed by Compose, so they were removed rather than left as dead code.
 
 // ─── Border Widths ──────────────────────────────────────────
 /**
