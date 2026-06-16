@@ -1,7 +1,7 @@
 package com.mukund.bookcompanion.ui.home
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import com.mukund.bookcompanion.data.FakeBooksRepository
+import com.mukund.bookcompanion.data.FakeBooksDao
 import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.util.MainDispatcherRule
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +22,7 @@ class BooksViewModelCrudTest {
     @get:Rule
     val tempFolder = TemporaryFolder()
 
-    private val fakeRepo = FakeBooksRepository()
+    private val fakeDao = FakeBooksDao()
     private lateinit var vm: BooksViewModel
 
     private val book = testBook
@@ -30,7 +30,7 @@ class BooksViewModelCrudTest {
     @Before
     fun setUp() {
         vm = BooksViewModel(
-            fakeRepo,
+            fakeDao,
             PreferenceDataStoreFactory.create(
                 scope = CoroutineScope(mainDispatcherRule.testDispatcher),
                 produceFile = { tempFolder.newFile("prefs_${System.nanoTime()}.preferences_pb") }
@@ -42,28 +42,27 @@ class BooksViewModelCrudTest {
     fun addBook_callsRepositoryAddBook_withCorrectBook() = runTest {
         // addBook returns Job (expression body = viewModelScope.launch); join it to wait for IO
         vm.addBook(book).join()
-        assertEquals(book, fakeRepo.lastAdded)
+        assertEquals(book, fakeDao.lastAdded)
     }
 
     @Test
     fun updateBook_callsRepositoryUpdateBook_withCorrectBook() = runTest {
         vm.updateBook(book).join()
-        assertEquals(book, fakeRepo.lastUpdated)
+        assertEquals(book, fakeDao.lastUpdated)
     }
 
     @Test
     fun deleteBook_callsRepositoryDeleteBook_withCorrectBook() = runTest {
         vm.deleteBook(book).join()
-        assertEquals(book, fakeRepo.lastDeleted)
+        assertEquals(book, fakeDao.lastDeleted)
     }
 
     @Test
     fun insertAllBooks_callsRepositoryInsertAll_withGivenList() = runTest {
         val books = listOf(book)
         vm.insertAllBooks(books)
-        // insertAllBooks() returns Unit; await the fake's signal set when the repo method runs
-        val received = fakeRepo.insertAllSignal.await()
+        val received = fakeDao.insertAllSignal.await()
         assertEquals(books, received)
-        assertEquals(books, fakeRepo.lastInsertedAll)
+        assertEquals(books, fakeDao.lastInsertedAll)
     }
 }

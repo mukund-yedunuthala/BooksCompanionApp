@@ -4,16 +4,15 @@ import androidx.room.*
 import androidx.room.OnConflictStrategy.Companion.IGNORE
 import com.mukund.bookcompanion.core.Constants.Companion.BOOK_TABLE
 import com.mukund.bookcompanion.domain.model.Book
-import com.mukund.bookcompanion.domain.repository.Books
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BooksDao {
     @Query("SELECT * FROM $BOOK_TABLE ORDER BY title ASC")
-    fun getBooksSortedByTitle(): Flow<Books>
+    fun getBooksSortedByTitle(): Flow<List<Book>>
 
     @Query("SELECT * FROM $BOOK_TABLE ORDER BY year DESC")
-    fun getBooksSortedByYear(): Flow<Books>
+    fun getBooksSortedByYear(): Flow<List<Book>>
 
     @Query("SELECT * FROM $BOOK_TABLE WHERE id = :id")
     fun getBook(id: Int): Flow<Book?>

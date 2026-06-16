@@ -3,7 +3,7 @@ package com.mukund.bookcompanion.ui.home
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.data.testBook
-import com.mukund.bookcompanion.data.FakeBooksRepository
+import com.mukund.bookcompanion.data.FakeBooksDao
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.util.MainDispatcherRule
 import kotlinx.coroutines.CoroutineScope
@@ -23,13 +23,13 @@ class BooksViewModelGetBookTest {
     @get:Rule
     val tempFolder = TemporaryFolder()
 
-    private val fakeRepo = FakeBooksRepository()
+    private val fakeDao = FakeBooksDao()
     private lateinit var vm: BooksViewModel
 
     @Before
     fun setUp() {
         vm = BooksViewModel(
-            fakeRepo,
+            fakeDao,
             PreferenceDataStoreFactory.create(
                 scope = CoroutineScope(mainDispatcherRule.testDispatcher),
                 produceFile = { tempFolder.newFile("prefs_${System.nanoTime()}.preferences_pb") }
@@ -44,16 +44,16 @@ class BooksViewModelGetBookTest {
 
     @Test
     fun getBook_withValidId_updatesBookState() {
-        fakeRepo.emitBook(testBook)
+        fakeDao.emitBook(testBook)
         vm.getBook(testBook.id)
         assertEquals(testBook, vm.book)
     }
 
     @Test
     fun getBook_withNullEmission_doesNotOverwriteExistingState() {
-        fakeRepo.emitBook(testBook)
+        fakeDao.emitBook(testBook)
         vm.getBook(testBook.id)
-        fakeRepo.emitBook(null)
+        fakeDao.emitBook(null)
         assertEquals(testBook, vm.book)
     }
 

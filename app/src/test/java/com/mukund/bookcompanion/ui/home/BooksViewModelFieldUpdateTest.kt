@@ -2,7 +2,7 @@ package com.mukund.bookcompanion.ui.home
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import com.mukund.bookcompanion.core.Constants
-import com.mukund.bookcompanion.data.FakeBooksRepository
+import com.mukund.bookcompanion.data.FakeBooksDao
 import com.mukund.bookcompanion.util.MainDispatcherRule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,13 +21,13 @@ class BooksViewModelFieldUpdateTest {
     @get:Rule
     val tempFolder = TemporaryFolder()
 
-    private val fakeRepo = FakeBooksRepository()
+    private val fakeDao = FakeBooksDao()
     private lateinit var vm: BooksViewModel
 
     @Before
     fun setUp() {
         vm = BooksViewModel(
-            fakeRepo,
+            fakeDao,
             PreferenceDataStoreFactory.create(
                 scope = CoroutineScope(mainDispatcherRule.testDispatcher),
                 produceFile = { tempFolder.newFile("prefs_${System.nanoTime()}.preferences_pb") }

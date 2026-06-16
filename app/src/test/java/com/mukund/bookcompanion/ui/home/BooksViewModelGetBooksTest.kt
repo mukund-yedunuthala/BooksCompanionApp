@@ -1,7 +1,7 @@
 package com.mukund.bookcompanion.ui.home
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import com.mukund.bookcompanion.data.FakeBooksRepository
+import com.mukund.bookcompanion.data.FakeBooksDao
 import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.util.MainDispatcherRule
 import kotlinx.coroutines.CoroutineScope
@@ -22,13 +22,13 @@ class BooksViewModelGetBooksTest {
     @get:Rule
     val tempFolder = TemporaryFolder()
 
-    private val fakeRepo = FakeBooksRepository()
+    private val fakeDao = FakeBooksDao()
     private lateinit var vm: BooksViewModel
 
     @Before
     fun setUp() {
         vm = BooksViewModel(
-            fakeRepo,
+            fakeDao,
             PreferenceDataStoreFactory.create(
                 scope = CoroutineScope(mainDispatcherRule.testDispatcher),
                 produceFile = { tempFolder.newFile("prefs_${System.nanoTime()}.preferences_pb") }
@@ -44,7 +44,7 @@ class BooksViewModelGetBooksTest {
     @Test
     fun getBooks_afterRepositoryEmission_booksMatchesEmittedList() {
         val bookList = listOf(testBook)
-        fakeRepo.emitBooks(bookList)
+        fakeDao.emitBooks(bookList)
         vm.getBooks()
         assertEquals(bookList, vm.books)
     }
@@ -52,7 +52,7 @@ class BooksViewModelGetBooksTest {
     @Test
     fun getBooks_repositoryEmitsEmpty_booksRemainsEmpty() {
         vm.getBooks()
-        fakeRepo.emitBooks(emptyList())
+        fakeDao.emitBooks(emptyList())
         assertTrue(vm.books.isEmpty())
     }
 }

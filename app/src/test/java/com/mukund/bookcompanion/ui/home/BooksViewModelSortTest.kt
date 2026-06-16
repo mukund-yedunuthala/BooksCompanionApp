@@ -1,7 +1,7 @@
 package com.mukund.bookcompanion.ui.home
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import com.mukund.bookcompanion.data.FakeBooksRepository
+import com.mukund.bookcompanion.data.FakeBooksDao
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.util.MainDispatcherRule
 import kotlinx.coroutines.CoroutineScope
@@ -29,13 +29,13 @@ class BooksViewModelSortTest {
     @get:Rule
     val tempFolder = TemporaryFolder()
 
-    private val fakeRepo = FakeBooksRepository()
+    private val fakeDao = FakeBooksDao()
     private lateinit var vm: BooksViewModel
 
     @Before
     fun setUp() {
         vm = BooksViewModel(
-            fakeRepo,
+            fakeDao,
             PreferenceDataStoreFactory.create(
                 scope = CoroutineScope(mainDispatcherRule.testDispatcher),
                 produceFile = { tempFolder.newFile("prefs_${System.nanoTime()}.preferences_pb") }
@@ -50,21 +50,21 @@ class BooksViewModelSortTest {
 
     @Test
     fun updateSortOption_title_booksAreSortedByTitleAsc() {
-        fakeRepo.emitBooks(listOf(bookB, bookA))
+        fakeDao.emitBooks(listOf(bookB, bookA))
         vm.updateSortOption(SortOption.TITLE)
         assertEquals(listOf(bookA, bookB), vm.books)
     }
 
     @Test
     fun updateSortOption_year_booksAreSortedByYearDesc() {
-        fakeRepo.emitBooks(listOf(bookA, bookB))
+        fakeDao.emitBooks(listOf(bookA, bookB))
         vm.updateSortOption(SortOption.YEAR)
         assertEquals(listOf(bookB, bookA), vm.books)
     }
 
     @Test
     fun updateSortOption_toggleTwice_booksReflectLatestSort() {
-        fakeRepo.emitBooks(listOf(bookA, bookB))
+        fakeDao.emitBooks(listOf(bookA, bookB))
         vm.updateSortOption(SortOption.YEAR)
         assertEquals(listOf(bookB, bookA), vm.books)
         vm.updateSortOption(SortOption.TITLE)
