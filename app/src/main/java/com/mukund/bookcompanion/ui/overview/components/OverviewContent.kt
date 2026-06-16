@@ -1,5 +1,7 @@
 package com.mukund.bookcompanion.ui.overview.components
 
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionSpacing
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,10 +22,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,20 +35,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
-import com.mukund.bookcompanion.design.CormorantGaramond
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.home.components.BookAdditionBottomSheet
 import com.mukund.bookcompanion.ui.theme.AppType
@@ -66,7 +68,7 @@ fun OverviewContent(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 28.dp)
+            .padding(horizontal = BookCompanionSpacing.gutter)
             .padding(bottom = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -89,7 +91,7 @@ fun OverviewContent(
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = "by ${book.author.trim()}",
+            text = stringResource(R.string.overview_by_author, book.author.trim()),
             style = AppType.authorSerifItalicLarge,
             color = bookColors.inkSoft,
             textAlign = TextAlign.Center,
@@ -103,44 +105,63 @@ fun OverviewContent(
         )
 
         // ── Rating ────────────────────────────────────────────
+        val currentRating = book.rating ?: 0
+        val ratingDescription = stringResource(R.string.overview_rating_description, currentRating)
         Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.padding(bottom = 28.dp)
+            modifier = Modifier
+                .padding(bottom = BookCompanionSpacing.gutter)
+                .semantics { contentDescription = ratingDescription }
         ) {
             (1..5).forEach { star ->
-                Icon(
-                    painter = painterResource(R.drawable.star),
-                    contentDescription = null,
-                    tint = if ((book.rating ?: 0) >= star) bookColors.terracotta else bookColors.rule,
+                val filled = currentRating >= star
+                // Tapping the current top star clears the rating; otherwise sets it.
+                val clearing = currentRating == star
+                val clickLabel = if (clearing) {
+                    stringResource(R.string.overview_clear_rating)
+                } else {
+                    stringResource(R.string.overview_rate_stars, star)
+                }
+                Box(
                     modifier = Modifier
-                        .size(14.dp)
-                        .clickable { onUpdateBook(book.copy(rating = star)) }
-                )
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .clickable(role = Role.Button, onClickLabel = clickLabel) {
+                            onUpdateBook(book.copy(rating = if (clearing) null else star))
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.star),
+                        contentDescription = null,
+                        tint = if (filled) bookColors.terracotta else bookColors.inkFaint,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         }
 
         // ── Divider ───────────────────────────────────────────
         HorizontalDivider(
             color = bookColors.rule,
-            thickness = 0.5.dp,
+            thickness = BookCompanionBorders.hairline,
             modifier = Modifier.padding(bottom = 4.dp)
         )
 
         // ── Metadata rows ─────────────────────────────────────
         if (book.year != 0L) {
-            MetaRow(label = "Year", value = book.year.toString())
+            MetaRow(label = stringResource(R.string.overview_meta_year), value = book.year.toString())
         }
         if (!book.language.isNullOrBlank()) {
-            MetaRow(label = "Language", value = book.language)
+            MetaRow(label = stringResource(R.string.overview_meta_language), value = book.language)
         }
         if (book.isbn != NO_VALUE) {
-            MetaRow(label = "ISBN", value = book.isbn, mono = true)
+            MetaRow(label = stringResource(R.string.overview_meta_isbn), value = book.isbn, mono = true)
         }
         if (!book.dateStarted.isNullOrBlank()) {
-            MetaRow(label = "Started", value = book.dateStarted)
+            MetaRow(label = stringResource(R.string.overview_meta_started), value = book.dateStarted)
         }
         if (!book.dateFinished.isNullOrBlank()) {
-            MetaRow(label = "Finished", value = book.dateFinished)
+            MetaRow(label = stringResource(R.string.overview_meta_finished), value = book.dateFinished)
         }
 
         // ── Notes ─────────────────────────────────────────────
@@ -178,7 +199,7 @@ fun OverviewContent(
                 modifier = Modifier
                     .weight(1f)
                     .background(color = bookColors.ink)
-                    .clickable { showEditSheet = true }
+                    .clickable(role = Role.Button) { showEditSheet = true }
                     .padding(vertical = 14.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -193,7 +214,7 @@ fun OverviewContent(
                         modifier = Modifier.size(13.dp)
                     )
                     Text(
-                        text = "Edit",
+                        text = stringResource(R.string.edit),
                         style = AppType.labelMicroMono,
                         color = bookColors.paper,
                     )
@@ -204,8 +225,8 @@ fun OverviewContent(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .border(width = 0.5.dp, color = bookColors.rule)
-                    .clickable { showDeleteDialog = true }
+                    .border(width = BookCompanionBorders.hairline, color = bookColors.rule)
+                    .clickable(role = Role.Button) { showDeleteDialog = true }
                     .padding(vertical = 14.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -220,7 +241,7 @@ fun OverviewContent(
                         modifier = Modifier.size(13.dp)
                     )
                     Text(
-                        text = "Delete",
+                        text = stringResource(R.string.delete),
                         style = AppType.labelMicroMono,
                         color = bookColors.inkSoft,
                     )
@@ -230,79 +251,56 @@ fun OverviewContent(
 
         // ── Delete confirmation ───────────────────────────────
         if (showDeleteDialog) {
-            Spacer(Modifier.height(16.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 0.5.dp,
-                        color = bookColors.terracotta.copy(alpha = 0.25f)
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                containerColor = bookColors.paper,
+                title = {
+                    Text(
+                        text = stringResource(R.string.delete_dialog_title),
+                        style = AppType.titleSerif,
+                        color = bookColors.ink,
                     )
-                    .background(bookColors.terracotta.copy(alpha = 0.05f))
-                    .padding(18.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                Text(
-                    text = buildAnnotatedString {
-                        append("Remove ")
-                        withStyle(
-                            SpanStyle(
-                                fontFamily = CormorantGaramond,
-                                fontStyle = FontStyle.Italic,
-                                fontSize = 15.sp,
-                            )
-                        ) { append(book.title.trim()) }
-                        append(" from your library?")
-                    },
-                    style = AppType.bodySmall,
-                    color = bookColors.inkSoft,
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .background(bookColors.terracotta)
-                            .clickable {
-                                onDeleteBook(book)
-                                onBackPress()
-                            }
-                            .padding(vertical = 10.dp),
-                        contentAlignment = Alignment.Center
+                },
+                text = {
+                    Text(
+                        text = stringResource(R.string.delete_dialog_confirm_body, book.title.trim()),
+                        style = AppType.bodySmall,
+                        color = bookColors.inkSoft,
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDeleteDialog = false
+                            onDeleteBook(book)
+                            onBackPress()
+                        }
                     ) {
                         Text(
-                            text = "Confirm",
-                            style = AppType.labelMicroMono,
-                            color = bookColors.paper,
+                            text = stringResource(R.string.delete_confirm),
+                            style = AppType.labelSmall,
+                            color = bookColors.terracotta,
                         )
                     }
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .border(width = 0.5.dp, color = bookColors.rule)
-                            .clickable { showDeleteDialog = false }
-                            .padding(vertical = 10.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
                         Text(
-                            text = "Cancel",
-                            style = AppType.labelMicroMono,
+                            text = stringResource(R.string.cancel),
+                            style = AppType.labelSmall,
                             color = bookColors.inkSoft,
                         )
                     }
                 }
-            }
+            )
         }
         if (showEditSheet) {
             BookAdditionBottomSheet(
                 onDismiss = { showEditSheet = false },
                 addBook = {},           // not used in edit mode
-                updateBook = { book ->
-                    onUpdateBook(book)
-                    onBackPress()
-                             },
+                // Just persist; the sheet closes itself and the getBook flow refreshes this
+                // screen in place. (Previously this also popped back to Home, hiding the edit.)
+                updateBook = { updated -> onUpdateBook(updated) },
                 books = emptyList(),    // not used in edit mode — duplicate check disabled
                 bookToEdit = book,
             )
@@ -326,7 +324,7 @@ private fun OverviewStatusBadge(
 
     Row(
         modifier = modifier
-            .border(width = 0.5.dp, color = borderColor)
+            .border(width = BookCompanionBorders.hairline, color = borderColor)
             .padding(horizontal = 16.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(7.dp)
@@ -374,7 +372,7 @@ private fun MetaRow(
             color = bookColors.inkSoft,
         )
     }
-    HorizontalDivider(color = bookColors.ruleSoft, thickness = 0.5.dp)
+    HorizontalDivider(color = bookColors.ruleSoft, thickness = BookCompanionBorders.hairline)
 }
 @Composable
 @Preview(

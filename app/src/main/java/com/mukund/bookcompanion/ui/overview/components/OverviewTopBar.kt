@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.ui.theme.AppType
@@ -39,8 +41,10 @@ fun OverviewTopBar(
                 modifier = Modifier
                     .clickable(
                         indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
+                        interactionSource = remember { MutableInteractionSource() },
+                        role = Role.Button
                     ) { onBackPress() }
+                    .heightIn(min = 48.dp)
                     .padding(start = 20.dp, top = 8.dp, bottom = 8.dp, end = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -52,7 +56,7 @@ fun OverviewTopBar(
                     modifier = Modifier.size(18.dp)
                 )
                 Text(
-                    text = "Library",
+                    text = stringResource(R.string.home_library),
                     style = AppType.bodySmall,
                     color = bookColors.inkSoft,
                 )
