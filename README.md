@@ -1,62 +1,54 @@
 <div align="center">
-  <img src="app/src/main/ic_launcher-playstore.png" alt="Icon" width="100">
-  <h1>Books Companion</h1>
+  <img src="app/src/main/ic_launcher-playstore.png" alt="Book Companion icon" width="100">
+  <h1>Book Companion</h1>
 </div>
 
 <p align="center">
-  <img alt="License" src="https://img.shields.io/github/license/mukund-yedunuthala/BooksCompanionApp" style="margin-right: 10px;">
+  <img alt="License" src="https://img.shields.io/github/license/mukund-yedunuthala/BooksCompanionApp">
   <a href="https://github.com/mukund-yedunuthala/BooksCompanionApp/actions/workflows/gradle-publish.yml">
     <img src="https://github.com/mukund-yedunuthala/BooksCompanionApp/actions/workflows/gradle-publish.yml/badge.svg" alt="Build CI/CD">
   </a>
 </p>
 
-
-This is one of many open source book trackers available for Android, still a work-in-progress.
-Hobby project, built entirely on Jetpack compose.
+Book Companion is a local Android app for keeping track of your reading library. It is a hobby project and remains a work in progress.
 
 ## Screenshots
-### Portrait Mode Screenshots
+
 <div align="center">
-  <img src="./assets/screenshot1.png" alt="Screenshot 1" width="25%">
-  <img src="./assets/screenshot2.png" alt="Screenshot 2" width="25%">
-  <img src="./assets/screenshot3.png" alt="Screenshot 3" width="25%">
-  <img src="./assets/screenshot4.png" alt="Screenshot 4" width="25%"> 
-  <img src="./assets/screenshot5.png" alt="Screenshot 5" width="25%"> 
-  <img src="./assets/screenshot6.png" alt="Screenshot 6" width="25%"> 
+  <img src="assets/screenshot1.png" alt="Library screen" width="25%">
+  <img src="assets/screenshot2.png" alt="Add book screen" width="25%">
+  <img src="assets/screenshot3.png" alt="Book overview screen" width="25%">
+  <img src="assets/screenshot4.png" alt="Settings screen" width="25%">
+  <img src="assets/screenshot5.png" alt="Backup and restore screen" width="25%">
+  <img src="assets/screenshot6.png" alt="Dark theme screen" width="25%">
 </div>
 
-## Installation
+## Features
 
-Currently, no public releases are available. 
+- Add, edit, and delete books; track title, author, year, genre, ISBN, language, notes, dates, status, and a 1–5 star rating.
+- Browse books by status (all, read, unread, or reading) and sort by title or year.
+- Use the system theme or choose light or dark mode.
+- Export the local library to JSON and restore it later.
 
-## What works
-- CRUD operations
-- Exporting and Importing database
+## Build from source
+
+Requires Android Studio with JDK 17 and an Android device or emulator running Android 12 (API 31) or newer.
+
+```bash
+./gradlew assembleDebug
+```
+
+The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Development
-- Written entirely using Jetpack Compose and Kotlin.
-- Hilt for dependency injection.
-- AndroidX Room, Lifecycle, Navigation architecture components are being used.
-- Material 3 Expressive theming.
+
+The app is written in Kotlin with Jetpack Compose, Material 3, Room, Hilt, DataStore, and Navigation Compose.
 
 ## Roadmap
-- More theming options.
-- Implement data fields such as tags, description
-- Implement sorting
-- Tablet optimization
+
+- Tablet optimization.
+- Public releases.
+
 ## License
-``` 
-Copyright (C) 2026  Mukund Yedunuthala
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>
+Copyright (C) 2026 Mukund Yedunuthala. Licensed under the [GNU General Public License v3.0](LICENSE).
