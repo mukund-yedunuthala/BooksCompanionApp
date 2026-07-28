@@ -1,109 +1,103 @@
 package com.mukund.bookcompanion.ui.home.components
 
-import androidx.compose.animation.core.MutableTransitionState
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import com.mukund.bookcompanion.design.BookCompanionRadius
+import com.mukund.bookcompanion.design.BookCompanionSpacing
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonGroup
-import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.R
-import com.mukund.bookcompanion.ui.home.BookCategory
 import com.mukund.bookcompanion.ui.home.BooksViewModel
+import com.mukund.bookcompanion.ui.theme.AppType
+import com.mukund.bookcompanion.ui.theme.bookColors
 
+
+// ── Bottom bar ────────────────────────────────────────────────────────────────
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun CustomBottomBar(
     viewModel: BooksViewModel,
-    categories: Array<BookCategory>,
-    currentCategory: BookCategory,
-    setCurrentCategory: (BookCategory) -> Unit,
-    visibleStateAll: MutableTransitionState<Boolean>,
-    visibleStateRead: MutableTransitionState<Boolean>,
-    visibleStateUnread: MutableTransitionState<Boolean>,
 ) {
     val haptic = LocalHapticFeedback.current
     var showSheet by remember { mutableStateOf(false) }
+    val borderColor = bookColors.rule
 
     BottomAppBar(
+        containerColor = bookColors.paper,
+        contentPadding = PaddingValues(horizontal = BookCompanionSpacing.gutter, vertical = 0.dp),
+        modifier = Modifier
+            .height(76.dp)
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .drawBehind {
+                // Hairline top border replacing Material's default elevation shadow
+                drawLine(
+                    color = borderColor,
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = BookCompanionBorders.hairline.toPx()
+                )
+            },
         actions = {
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.padding(start = 15.dp)
-            ) {
-                categories.forEach { category ->
-                    ToggleButton(
-                        checked = currentCategory == category,
-                        onCheckedChange = { selected ->
-                            if (selected && category != currentCategory) {
-                                haptic.performHapticFeedback(HapticFeedbackType.Confirm)
-                                setCurrentCategory(category)
-                                visibleStateAll.targetState = false
-                                visibleStateRead.targetState = false
-                                visibleStateUnread.targetState = false
-                            }
-                        },
-                        modifier = Modifier.semantics { role = Role.RadioButton }
-                    ) {
-                        Icon(
-                            painter = painterResource(category.icon),
-                            contentDescription = category.name,
-                            modifier = Modifier.size(IconButtonDefaults.smallIconSize)
-                        )
-                        Spacer(Modifier.size(ButtonDefaults.iconSpacingFor(ButtonDefaults.MinHeight)))
-                        Text(
-                            text = category.name,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
-            }
+            // Wordmark — left-anchored, replaces filter buttons
+            Text(
+                text = stringResource(R.string.home_library),
+                style = AppType.labelMicroMono,
+                color = bookColors.inkFaint,
+            )
         },
         floatingActionButton = {
-            FloatingActionButton(
+            ExtendedFloatingActionButton(
                 onClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                     showSheet = true
                 },
-                containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
-
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.add),
-                    contentDescription = "Add Book",
-                    modifier = Modifier.size(FloatingActionButtonDefaults.MediumIconSize)
-                )
-            }
+                containerColor = bookColors.ink,
+                contentColor = bookColors.paper,
+                shape = RoundedCornerShape(BookCompanionRadius.pill),
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.add),
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(R.string.home_new_entry),
+                        style = AppType.fabLabelSerif,
+                    )
+                }
+            )
         }
     )
 
@@ -112,6 +106,7 @@ fun CustomBottomBar(
             onDismiss = { showSheet = false },
             addBook = { book -> viewModel.addBook(book) },
             books = viewModel.books,
+            updateBook = { },
         )
     }
 }

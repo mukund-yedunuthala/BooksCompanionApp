@@ -21,12 +21,8 @@ Hobby project, built entirely on Jetpack compose.
   <img src="./assets/screenshot2.png" alt="Screenshot 2" width="25%">
   <img src="./assets/screenshot3.png" alt="Screenshot 3" width="25%">
   <img src="./assets/screenshot4.png" alt="Screenshot 4" width="25%"> 
-</div>
-
-### Landscape Mode Screenshots
-<div align="center">
-  <img src="assets/landscape1.png" alt="Landscape 1" width="50%">
-  <img src="assets/landscape2.png" alt="Landscape 2" width="50%">
+  <img src="./assets/screenshot5.png" alt="Screenshot 5" width="25%"> 
+  <img src="./assets/screenshot6.png" alt="Screenshot 6" width="25%"> 
 </div>
 
 ## Installation

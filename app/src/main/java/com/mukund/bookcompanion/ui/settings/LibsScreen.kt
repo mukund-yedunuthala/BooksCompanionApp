@@ -36,7 +36,7 @@ fun LibsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Open Source Libraries") },
+                title = { Text(text = stringResource(R.string.libs_title)) },
                 navigationIcon = {
                     IconButton(onClick = { backPress() }) {
                         Icon(

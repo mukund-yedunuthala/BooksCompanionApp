@@ -9,9 +9,12 @@ import androidx.navigation.NavType.Companion.IntType
 import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.mukund.bookcompanion.core.Constants.Companion.BACKUP_SCREEN
 import com.mukund.bookcompanion.core.Constants.Companion.BOOK_ID
-import com.mukund.bookcompanion.navigation.Screen.*
-import com.mukund.bookcompanion.ui.edit.EditScreen
+import com.mukund.bookcompanion.core.Constants.Companion.BOOKS_SCREEN
+import com.mukund.bookcompanion.core.Constants.Companion.LIBRARIES_SCREEN
+import com.mukund.bookcompanion.core.Constants.Companion.OVERVIEW_SCREEN
+import com.mukund.bookcompanion.core.Constants.Companion.SETTINGS_SCREEN
 import com.mukund.bookcompanion.ui.home.HomeScreen
 import com.mukund.bookcompanion.ui.overview.Overview
 import com.mukund.bookcompanion.ui.settings.SettingScreen
@@ -20,6 +23,13 @@ import com.mukund.bookcompanion.ui.settings.LibsScreen
 import com.mukund.bookcompanion.ui.settings.SettingsViewModel
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 
+/**
+ * Pure function extracted from NavGraph so it can be tested without Compose.
+ * Returns true when dark mode should be active.
+ */
+fun resolveTheme(followSystem: Boolean, userDark: Boolean, isSystemDark: Boolean): Boolean =
+    if (followSystem) isSystemDark else userDark
+
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -27,71 +37,47 @@ fun NavGraph(
 ) {
     val darkTheme = viewModel.hasUserDarkThemeEnabled
     val systemTheme = viewModel.followSystemTheme
-    val darkSetting = if (systemTheme) {
-        isSystemInDarkTheme()
-    }
-    else {
-        darkTheme
-    }
+    val darkSetting = resolveTheme(systemTheme, darkTheme, isSystemInDarkTheme())
     BooksCompanionTheme(darkTheme = darkSetting) {
         Surface {
             NavHost(
                 navController = navController,
-                startDestination = BooksScreen.route
+                startDestination = BOOKS_SCREEN
             ) {
                 // HOME
                 composable(
-                    route = BooksScreen.route,
+                    route = BOOKS_SCREEN,
                     enterTransition = customEnterTransition(),
-                    popEnterTransition = customPopEnterTransition(),
+                    popEnterTransition = customEnterTransition(),
                     exitTransition = customExitTransition()
                 ) {
                     HomeScreen(
                         navigateTo = {
-                            navController.navigate("${OverviewScreen.route}/${it}")
+                            navController.navigate("$OVERVIEW_SCREEN/${it}")
                         },
                         settings = {
-                            navController.navigate(SettingsScreen.route)
-                        }
-                    )
-                }
-                // UPDATE
-                composable(
-                    route = "${UpdateBookScreen.route}/{$BOOK_ID}",
-                    arguments = listOf(
-                        navArgument(BOOK_ID) {
-                            type = IntType
-                        },
-                    ),
-                    enterTransition = customEnterTransition(),
-                    popExitTransition = customPopExitTransition()
-                ) { navBackStackEntry ->
-                    val bookId = navBackStackEntry.arguments?.getInt(BOOK_ID) ?: 0
-                    EditScreen(
-                        bookId = bookId,
-                        backPress = {
-                            navController.popBackStack()
+                            navController.navigate(SETTINGS_SCREEN)
                         }
                     )
                 }
                 // SETTINGS
                 composable(
-                    route = SettingsScreen.route,
+                    route = SETTINGS_SCREEN,
                     enterTransition = customEnterTransition(),
                     exitTransition = customExitTransition(),
-                    popExitTransition = customPopExitTransition(),
-                    popEnterTransition = customPopEnterTransition()
+                    popExitTransition = customExitTransition(),
+                    popEnterTransition = customEnterTransition()
                 ) {
                     SettingScreen(
                         backPress = { navController.popBackStack() },
-                        libraries = { navController.navigate(LibrariesScreen.route) },
-                        backup = { navController.navigate(BackupScreen.route) }
+                        libraries = { navController.navigate(LIBRARIES_SCREEN) },
+                        backup = { navController.navigate(BACKUP_SCREEN) }
                     )
                 }
                 // OSS LIBS
                 composable(
-                    route = LibrariesScreen.route,
-                    popExitTransition = customPopExitTransition(),
+                    route = LIBRARIES_SCREEN,
+                    popExitTransition = customExitTransition(),
                     enterTransition = customEnterTransition()
                 ) {
                     LibsScreen {
@@ -100,7 +86,7 @@ fun NavGraph(
                 }
                 // OVERVIEW
                 composable(
-                    route = "${OverviewScreen.route}/{$BOOK_ID}",
+                    route = "$OVERVIEW_SCREEN/{$BOOK_ID}",
                     arguments = listOf(
                         navArgument(BOOK_ID) {
                             type = IntType
@@ -108,22 +94,19 @@ fun NavGraph(
                     ),
                     enterTransition = customEnterTransition(),
                     exitTransition = customExitTransition(),
-                    popExitTransition = customPopExitTransition(),
-                    popEnterTransition = customPopEnterTransition()
+                    popExitTransition = customExitTransition(),
+                    popEnterTransition = customEnterTransition()
                 ) { navBackStackEntry ->
                     val bookId = navBackStackEntry.arguments?.getInt(BOOK_ID) ?: 0
                     Overview(
                         bookId = bookId,
                         backPress = { navController.popBackStack() },
-                        navigateTo = {
-                            navController.navigate("${UpdateBookScreen.route}/${bookId}")
-                        }
                     )
                 }
                 // BACKUP
                 composable(
-                    route = BackupScreen.route,
-                    popExitTransition = customPopExitTransition(),
+                    route = BACKUP_SCREEN,
+                    popExitTransition = customExitTransition(),
                     enterTransition = customEnterTransition()
                 ) {
                     Backup_Screen { navController.popBackStack() }

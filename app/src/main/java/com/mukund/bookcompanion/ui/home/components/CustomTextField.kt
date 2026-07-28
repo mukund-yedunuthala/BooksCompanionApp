@@ -1,49 +1,179 @@
 package com.mukund.bookcompanion.ui.home.components
 
-import androidx.compose.foundation.text.KeyboardActions
+import com.mukund.bookcompanion.design.BookCompanionBorders
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.mukund.bookcompanion.design.CormorantGaramond
+import com.mukund.bookcompanion.design.IBMPlexSans
+import com.mukund.bookcompanion.ui.theme.AppType
+import com.mukund.bookcompanion.ui.theme.bookColors
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeParseException
 
+// ── Editorial text field ──────────────────────────────────────────────────────
 @Composable
-fun CustomAdditionTextField(
-    modifier: Modifier = Modifier,
-    text: String,
-    placeholder: String,
+fun EditorialTextField(
+    value: String,
     label: String,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    onChange: (String) -> Unit = {},
-    imeAction: ImeAction = ImeAction.Next,
+    placeholder: String,
+    onChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     keyboardType: KeyboardType = KeyboardType.Text,
-    keyboardActions: KeyboardActions = KeyboardActions(),
+    useSerif: Boolean = false,
+    singleLine: Boolean = true,
+    required: Boolean = false,
 ) {
-    OutlinedTextField(
-        value = text,
-        onValueChange = onChange,
-        label = { Text(label) },
-        placeholder = {
-            Text(
-                text = placeholder,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-            )
-        },
-        leadingIcon = leadingIcon,
-        textStyle = MaterialTheme.typography.bodyLarge,
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Words,
-            autoCorrectEnabled = false,
-            keyboardType = keyboardType,
-            imeAction = imeAction,
-        ),
-        keyboardActions = keyboardActions,
-        shape = MaterialTheme.shapes.large,
-        modifier = modifier,
-        singleLine = true,
-    )
+    var isFocused by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier.padding(bottom = 18.dp)) {
+        Text(
+            text = buildAnnotatedString {
+                append(label)
+                if (required) {
+                    withStyle(SpanStyle(color = bookColors.terracotta)) { append(" *") }
+                }
+            },
+            style = AppType.labelMicroMono,
+            color = bookColors.inkFaint,
+            modifier = Modifier.padding(bottom = 6.dp)
+        )
+        BasicTextField(
+            value = value,
+            onValueChange = onChange,
+            textStyle = TextStyle(
+                fontFamily = if (useSerif) CormorantGaramond else IBMPlexSans,
+                fontSize = if (useSerif) 20.sp else 15.sp,
+                fontWeight = if (useSerif) FontWeight.Medium else FontWeight.Normal,
+                color = bookColors.ink,
+            ),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            singleLine = singleLine,
+            minLines = if (singleLine) 1 else 3,
+            cursorBrush = SolidColor(bookColors.ink),
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged { isFocused = it.isFocused },
+            decorationBox = { inner ->
+                Column {
+                    Box(modifier = Modifier.padding(bottom = 8.dp)) {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = placeholder,
+                                fontFamily = if (useSerif) CormorantGaramond else IBMPlexSans,
+                                fontSize = if (useSerif) 20.sp else 15.sp,
+                                color = bookColors.inkFaint,
+                            )
+                        }
+                        inner()
+                    }
+                    // Hairline underline — animates from rule to ink on focus
+                    HorizontalDivider(
+                        color = if (isFocused) bookColors.ink
+                        else bookColors.rule,
+                        thickness = BookCompanionBorders.hairline
+                    )
+                }
+            }
+        )
+    }
 }
+
+// ── Editorial date field ───────────────────────────────────────────────────────
+// Same visual language as EditorialTextField, but tapping opens a date picker so
+// the stored value is always a valid ISO (yyyy-MM-dd) string.
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditorialDateField(
+    value: String,
+    label: String,
+    placeholder: String,
+    onChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var showPicker by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier.padding(bottom = 18.dp)) {
+        Text(
+            text = label,
+            style = AppType.labelMicroMono,
+            color = bookColors.inkFaint,
+            modifier = Modifier.padding(bottom = 6.dp)
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { showPicker = true }
+        ) {
+            Box(modifier = Modifier.padding(bottom = 8.dp)) {
+                Text(
+                    text = value.ifEmpty { placeholder },
+                    fontFamily = IBMPlexSans,
+                    fontSize = 15.sp,
+                    color = if (value.isEmpty()) bookColors.inkFaint else bookColors.ink,
+                )
+            }
+            HorizontalDivider(color = bookColors.rule, thickness = BookCompanionBorders.hairline)
+        }
+    }
+
+    if (showPicker) {
+        val state = rememberDatePickerState(initialSelectedDateMillis = parseIsoDateToMillis(value))
+        DatePickerDialog(
+            onDismissRequest = { showPicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    state.selectedDateMillis?.let { onChange(millisToIsoDate(it)) }
+                    showPicker = false
+                }) { Text(stringResource(android.R.string.ok)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showPicker = false }) {
+                    Text(stringResource(android.R.string.cancel))
+                }
+            }
+        ) {
+            DatePicker(state = state)
+        }
+    }
+}
+
+private fun parseIsoDateToMillis(value: String): Long? = try {
+    if (value.isBlank()) null
+    else LocalDate.parse(value).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+} catch (e: DateTimeParseException) {
+    null
+}
+
+private fun millisToIsoDate(millis: Long): String =
+    Instant.ofEpochMilli(millis).atZone(ZoneOffset.UTC).toLocalDate().toString()

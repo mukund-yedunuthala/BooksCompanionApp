@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -5,28 +7,43 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.aboutLibraries)
 }
+
+val keystorePropsFile = rootProject.file("keystore.properties")
+val signingProps: Properties? = if (keystorePropsFile.exists()) {
+    Properties().apply { load(keystorePropsFile.inputStream()) }
+} else null
+
 android {
     namespace = "com.mukund.bookcompanion"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId="com.mukund.bookcompanion"
-        minSdk=29
+        minSdk=31
         targetSdk=36
-        versionCode= 29
-        versionName= "0.2.2"
+        versionCode= 33
+        versionName= "1.0.1"
 
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-        versionNameSuffix = ""
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile     = signingProps?.getProperty("storeFile")?.takeIf { it.isNotBlank() }?.let { rootProject.file(it) }
+            storePassword = signingProps?.getProperty("storePassword")?.takeIf { it.isNotBlank() }
+            keyAlias      = signingProps?.getProperty("keyAlias")?.takeIf { it.isNotBlank() }
+            keyPassword   = signingProps?.getProperty("keyPassword")?.takeIf { it.isNotBlank() }
+        }
+    }
 
     buildTypes {
         release {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -48,17 +65,23 @@ android {
         generateLocaleConfig = true
     }
     buildToolsVersion = "36.0.0"
+
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
+configurations.configureEach {
+    // Hilt 2.59.2 bundles kotlin-metadata-jvm:2.2.20 (max metadata 2.3.0).
+    // Kotlin 2.3.x generates metadata 2.4.0, so force the matching version.
+    resolutionStrategy.force("org.jetbrains.kotlin:kotlin-metadata-jvm:${libs.versions.kotlin.get()}")
+}
 dependencies {
-    // AppCompat
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.appcompat.resources)
-
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -67,9 +90,6 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-    // Navigation
-    implementation(libs.androidx.navigation.ui.ktx)
 
     // Room
     implementation(libs.androidx.room.runtime)
@@ -83,7 +103,6 @@ dependencies {
     // Compose
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.runtime)
 
     // AboutLibraries
     implementation(libs.aboutlibraries.core)
@@ -102,5 +121,10 @@ dependencies {
 
     // Others
     implementation(libs.androidx.activity.ktx)
-    implementation(libs.accompanist.systemuicontroller)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.robolectric)
 }
