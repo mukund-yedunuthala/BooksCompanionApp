@@ -3,6 +3,8 @@
   <h1>Book Companion</h1>
 </div>
 
+[![AI-DECLARATION: copilot](https://img.shields.io/badge/䷼%20AI--DECLARATION-copilot-fee2e2?labelColor=fee2e2)](https://ai-declaration.md)
+
 <p align="center">
   <img alt="License" src="https://img.shields.io/github/license/mukund-yedunuthala/BooksCompanionApp">
   <a href="https://github.com/mukund-yedunuthala/BooksCompanionApp/actions/workflows/gradle-publish.yml">
