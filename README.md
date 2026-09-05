@@ -4,13 +4,7 @@
 </div>
 
 [![AI-DECLARATION: copilot](https://img.shields.io/badge/䷼%20AI--DECLARATION-copilot-fee2e2?labelColor=fee2e2)](https://ai-declaration.md)
-
-<p align="center">
-  <img alt="License" src="https://img.shields.io/github/license/mukund-yedunuthala/BooksCompanionApp">
-  <a href="https://github.com/mukund-yedunuthala/BooksCompanionApp/actions/workflows/gradle-publish.yml">
-    <img src="https://github.com/mukund-yedunuthala/BooksCompanionApp/actions/workflows/gradle-publish.yml/badge.svg" alt="Build CI/CD">
-  </a>
-</p>
+[![LICENSE: GPL-3.0](https://img.shields.io/github/license/mukund-yedunuthala/BooksCompanionApp)]()
 
 Book Companion is a local Android app for keeping track of your reading library. It is a hobby project and remains a work in progress.
 
