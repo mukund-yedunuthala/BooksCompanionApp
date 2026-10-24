@@ -25,15 +25,10 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.mukund.bookcompanion.design.CormorantGaramond
-import com.mukund.bookcompanion.design.IBMPlexSans
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 import java.time.Instant
@@ -61,7 +56,7 @@ fun EditorialTextField(
             text = buildAnnotatedString {
                 append(label)
                 if (required) {
-                    withStyle(SpanStyle(color = bookColors.terracotta)) { append(" *") }
+                    withStyle(SpanStyle(color = bookColors.terracottaText)) { append(" *") }
                 }
             },
             style = AppType.labelMicroMono,
@@ -71,12 +66,8 @@ fun EditorialTextField(
         BasicTextField(
             value = value,
             onValueChange = onChange,
-            textStyle = TextStyle(
-                fontFamily = if (useSerif) CormorantGaramond else IBMPlexSans,
-                fontSize = if (useSerif) 20.sp else 15.sp,
-                fontWeight = if (useSerif) FontWeight.Medium else FontWeight.Normal,
-                color = bookColors.ink,
-            ),
+            textStyle = (if (useSerif) AppType.inputSerif else AppType.input)
+                .copy(color = bookColors.ink),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             singleLine = singleLine,
             minLines = if (singleLine) 1 else 3,
@@ -90,8 +81,7 @@ fun EditorialTextField(
                         if (value.isEmpty()) {
                             Text(
                                 text = placeholder,
-                                fontFamily = if (useSerif) CormorantGaramond else IBMPlexSans,
-                                fontSize = if (useSerif) 20.sp else 15.sp,
+                                style = if (useSerif) AppType.inputSerif else AppType.input,
                                 color = bookColors.inkFaint,
                             )
                         }
@@ -138,8 +128,7 @@ fun EditorialDateField(
             Box(modifier = Modifier.padding(bottom = 8.dp)) {
                 Text(
                     text = value.ifEmpty { placeholder },
-                    fontFamily = IBMPlexSans,
-                    fontSize = 15.sp,
+                    style = AppType.input,
                     color = if (value.isEmpty()) bookColors.inkFaint else bookColors.ink,
                 )
             }

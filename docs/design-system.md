@@ -16,14 +16,28 @@ Raw color values. Never reference these directly in Composables.
 | `paperDeep` | `#EBE1CE` | Elevated surfaces, cards |
 | `ink` | `#1C1814` | Primary text |
 | `inkSoft` | `#4A3F36` | Secondary text, icons |
-| `inkFaint` | `#8B7E6F` | Placeholder, disabled text |
+| `inkFaint` | `#6F6152` | Secondary labels, placeholders |
 | `rule` | `#D8CBB2` | Dividers, borders |
 | `ruleSoft` | `#E5DCC7` | Subtle separators |
-| `terracotta` | `#B8543E` | Accent — actions, highlights |
+| `terracotta` | `#B8543E` | Accent — icons, indicators, highlights |
+| `terracottaText` | `#A14432` | Accessible terracotta text |
 | `sage` | `#6B7F5A` | Accent — positive states |
 | `ochre` | `#B8893E` | Accent — warnings, emphasis |
 
-**Dark** — same semantic slots, different values. `terracotta`, `sage`, `ochre` are shared (work on both backgrounds).
+**Dark**
+
+| Token | Hex | Role |
+|---|---|---|
+| `paper` | `#1A1410` | Primary background |
+| `paperDeep` | `#2A2420` | Elevated surfaces, cards |
+| `ink` | `#E8DCC8` | Primary text |
+| `inkSoft` | `#B8A894` | Secondary text, icons |
+| `inkFaint` | `#A79A8A` | Secondary labels, placeholders |
+| `rule` | `#3D3530` | Dividers, borders |
+| `ruleSoft` | `#2E2924` | Subtle separators |
+| `terracottaText` | `#D27A64` | Accessible terracotta text |
+
+`terracotta`, `sage`, and `ochre` are shared across themes for accents and non-text indicators. Use `terracottaText` for text to retain contrast in both modes.
 
 ### Scheme (`BookCompanionColorScheme`)
 
@@ -46,7 +60,7 @@ val colors = LocalBookCompanionColors.current
 
 ### Rules
 - Always use semantic tokens (`ink`, `paper`, `rule`) — not raw hex.
-- Accents (`terracotta`, `sage`, `ochre`) are the same in light and dark; use them for interactive and status states.
+- Accents (`terracotta`, `sage`, `ochre`) are the same in light and dark; use them for icons and status indicators. Use `terracottaText` for terracotta-colored text.
 - `paperDeep` is for elevated surfaces (cards, bottom sheet interiors) — not for full-screen backgrounds.
 
 ---

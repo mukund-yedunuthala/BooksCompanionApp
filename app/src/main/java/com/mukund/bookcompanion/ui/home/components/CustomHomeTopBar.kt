@@ -5,6 +5,7 @@ import com.mukund.bookcompanion.design.BookCompanionSpacing
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -242,7 +244,9 @@ fun FilterTabs(
     val haptic = LocalHapticFeedback.current
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         categories.forEach { category ->
@@ -282,7 +286,7 @@ fun FilterTabs(
                     Text(
                         text = count.toString().padStart(2, '0'),
                         style = AppType.labelMicroMono,
-                        color = if (isActive) bookColors.terracotta else bookColors.inkFaint,
+                        color = if (isActive) bookColors.terracottaText else bookColors.inkFaint,
                     )
                 }
                 Box(

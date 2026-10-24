@@ -19,10 +19,11 @@ object BookCompanionColors {
     val paperDeep    = Color(0xFFEBE1CE)
     val ink          = Color(0xFF1C1814)
     val inkSoft      = Color(0xFF4A3F36)
-    val inkFaint     = Color(0xFF8B7E6F)
+    val inkFaint     = Color(0xFF6F6152)
     val rule         = Color(0xFFD8CBB2)
     val ruleSoft     = Color(0xFFE5DCC7)
     val terracotta   = Color(0xFFB8543E)
+    val terracottaText = Color(0xFFA14432)
     val sage         = Color(0xFF6B7F5A)
     val ochre        = Color(0xFFB8893E)
 
@@ -31,7 +32,7 @@ object BookCompanionColors {
     val darkPaperDeep  = Color(0xFF2A2420)
     val darkInk        = Color(0xFFE8DCC8)
     val darkInkSoft    = Color(0xFFB8A894)
-    val darkInkFaint   = Color(0xFF7A6F64)
+    val darkInkFaint   = Color(0xFFA79A8A)
     val darkRule       = Color(0xFF3D3530)
     val darkRuleSoft   = Color(0xFF2E2924)
 
@@ -49,6 +50,7 @@ data class BookCompanionColorScheme(
     val rule: Color,
     val ruleSoft: Color,
     val terracotta: Color,
+    val terracottaText: Color,
     val sage: Color,
     val ochre: Color,
 )
@@ -62,6 +64,7 @@ val LightColorScheme = BookCompanionColorScheme(
     rule       = BookCompanionColors.rule,
     ruleSoft   = BookCompanionColors.ruleSoft,
     terracotta = BookCompanionColors.terracotta,
+    terracottaText = BookCompanionColors.terracottaText,
     sage       = BookCompanionColors.sage,
     ochre      = BookCompanionColors.ochre,
 )
@@ -75,6 +78,7 @@ val DarkColorScheme = BookCompanionColorScheme(
     rule       = BookCompanionColors.darkRule,
     ruleSoft   = BookCompanionColors.darkRuleSoft,
     terracotta = BookCompanionColors.terracotta,
+    terracottaText = Color(0xFFD27A64),
     sage       = BookCompanionColors.sage,
     ochre      = BookCompanionColors.ochre,
 )

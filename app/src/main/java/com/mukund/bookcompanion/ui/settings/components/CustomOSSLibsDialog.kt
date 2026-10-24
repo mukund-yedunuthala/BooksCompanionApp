@@ -56,7 +56,7 @@ fun CustomURLDialog(
                                 style = SpanStyle(
                                     fontFamily = JetBrainsMono,
                                     fontSize = 11.sp,
-                                    color = bookColors.terracotta,
+                                    color = bookColors.terracottaText,
                                     textDecoration = TextDecoration.Underline,
                                 )
                             )

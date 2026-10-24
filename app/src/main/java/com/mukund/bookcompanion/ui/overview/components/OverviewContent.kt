@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -198,6 +199,7 @@ fun OverviewContent(
             Box(
                 modifier = Modifier
                     .weight(1f)
+                    .heightIn(min = 48.dp)
                     .background(color = bookColors.ink)
                     .clickable(role = Role.Button) { showEditSheet = true }
                     .padding(vertical = 14.dp),
@@ -225,6 +227,7 @@ fun OverviewContent(
             Box(
                 modifier = Modifier
                     .weight(1f)
+                    .heightIn(min = 48.dp)
                     .border(width = BookCompanionBorders.hairline, color = bookColors.rule)
                     .clickable(role = Role.Button) { showDeleteDialog = true }
                     .padding(vertical = 14.dp),
@@ -279,7 +282,7 @@ fun OverviewContent(
                         Text(
                             text = stringResource(R.string.delete_confirm),
                             style = AppType.labelSmall,
-                            color = bookColors.terracotta,
+                            color = bookColors.terracottaText,
                         )
                     }
                 },

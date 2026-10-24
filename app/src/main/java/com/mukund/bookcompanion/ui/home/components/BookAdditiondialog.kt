@@ -248,7 +248,7 @@ fun BookAdditionBottomSheet(
                     text = if (isDuplicate) stringResource(R.string.sheet_duplicate, title)
                     else stringResource(R.string.sheet_required_hint),
                     style = AppType.labelSmallLight,
-                    color = if (isDuplicate) bookColors.terracotta
+                    color = if (isDuplicate) bookColors.terracottaText
                     else bookColors.inkFaint,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
