@@ -21,8 +21,8 @@ android {
         applicationId="com.mukund.bookcompanion"
         minSdk=31
         targetSdk=36
-        versionCode= 34
-        versionName= "1.0.2"
+        versionCode= 35
+        versionName= "1.0.3"
 
     }
 
