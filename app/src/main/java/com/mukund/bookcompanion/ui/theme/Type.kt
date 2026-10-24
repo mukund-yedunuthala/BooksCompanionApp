@@ -124,6 +124,22 @@ object AppType {
         letterSpacing = 0.02.sp,
     )
 
+    /** 15 sp · Regular — standard form input and date-field values */
+    val input = TextStyle(
+        fontFamily = IBMPlexSans,
+        fontWeight = FontWeight.Normal,
+        fontSize   = 15.sp,
+        lineHeight  = 22.sp,
+    )
+
+    /** 20 sp · Medium — title input */
+    val inputSerif = TextStyle(
+        fontFamily = CormorantGaramond,
+        fontWeight = FontWeight.Medium,
+        fontSize   = 20.sp,
+        lineHeight  = 24.sp,
+    )
+
     /** 12 sp · Medium — filter-tab active labels */
     val labelSmall = TextStyle(
         fontFamily = IBMPlexSans,
