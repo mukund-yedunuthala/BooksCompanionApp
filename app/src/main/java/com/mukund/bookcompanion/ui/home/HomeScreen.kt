@@ -16,7 +16,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mukund.bookcompanion.ui.home.components.CustomBottomBar
-import com.mukund.bookcompanion.ui.home.components.CustomHomeTopBarNew
+import com.mukund.bookcompanion.ui.home.components.HomeBrandingHeader
+import com.mukund.bookcompanion.ui.home.components.HomeFilterHeader
+import com.mukund.bookcompanion.ui.home.components.HomeTopBarControls
 import com.mukund.bookcompanion.ui.home.components.HomeContent
 import com.mukund.bookcompanion.ui.theme.bookColors
 import com.mukund.bookcompanion.ui.home.SortOption
@@ -46,16 +48,8 @@ fun HomeScreen(
         containerColor = bookColors.paper,
         contentWindowInsets = WindowInsets(0),
         topBar = {
-            CustomHomeTopBarNew(
+            HomeTopBarControls(
                 settings = settings,
-                categories = BookCategory.entries.toTypedArray(),
-                currentCategory = currentCategory,
-                setCurrentCategory = { currentCategory = it },
-                visibleStateAll = visibleStateAll,
-                visibleStateRead = visibleStateRead,
-                visibleStateUnread = visibleStateUnread,
-                visibleStateReading = visibleStateReading,
-                books = viewModel.books,
                 sortOption = viewModel.sortOption,
                 onSortClick = {
                     val next = SortOption.entries[(viewModel.sortOption.ordinal + 1) % SortOption.entries.size]
@@ -79,6 +73,15 @@ fun HomeScreen(
             visibleStateRead = visibleStateRead,
             visibleStateUnread = visibleStateUnread,
             visibleStateReading = visibleStateReading,
+            header = { HomeBrandingHeader(viewModel.books) },
+            filterHeader = {
+                HomeFilterHeader(
+                    categories = BookCategory.entries.toTypedArray(),
+                    currentCategory = currentCategory,
+                    setCurrentCategory = { currentCategory = it },
+                    books = viewModel.books,
+                )
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),

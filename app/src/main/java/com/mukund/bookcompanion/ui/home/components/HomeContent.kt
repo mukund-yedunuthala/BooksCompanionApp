@@ -33,6 +33,8 @@ fun HomeContent(
     visibleStateRead: MutableTransitionState<Boolean>,
     visibleStateUnread: MutableTransitionState<Boolean>,
     visibleStateReading: MutableTransitionState<Boolean>,
+    header: @Composable () -> Unit,
+    filterHeader: @Composable () -> Unit,
     modifier: Modifier,
 ) {
     val filtered = remember(books, currentCategory) {
@@ -44,33 +46,42 @@ fun HomeContent(
         }
     }
 
-    if (filtered.isEmpty()) {
-        EmptyState(currentCategory = currentCategory, modifier = modifier)
-        return
-    }
-
     LazyColumn(
         modifier = modifier
     ) {
-        itemsIndexed(
-            items = filtered,
-            key = { _, book -> book.id }
-        ) { index, book ->
-            val itemModifier = Modifier.animateItem(
-                fadeInSpec = null, fadeOutSpec = null, placementSpec = tween(400)
-            )
-            CustomBookCardNew(
-                book = book,
-                navigateTo = navigateTo,
-                modifier = itemModifier,
-                index = index,
-                visibleState = when (currentCategory) {
-                    BookCategory.All -> visibleStateAll
-                    BookCategory.Read -> visibleStateRead
-                    BookCategory.Unread -> visibleStateUnread
-                    BookCategory.Reading -> visibleStateReading
-                },
-            )
+        item(key = "home-branding") { header() }
+        stickyHeader(key = "home-filters") { filterHeader() }
+
+        if (filtered.isEmpty()) {
+            item(key = "home-empty-state") {
+                EmptyState(
+                    currentCategory = currentCategory,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 160.dp),
+                )
+            }
+        } else {
+            itemsIndexed(
+                items = filtered,
+                key = { _, book -> book.id }
+            ) { index, book ->
+                val itemModifier = Modifier.animateItem(
+                    fadeInSpec = null, fadeOutSpec = null, placementSpec = tween(400)
+                )
+                CustomBookCardNew(
+                    book = book,
+                    navigateTo = navigateTo,
+                    modifier = itemModifier,
+                    index = index,
+                    visibleState = when (currentCategory) {
+                        BookCategory.All -> visibleStateAll
+                        BookCategory.Read -> visibleStateRead
+                        BookCategory.Unread -> visibleStateUnread
+                        BookCategory.Reading -> visibleStateReading
+                    },
+                )
+            }
         }
     }
 }

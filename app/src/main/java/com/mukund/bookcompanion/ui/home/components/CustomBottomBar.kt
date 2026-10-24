@@ -3,17 +3,8 @@ package com.mukund.bookcompanion.ui.home.components
 import com.mukund.bookcompanion.design.BookCompanionBorders
 import com.mukund.bookcompanion.design.BookCompanionRadius
 import com.mukund.bookcompanion.design.BookCompanionSpacing
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -56,8 +46,6 @@ fun CustomBottomBar(
         containerColor = bookColors.paper,
         contentPadding = PaddingValues(horizontal = BookCompanionSpacing.gutter, vertical = 0.dp),
         modifier = Modifier
-            .height(76.dp)
-            .windowInsetsPadding(WindowInsets.navigationBars)
             .drawBehind {
                 // Hairline top border replacing Material's default elevation shadow
                 drawLine(

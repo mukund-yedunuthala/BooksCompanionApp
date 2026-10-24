@@ -2,27 +2,22 @@ package com.mukund.bookcompanion.ui.home.components
 
 import com.mukund.bookcompanion.design.BookCompanionBorders
 import com.mukund.bookcompanion.design.BookCompanionSpacing
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -33,11 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.domain.model.Book
@@ -46,18 +43,10 @@ import com.mukund.bookcompanion.ui.home.SortOption
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun CustomHomeTopBarNew(
+fun HomeTopBarControls(
     settings: () -> Unit,
-    categories: Array<BookCategory>,
-    currentCategory: BookCategory,
-    setCurrentCategory: (BookCategory) -> Unit,
-    visibleStateAll: MutableTransitionState<Boolean>,
-    visibleStateRead: MutableTransitionState<Boolean>,
-    visibleStateUnread: MutableTransitionState<Boolean>,
-    visibleStateReading: MutableTransitionState<Boolean>,
-    books: List<Book>,
     sortOption: SortOption,
     onSortClick: () -> Unit,
 ) {
@@ -76,11 +65,9 @@ fun CustomHomeTopBarNew(
 
             // ── Month/year micro bar ──────────────────────────────
             val monthYearPattern = stringResource(R.string.home_month_year_pattern)
-            val monthYear = remember(monthYearPattern) {
-                java.time.LocalDate.now()
-                    .format(java.time.format.DateTimeFormatter.ofPattern(monthYearPattern))
-                    .uppercase()
-            }
+            val monthYear = java.time.LocalDate.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern(monthYearPattern))
+                .uppercase()
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -136,6 +123,18 @@ fun CustomHomeTopBarNew(
                 }
             }
 
+        }
+    }
+}
+
+@Composable
+fun HomeBrandingHeader(books: List<Book>) {
+    Surface(color = bookColors.paper) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = BookCompanionSpacing.gutter)
+        ) {
             // ── Wordmark ──────────────────────────────────────────
             Text(
                 text = stringResource(R.string.home_wordmark_line1),
@@ -206,27 +205,31 @@ fun CustomHomeTopBarNew(
                 }
             }
 
-            // ── Hairline divider ──────────────────────────────────
             HorizontalDivider(
                 color = bookColors.rule,
                 thickness = BookCompanionBorders.hairline,
             )
-
-            // ── Filter tabs ───────────────────────────────────────
-            FilterTabs(
-                categories = categories,
-                currentCategory = currentCategory,
-                setCurrentCategory = { selected ->
-                    setCurrentCategory(selected)
-                    visibleStateAll.targetState = false
-                    visibleStateRead.targetState = false
-                    visibleStateUnread.targetState = false
-                    visibleStateReading.targetState = false
-                },
-                modifier = Modifier.padding(vertical = 4.dp),
-                books = books
-            )
         }
+    }
+}
+
+@Composable
+fun HomeFilterHeader(
+    categories: Array<BookCategory>,
+    currentCategory: BookCategory,
+    setCurrentCategory: (BookCategory) -> Unit,
+    books: List<Book>,
+) {
+    Surface(color = bookColors.paper) {
+        FilterTabs(
+            categories = categories,
+            currentCategory = currentCategory,
+            setCurrentCategory = setCurrentCategory,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = BookCompanionSpacing.gutter, vertical = 4.dp),
+            books = books,
+        )
     }
 }
 
@@ -246,7 +249,8 @@ fun FilterTabs(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
+            .horizontalScroll(rememberScrollState())
+            .selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         categories.forEach { category ->
@@ -258,9 +262,12 @@ fun FilterTabs(
                 }
             }
 
+            val activeColor = bookColors.ink
             Column(
                 modifier = Modifier
-                    .clickable(
+                    .selectable(
+                        selected = isActive,
+                        role = Role.Tab,
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
@@ -270,7 +277,19 @@ fun FilterTabs(
                         }
                     }
                     .heightIn(min = 48.dp)
-                    .padding(end = 20.dp, top = 4.dp, bottom = 4.dp),
+                    .padding(end = 20.dp, top = 4.dp, bottom = 4.dp)
+                    .drawBehind {
+                        if (isActive) {
+                            val strokeWidth = 1.5.dp.toPx()
+                            val y = size.height - strokeWidth / 2
+                            drawLine(
+                                color = activeColor,
+                                start = Offset(0f, y),
+                                end = Offset(size.width, y),
+                                strokeWidth = strokeWidth,
+                            )
+                        }
+                    },
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -289,16 +308,6 @@ fun FilterTabs(
                         color = if (isActive) bookColors.terracottaText else bookColors.inkFaint,
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .wrapContentWidth()
-                        .height(1.5.dp)
-                        .background(
-                            color = if (isActive) bookColors.ink
-                            else Color.Transparent
-                        )
-                )
             }
         }
     }
