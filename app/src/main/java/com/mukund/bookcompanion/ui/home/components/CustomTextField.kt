@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,6 +29,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
@@ -74,6 +78,7 @@ fun EditorialTextField(
             cursorBrush = SolidColor(bookColors.ink),
             modifier = Modifier
                 .fillMaxWidth()
+                .semantics { contentDescription = label }
                 .onFocusChanged { isFocused = it.isFocused },
             decorationBox = { inner ->
                 Column {
@@ -123,7 +128,12 @@ fun EditorialDateField(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { showPicker = true }
+                .heightIn(min = 48.dp)
+                .clickable(onClickLabel = label, role = Role.Button) { showPicker = true }
+                .semantics {
+                    contentDescription = "$label, ${value.ifEmpty { placeholder }}"
+                },
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
             Box(modifier = Modifier.padding(bottom = 8.dp)) {
                 Text(

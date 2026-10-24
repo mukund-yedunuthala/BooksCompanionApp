@@ -4,7 +4,8 @@ import com.mukund.bookcompanion.design.BookCompanionBorders
 import com.mukund.bookcompanion.design.BookCompanionSpacing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -37,7 +38,9 @@ fun CategoryButtonGroupNew(
     val categories = listOf(BookCategory.Unread, BookCategory.Reading, BookCategory.Read)
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         categories.forEach { category ->
@@ -54,7 +57,10 @@ fun CategoryButtonGroupNew(
                         color = if (isActive) bookColors.ink
                         else Color.Transparent
                     )
-                    .clickable(role = Role.RadioButton) {
+                    .selectable(
+                        selected = isActive,
+                        role = Role.RadioButton,
+                    ) {
                         haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                         onCategorySelect(category.statusLabel.orEmpty())
                     }

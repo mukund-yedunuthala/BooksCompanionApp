@@ -20,10 +20,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +40,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.domain.model.Book
+import com.mukund.bookcompanion.ui.home.BookCategory
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 import kotlinx.coroutines.launch
@@ -55,34 +56,38 @@ fun BookAdditionBottomSheet(
     val isEditMode = bookToEdit != null
     val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
 
     var title       by rememberSaveable { mutableStateOf(bookToEdit?.title        ?: "") }
     var author      by rememberSaveable { mutableStateOf(bookToEdit?.author       ?: "") }
-    var year        by rememberSaveable { mutableStateOf(bookToEdit?.year?.toString() ?: "") }
+    var year        by rememberSaveable {
+        mutableStateOf(bookToEdit?.year?.takeIf { it != 0L }?.toString() ?: "")
+    }
     var genre       by rememberSaveable { mutableStateOf(bookToEdit?.genre        ?: "") }
     var isbn        by rememberSaveable { mutableStateOf(bookToEdit?.isbn         ?: "") }
-    var category    by rememberSaveable { mutableStateOf(bookToEdit?.status       ?: "Unread") }
+    var category    by rememberSaveable {
+        mutableStateOf(bookToEdit?.status ?: BookCategory.Unread.statusLabel.orEmpty())
+    }
     var language    by rememberSaveable { mutableStateOf(bookToEdit?.language     ?: "") }
     var notes       by rememberSaveable { mutableStateOf(bookToEdit?.notes        ?: "") }
     var dateStarted by rememberSaveable { mutableStateOf(bookToEdit?.dateStarted  ?: "") }
     var dateFinished by rememberSaveable { mutableStateOf(bookToEdit?.dateFinished ?: "") }
 
-    val isDuplicate by remember {
-        derivedStateOf {
-            if (isEditMode) false  // editing existing — skip duplicate check
-            else books.any { book ->
-                book.title.equals(title, ignoreCase = true) &&
-                        book.author.equals(author, ignoreCase = true) &&
-                        book.year.toString() == year
+    val isDuplicate = remember(books, title, author, year, isEditMode) {
+        if (isEditMode) false
+        else {
+            val normalizedTitle = title.trim()
+            val normalizedAuthor = author.trim()
+            val normalizedYear = year.toLongOrNull() ?: 0L
+            books.any { book ->
+                book.title.trim().equals(normalizedTitle, ignoreCase = true) &&
+                    book.author.trim().equals(normalizedAuthor, ignoreCase = true) &&
+                    book.year == normalizedYear
             }
         }
     }
-    val isValid by remember {
-        derivedStateOf {
-            title.isNotBlank() && author.isNotBlank() && !isDuplicate
-        }
-    }
+    val isYearValid = year.isBlank() || year.toLongOrNull() != null
+    val isValid = title.isNotBlank() && author.isNotBlank() && isYearValid && !isDuplicate
 
     val closeSheet: () -> Unit = {
         scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -245,10 +250,13 @@ fun BookAdditionBottomSheet(
 
                 // ── Validation message ────────────────────────
                 Text(
-                    text = if (isDuplicate) stringResource(R.string.sheet_duplicate, title)
-                    else stringResource(R.string.sheet_required_hint),
+                    text = when {
+                        !isYearValid -> stringResource(R.string.sheet_invalid_year)
+                        isDuplicate -> stringResource(R.string.sheet_duplicate, title.trim())
+                        else -> stringResource(R.string.sheet_required_hint)
+                    },
                     style = AppType.labelSmallLight,
-                    color = if (isDuplicate) bookColors.terracottaText
+                    color = if (isDuplicate || !isYearValid) bookColors.terracottaText
                     else bookColors.inkFaint,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
@@ -267,12 +275,12 @@ fun BookAdditionBottomSheet(
                             haptic.performHapticFeedback(HapticFeedbackType.Confirm)
                             if (isEditMode) {
                                 updateBook(
-                                    bookToEdit!!.copy(
-                                        title        = title,
-                                        author       = author,
-                                        genre        = genre,
-                                        isbn         = isbn,
-                                        year         = year.toLongOrNull() ?: bookToEdit.year,
+                                    bookToEdit.copy(
+                                        title        = title.trim(),
+                                        author       = author.trim(),
+                                        genre        = genre.trim(),
+                                        isbn         = isbn.trim(),
+                                        year         = year.toLongOrNull() ?: 0L,
                                         status       = category,
                                         language     = language.trimToNull(),
                                         notes        = notes.trimToNull(),
@@ -284,10 +292,10 @@ fun BookAdditionBottomSheet(
                                 addBook(
                                     Book(
                                         id           = 0,
-                                        title        = title,
-                                        author       = author,
-                                        genre        = genre,
-                                        isbn         = isbn,
+                                        title        = title.trim(),
+                                        author       = author.trim(),
+                                        genre        = genre.trim(),
+                                        isbn         = isbn.trim(),
                                         year         = year.toLongOrNull() ?: 0L,
                                         status       = category,
                                         language     = language.trimToNull(),
