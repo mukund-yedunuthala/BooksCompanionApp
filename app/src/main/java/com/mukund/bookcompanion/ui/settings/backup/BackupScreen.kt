@@ -31,6 +31,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -47,6 +49,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.io.IOException
 import com.mukund.bookcompanion.ui.home.BooksViewModel
 import com.mukund.bookcompanion.ui.settings.components.CustomEntryButton
 import java.text.SimpleDateFormat
@@ -69,29 +72,11 @@ fun Backup_Screen(
         viewModel.getBooks()
     }
 
-    val importUriState = remember { mutableStateOf<Uri?>(null) }
+    var pendingRestoreUri by remember { mutableStateOf<Uri?>(null) }
     val importLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
-                importUriState.value = uri
-                scope.launch(Dispatchers.IO) {
-                    val result = importBackupFile(viewModel, context.contentResolver, uri)
-                    val message = when (result) {
-                        is ImportResult.Success ->
-                            context.getString(R.string.backup_import_success, result.count)
-                        ImportResult.EmptyStream ->
-                            context.getString(R.string.backup_import_error_unreadable)
-                        ImportResult.FileTooLarge ->
-                            context.getString(R.string.backup_import_error_too_large)
-                        ImportResult.Malformed ->
-                            context.getString(R.string.backup_import_error_invalid)
-                        ImportResult.RestoreFailed ->
-                            context.getString(R.string.backup_import_error_restore)
-                    }
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    }
-                }
+                pendingRestoreUri = uri
             }
         }
     val activityResultLauncher =
@@ -100,13 +85,21 @@ fun Backup_Screen(
                 val uri = result.data?.data
                 uri?.let { backupUri ->
                     scope.launch(Dispatchers.IO) {
-                        val books = viewModel.getBooksSnapshot()
-                        val result = performBackup(resolver, books, backupUri)
+                        val result = try {
+                            val books = viewModel.getBooksSnapshot()
+                            performBackup(resolver, books, backupUri)
+                        } catch (cancelled: CancellationException) {
+                            throw cancelled
+                        } catch (_: Exception) {
+                            ExportResult.Failure
+                        }
                         val message = when (result) {
                             ExportResult.Success ->
                                 context.getString(R.string.backup_export_success)
-                            ExportResult.NoOutputStream ->
+                            ExportResult.NoOutputStream, ExportResult.Failure ->
                                 context.getString(R.string.backup_export_error)
+                            ExportResult.FileTooLarge ->
+                                context.getString(R.string.backup_export_error_too_large)
                         }
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -188,14 +181,60 @@ fun Backup_Screen(
             }
         }
     }
+
+    pendingRestoreUri?.let { uri ->
+        AlertDialog(
+            onDismissRequest = { pendingRestoreUri = null },
+            containerColor = bookColors.paper,
+            title = { Text(stringResource(R.string.backup_restore_warning_title)) },
+            text = { Text(stringResource(R.string.backup_restore_warning_body)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        pendingRestoreUri = null
+                        scope.launch(Dispatchers.IO) {
+                            val result = try {
+                                importBackupFile(viewModel, resolver, uri)
+                            } catch (cancelled: CancellationException) {
+                                throw cancelled
+                            } catch (_: Exception) {
+                                ImportResult.IoFailure
+                            }
+                            val message = when (result) {
+                                is ImportResult.Success ->
+                                    context.getString(R.string.backup_import_success, result.count)
+                                ImportResult.EmptyStream, ImportResult.IoFailure ->
+                                    context.getString(R.string.backup_import_error_unreadable)
+                                ImportResult.FileTooLarge ->
+                                    context.getString(R.string.backup_import_error_too_large)
+                                ImportResult.Malformed ->
+                                    context.getString(R.string.backup_import_error_invalid)
+                                ImportResult.RestoreFailed ->
+                                    context.getString(R.string.backup_import_error_restore)
+                            }
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                ) { Text(stringResource(R.string.backup_restore_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingRestoreUri = null }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
+    }
 }
 
-private const val MAX_IMPORT_BYTES = 10 * 1024 * 1024  // 10 MB
+private const val MAX_BACKUP_BYTES = 10 * 1024 * 1024  // 10 MB
 
 /** Outcome of a restore so the caller can give the user honest feedback. */
 sealed interface ImportResult {
     data class Success(val count: Int) : ImportResult
     data object EmptyStream : ImportResult
+    data object IoFailure : ImportResult
     data object FileTooLarge : ImportResult
     data object Malformed : ImportResult
     data object RestoreFailed : ImportResult
@@ -205,6 +244,8 @@ sealed interface ImportResult {
 sealed interface ExportResult {
     data object Success : ExportResult
     data object NoOutputStream : ExportResult
+    data object FileTooLarge : ExportResult
+    data object Failure : ExportResult
 }
 
 suspend fun importBackupFile(
@@ -212,23 +253,33 @@ suspend fun importBackupFile(
     contentResolver: ContentResolver,
     uri: Uri,
 ): ImportResult {
-    val inputStream = contentResolver.openInputStream(uri) ?: return ImportResult.EmptyStream
-    inputStream.use { stream ->
-        val bytes = readBackupBytes(stream) ?: return ImportResult.FileTooLarge
-        val backupData = bytes.decodeToString()
-        val books = try {
-            Gson().fromJson(backupData, Array<Book>::class.java) ?: return ImportResult.Malformed
-        } catch (e: com.google.gson.JsonSyntaxException) {
-            return ImportResult.Malformed
+    return try {
+        val inputStream = contentResolver.openInputStream(uri) ?: return ImportResult.EmptyStream
+        inputStream.use { stream ->
+            val bytes = readBackupBytes(stream) ?: return ImportResult.FileTooLarge
+            val backupData = bytes.decodeToString()
+            val books = try {
+                Gson().fromJson(backupData, Array<Book>::class.java) ?: return ImportResult.Malformed
+            } catch (e: com.google.gson.JsonSyntaxException) {
+                return ImportResult.Malformed
+            }
+            try {
+                viewModel.insertAllBooks(books.toList())
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                return ImportResult.RestoreFailed
+            }
+            ImportResult.Success(books.size)
         }
-        try {
-            viewModel.insertAllBooks(books.toList())
-        } catch (cancelled: CancellationException) {
-            throw cancelled
-        } catch (_: Exception) {
-            return ImportResult.RestoreFailed
-        }
-        return ImportResult.Success(books.size)
+    } catch (cancelled: CancellationException) {
+        throw cancelled
+    } catch (_: IOException) {
+        ImportResult.IoFailure
+    } catch (_: SecurityException) {
+        ImportResult.IoFailure
+    } catch (_: Exception) {
+        ImportResult.IoFailure
     }
 }
 
@@ -238,19 +289,19 @@ private fun readBackupBytes(stream: InputStream): ByteArray? {
     var totalBytes = 0
 
     while (true) {
-        val remainingIncludingOverflowByte = MAX_IMPORT_BYTES + 1 - totalBytes
+        val remainingIncludingOverflowByte = MAX_BACKUP_BYTES + 1 - totalBytes
         val bytesRead = stream.read(buffer, 0, minOf(buffer.size, remainingIncludingOverflowByte))
         if (bytesRead < 0) break
         if (bytesRead == 0) {
             val nextByte = stream.read()
             if (nextByte < 0) break
-            if (totalBytes == MAX_IMPORT_BYTES) return null
+            if (totalBytes == MAX_BACKUP_BYTES) return null
             output.write(nextByte)
             totalBytes++
             continue
         }
         totalBytes += bytesRead
-        if (totalBytes > MAX_IMPORT_BYTES) return null
+        if (totalBytes > MAX_BACKUP_BYTES) return null
         output.write(buffer, 0, bytesRead)
     }
 
@@ -267,11 +318,11 @@ fun createBackupIntent(): Intent {
     return intent
 }
 fun performBackup(resolver: ContentResolver, books: List<Book>, backupUri: Uri): ExportResult {
+    val backupData = Gson().toJson(books).toByteArray(Charsets.UTF_8)
+    if (backupData.size > MAX_BACKUP_BYTES) return ExportResult.FileTooLarge
     val outputStream = resolver.openOutputStream(backupUri) ?: return ExportResult.NoOutputStream
     outputStream.use { stream ->
-        val gson = Gson()
-        val backupData = gson.toJson(books)
-        stream.write(backupData.toByteArray())
+        stream.write(backupData)
     }
     return ExportResult.Success
 }

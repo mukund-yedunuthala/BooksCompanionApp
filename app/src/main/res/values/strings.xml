@@ -45,6 +45,10 @@
     <string name="backup_import_error_restore">Couldn\'t restore this backup</string>
     <string name="backup_export_success">Backup created</string>
     <string name="backup_export_error">Couldn\'t create the backup file</string>
+    <string name="backup_export_error_too_large">This backup is larger than the 10 MB limit</string>
+    <string name="backup_restore_warning_title">Replace matching books?</string>
+    <string name="backup_restore_warning_body">Books in this backup with IDs already in your library will replace those entries. This can overwrite newer details.</string>
+    <string name="backup_restore_confirm">Restore backup</string>
 
     <!-- Home wordmark / header -->
     <string name="home_wordmark_line1">Book</string>
@@ -91,6 +95,7 @@
     <string name="sheet_placeholder_notes">Thoughts, quotes, marginalia…</string>
     <string name="sheet_duplicate">%1$s already exists!</string>
     <string name="sheet_required_hint">Fields marked with * are required.</string>
+    <string name="sheet_invalid_year">Enter a valid year or leave the field blank.</string>
     <string name="sheet_submit_add">Add to library →</string>
     <string name="sheet_submit_save">Save changes →</string>
 
