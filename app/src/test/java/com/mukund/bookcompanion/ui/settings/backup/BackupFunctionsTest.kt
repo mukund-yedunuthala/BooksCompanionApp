@@ -27,6 +27,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
@@ -63,13 +64,12 @@ class BackupFunctionsTest {
         val json = """[{"id":0,"title":"Test book","author":"Test book author","year":2025,"status":"Read","genre":"Fiction","isbn":"123456"}]"""
         every { mockResolver.openInputStream(mockUri) } returns json.byteInputStream()
         val result = importBackupFile(vm, mockResolver, mockUri)
-        val received = fakeDao.insertAllSignal.await()
-        assertEquals(listOf(book), received)
+        assertEquals(listOf(book), fakeDao.lastInsertedAll)
         assertEquals(ImportResult.Success(1), result)
     }
 
     @Test
-    fun importBackupFile_withMalformedJson_returnsMalformed() {
+    fun importBackupFile_withMalformedJson_returnsMalformed() = runTest {
         every { mockResolver.openInputStream(mockUri) } returns "null".byteInputStream()
         val result = importBackupFile(vm, mockResolver, mockUri)
         assertEquals(ImportResult.Malformed, result)
@@ -77,7 +77,7 @@ class BackupFunctionsTest {
     }
 
     @Test
-    fun importBackupFile_withBrokenJson_returnsMalformed() {
+    fun importBackupFile_withBrokenJson_returnsMalformed() = runTest {
         every { mockResolver.openInputStream(mockUri) } returns "{not valid".byteInputStream()
         val result = importBackupFile(vm, mockResolver, mockUri)
         assertEquals(ImportResult.Malformed, result)
@@ -85,7 +85,7 @@ class BackupFunctionsTest {
     }
 
     @Test
-    fun importBackupFile_withNullStream_returnsEmptyStream() {
+    fun importBackupFile_withNullStream_returnsEmptyStream() = runTest {
         every { mockResolver.openInputStream(mockUri) } returns null
         val result = importBackupFile(vm, mockResolver, mockUri)
         assertEquals(ImportResult.EmptyStream, result)
@@ -93,25 +93,52 @@ class BackupFunctionsTest {
     }
 
     @Test
-    fun importBackupFile_withOversizeFile_returnsFileTooLarge() {
-        // 11 MB of bytes — exceeds MAX_IMPORT_BYTES (10 MB)
-        val oversize = ByteArray(11 * 1024 * 1024) { '['.code.toByte() }
-        every { mockResolver.openInputStream(mockUri) } returns oversize.inputStream()
+    fun importBackupFile_stopsReadingAfterLimitAndReturnsFileTooLarge() = runTest {
+        val sourceSize = 11 * 1024 * 1024
+        var bytesRead = 0
+        val oversize = object : InputStream() {
+            override fun read(): Int {
+                if (bytesRead == sourceSize) return -1
+                bytesRead++
+                return '['.code
+            }
+
+            override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+                if (bytesRead == sourceSize) return -1
+                val count = minOf(length, sourceSize - bytesRead)
+                buffer.fill('['.code.toByte(), offset, offset + count)
+                bytesRead += count
+                return count
+            }
+        }
+        every { mockResolver.openInputStream(mockUri) } returns oversize
+
         val result = importBackupFile(vm, mockResolver, mockUri)
+
         assertEquals(ImportResult.FileTooLarge, result)
+        assertEquals(10 * 1024 * 1024 + 1, bytesRead)
         assertNull(fakeDao.lastInsertedAll)
+    }
+
+    @Test
+    fun importBackupFile_acceptsInputsJustUnderAndExactlyAtLimit() = runTest {
+        for (size in listOf(10 * 1024 * 1024 - 1, 10 * 1024 * 1024)) {
+            every { mockResolver.openInputStream(mockUri) } returns validEmptyBackupStream(size)
+
+            assertEquals(ImportResult.Success(0), importBackupFile(vm, mockResolver, mockUri))
+            assertEquals(emptyList<Book>(), fakeDao.lastInsertedAll)
+        }
     }
 
     @Test
     fun importBackupFile_withEmptyJsonArray_insertsEmptyList() = runTest {
         every { mockResolver.openInputStream(mockUri) } returns "[]".byteInputStream()
         importBackupFile(vm, mockResolver, mockUri)
-        val received = fakeDao.insertAllSignal.await()
-        assertTrue(received.isEmpty())
+        assertTrue(fakeDao.lastInsertedAll.orEmpty().isEmpty())
     }
 
     @Test
-    fun importBackupFile_withMalformedJson_doesNotCrash() {
+    fun importBackupFile_withMalformedJson_doesNotCrash() = runTest {
         // JSON literal "null" causes Gson.fromJson to return null, triggering ?: return
         every { mockResolver.openInputStream(mockUri) } returns "null".byteInputStream()
         importBackupFile(vm, mockResolver, mockUri)
@@ -119,10 +146,20 @@ class BackupFunctionsTest {
     }
 
     @Test
-    fun importBackupFile_withNullInputStream_returnsEarly() {
+    fun importBackupFile_withNullInputStream_returnsEarly() = runTest {
         every { mockResolver.openInputStream(mockUri) } returns null
         importBackupFile(vm, mockResolver, mockUri)
         assertNull(fakeDao.lastInsertedAll)
+    }
+
+    @Test
+    fun importBackupFile_whenDatabaseInsertFails_returnsRestoreFailed() = runTest {
+        fakeDao.insertAllFailure = IllegalStateException("database write failed")
+        every { mockResolver.openInputStream(mockUri) } returns "[]".byteInputStream()
+
+        val result = importBackupFile(vm, mockResolver, mockUri)
+
+        assertEquals(ImportResult.RestoreFailed, result)
     }
 
     // ─── C-5: performBackup ─────────────────────────────────────────────────
@@ -204,5 +241,31 @@ class BackupFunctionsTest {
     fun createBackupIntent_typeIsApplicationJson() {
         val intent = createBackupIntent()
         assertEquals("application/json", intent.type)
+    }
+
+    private fun validEmptyBackupStream(size: Int): InputStream = object : InputStream() {
+        private var position = 0
+
+        override fun read(): Int {
+            if (position >= size) return -1
+            return when (position++) {
+                0 -> '['.code
+                1 -> ']'.code
+                else -> ' '.code
+            }
+        }
+
+        override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
+            if (position >= size) return -1
+            val count = minOf(length, size - position)
+            repeat(count) { index ->
+                buffer[offset + index] = when (position++) {
+                    0 -> '['.code.toByte()
+                    1 -> ']'.code.toByte()
+                    else -> ' '.code.toByte()
+                }
+            }
+            return count
+        }
     }
 }

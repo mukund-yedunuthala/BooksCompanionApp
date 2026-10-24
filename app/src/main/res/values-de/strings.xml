@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settingsscreen_toplabel">Einstellungen</string>
+    <string name="backup_import_error_restore">Dieses Backup konnte nicht wiederhergestellt werden</string>
 </resources>

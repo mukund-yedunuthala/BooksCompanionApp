@@ -42,8 +42,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import com.mukund.bookcompanion.domain.model.Book
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import com.mukund.bookcompanion.ui.home.BooksViewModel
 import com.mukund.bookcompanion.ui.settings.components.CustomEntryButton
 import java.text.SimpleDateFormat
@@ -82,6 +85,8 @@ fun Backup_Screen(
                             context.getString(R.string.backup_import_error_too_large)
                         ImportResult.Malformed ->
                             context.getString(R.string.backup_import_error_invalid)
+                        ImportResult.RestoreFailed ->
+                            context.getString(R.string.backup_import_error_restore)
                     }
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -95,7 +100,8 @@ fun Backup_Screen(
                 val uri = result.data?.data
                 uri?.let { backupUri ->
                     scope.launch(Dispatchers.IO) {
-                        val result = performBackup(resolver, viewModel.books, backupUri)
+                        val books = viewModel.getBooksSnapshot()
+                        val result = performBackup(resolver, books, backupUri)
                         val message = when (result) {
                             ExportResult.Success ->
                                 context.getString(R.string.backup_export_success)
@@ -192,6 +198,7 @@ sealed interface ImportResult {
     data object EmptyStream : ImportResult
     data object FileTooLarge : ImportResult
     data object Malformed : ImportResult
+    data object RestoreFailed : ImportResult
 }
 
 /** Outcome of an export. */
@@ -200,24 +207,54 @@ sealed interface ExportResult {
     data object NoOutputStream : ExportResult
 }
 
-fun importBackupFile(
+suspend fun importBackupFile(
     viewModel: BooksViewModel,
     contentResolver: ContentResolver,
     uri: Uri,
 ): ImportResult {
     val inputStream = contentResolver.openInputStream(uri) ?: return ImportResult.EmptyStream
     inputStream.use { stream ->
-        val bytes = stream.readBytes()
-        if (bytes.size > MAX_IMPORT_BYTES) return ImportResult.FileTooLarge
+        val bytes = readBackupBytes(stream) ?: return ImportResult.FileTooLarge
         val backupData = bytes.decodeToString()
         val books = try {
             Gson().fromJson(backupData, Array<Book>::class.java) ?: return ImportResult.Malformed
         } catch (e: com.google.gson.JsonSyntaxException) {
             return ImportResult.Malformed
         }
-        viewModel.insertAllBooks(books.toList())
+        try {
+            viewModel.insertAllBooks(books.toList())
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: Exception) {
+            return ImportResult.RestoreFailed
+        }
         return ImportResult.Success(books.size)
     }
+}
+
+private fun readBackupBytes(stream: InputStream): ByteArray? {
+    val output = ByteArrayOutputStream()
+    val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+    var totalBytes = 0
+
+    while (true) {
+        val remainingIncludingOverflowByte = MAX_IMPORT_BYTES + 1 - totalBytes
+        val bytesRead = stream.read(buffer, 0, minOf(buffer.size, remainingIncludingOverflowByte))
+        if (bytesRead < 0) break
+        if (bytesRead == 0) {
+            val nextByte = stream.read()
+            if (nextByte < 0) break
+            if (totalBytes == MAX_IMPORT_BYTES) return null
+            output.write(nextByte)
+            totalBytes++
+            continue
+        }
+        totalBytes += bytesRead
+        if (totalBytes > MAX_IMPORT_BYTES) return null
+        output.write(buffer, 0, bytesRead)
+    }
+
+    return output.toByteArray()
 }
 fun createBackupIntent(): Intent {
     val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())

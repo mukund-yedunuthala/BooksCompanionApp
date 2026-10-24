@@ -12,13 +12,22 @@ class FakeBooksDao : BooksDao {
     var lastDeleted: Book? = null
     var lastUpdated: Book? = null
     var lastInsertedAll: List<Book>? = null
+    var insertAllFailure: Throwable? = null
     var insertAllSignal = CompletableDeferred<List<Book>>()
 
     private val booksFlow = MutableStateFlow<List<Book>>(emptyList())
-    private val bookFlow = MutableStateFlow<Book?>(null)
+    private var lastEmittedBook: Book? = null
+    private val bookFlows = mutableMapOf<Int, MutableStateFlow<Book?>>()
 
     fun emitBooks(books: List<Book>) { booksFlow.value = books }
-    fun emitBook(book: Book?) { bookFlow.value = book }
+    fun emitBook(book: Book?) {
+        lastEmittedBook = book
+        if (book == null) bookFlows.values.forEach { it.value = null }
+        else bookFlows[book.id]?.value = book
+    }
+    fun emitBook(id: Int, book: Book?) {
+        bookFlows.getOrPut(id) { MutableStateFlow(null) }.value = book
+    }
 
     override fun getBooksSortedByTitle(): Flow<List<Book>> =
         booksFlow.map { it.sortedBy { b -> b.title } }
@@ -26,9 +35,11 @@ class FakeBooksDao : BooksDao {
     override fun getBooksSortedByYear(): Flow<List<Book>> =
         booksFlow.map { it.sortedByDescending { b -> b.year } }
 
-    override fun getBook(id: Int): Flow<Book?> = bookFlow
+    override fun getBook(id: Int): Flow<Book?> =
+        bookFlows.getOrPut(id) { MutableStateFlow(lastEmittedBook?.takeIf { it.id == id }) }
     override fun addBook(book: Book) { lastAdded = book }
     override fun insertAll(books: List<Book>) {
+        insertAllFailure?.let { throw it }
         lastInsertedAll = books
         insertAllSignal.complete(books)
     }

@@ -42,6 +42,7 @@
     <string name="backup_import_error_unreadable">Couldn\'t read the selected file</string>
     <string name="backup_import_error_too_large">That file is too large to import</string>
     <string name="backup_import_error_invalid">That isn\'t a valid backup file</string>
+    <string name="backup_import_error_restore">Couldn\'t restore this backup</string>
     <string name="backup_export_success">Backup created</string>
     <string name="backup_export_error">Couldn\'t create the backup file</string>
 

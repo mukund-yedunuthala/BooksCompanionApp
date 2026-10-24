@@ -63,4 +63,18 @@ class BooksViewModelGetBookTest {
         vm.getBook(999)
         assertEquals(defaultBook, vm.book)
     }
+
+    @Test
+    fun getBook_repeatedCallOnlyLatestBookFlowUpdatesDetailState() {
+        val firstBook = testBook.copy(id = 1)
+        val secondBook = testBook.copy(id = 2)
+
+        vm.getBook(firstBook.id)
+        vm.getBook(secondBook.id)
+        fakeDao.emitBook(secondBook.id, secondBook)
+        assertEquals(BookDetailState.Loaded(secondBook), vm.bookDetail)
+
+        fakeDao.emitBook(firstBook.id, firstBook)
+        assertEquals(BookDetailState.Loaded(secondBook), vm.bookDetail)
+    }
 }

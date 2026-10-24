@@ -61,8 +61,6 @@ class BooksViewModelCrudTest {
     fun insertAllBooks_callsRepositoryInsertAll_withGivenList() = runTest {
         val books = listOf(book)
         vm.insertAllBooks(books)
-        val received = fakeDao.insertAllSignal.await()
-        assertEquals(books, received)
         assertEquals(books, fakeDao.lastInsertedAll)
     }
 }

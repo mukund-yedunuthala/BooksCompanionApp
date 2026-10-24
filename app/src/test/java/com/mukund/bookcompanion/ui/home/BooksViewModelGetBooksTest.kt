@@ -2,11 +2,20 @@ package com.mukund.bookcompanion.ui.home
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import com.mukund.bookcompanion.data.FakeBooksDao
+import com.mukund.bookcompanion.data.network.BooksDao
 import com.mukund.bookcompanion.data.testBook
+import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.util.MainDispatcherRule
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.runCurrent
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -54,5 +63,36 @@ class BooksViewModelGetBooksTest {
         vm.getBooks()
         fakeDao.emitBooks(emptyList())
         assertTrue(vm.books.isEmpty())
+    }
+
+    @Test
+    fun getBooksSnapshot_returnsCurrentDaoBooks() = runTest {
+        val bookList = listOf(testBook)
+        fakeDao.emitBooks(bookList)
+
+        assertEquals(bookList, vm.getBooksSnapshot())
+    }
+
+    @Test
+    fun getBooksSnapshot_doesNotReturnUntilDaoEmits() = runTest {
+        val delayedBooks = CompletableDeferred<List<Book>>()
+        val delayedDao = object : BooksDao by fakeDao {
+            override fun getBooksSortedByTitle(): Flow<List<Book>> =
+                flow { emit(delayedBooks.await()) }
+        }
+        val delayedVm = BooksViewModel(
+            delayedDao,
+            PreferenceDataStoreFactory.create(
+                scope = CoroutineScope(mainDispatcherRule.testDispatcher),
+                produceFile = { tempFolder.newFile("delayed_prefs_${System.nanoTime()}.preferences_pb") }
+            )
+        )
+
+        val snapshot = async { delayedVm.getBooksSnapshot() }
+        runCurrent()
+        assertFalse(snapshot.isCompleted)
+
+        delayedBooks.complete(listOf(testBook))
+        assertEquals(listOf(testBook), snapshot.await())
     }
 }

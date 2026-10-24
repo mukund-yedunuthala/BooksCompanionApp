@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 val SORT_OPTION_KEY = stringPreferencesKey("sort_option")
@@ -64,6 +65,7 @@ class BooksViewModel @Inject constructor(
         private set
 
     private var booksFetchJob: Job? = null
+    private var bookFetchJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -81,14 +83,17 @@ class BooksViewModel @Inject constructor(
         getBooks()
     }
 
-    fun getBook(id: Int) = viewModelScope.launch {
-        bookDetail = BookDetailState.Loading
-        booksDao.getBook(id).collectLatest { fetched ->
-            if (fetched != null) {
-                book = fetched
-                bookDetail = BookDetailState.Loaded(fetched)
-            } else {
-                bookDetail = BookDetailState.NotFound
+    fun getBook(id: Int) {
+        bookFetchJob?.cancel()
+        bookFetchJob = viewModelScope.launch {
+            bookDetail = BookDetailState.Loading
+            booksDao.getBook(id).collectLatest { fetched ->
+                if (fetched != null) {
+                    book = fetched
+                    bookDetail = BookDetailState.Loaded(fetched)
+                } else {
+                    bookDetail = BookDetailState.NotFound
+                }
             }
         }
     }
@@ -102,6 +107,11 @@ class BooksViewModel @Inject constructor(
             }.collectLatest { this@BooksViewModel.books = it }
         }
     }
+
+    suspend fun getBooksSnapshot(): List<Book> = when (sortOption) {
+        SortOption.TITLE -> booksDao.getBooksSortedByTitle()
+        SortOption.YEAR  -> booksDao.getBooksSortedByYear()
+    }.first()
 
     fun addBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
         booksDao.addBook(book)
@@ -142,8 +152,8 @@ class BooksViewModel @Inject constructor(
         book = book.copy(status = status.trim())
     }
 
-    fun insertAllBooks(books: List<Book>) {
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun insertAllBooks(books: List<Book>) {
+        withContext(Dispatchers.IO) {
             booksDao.insertAll(books)
         }
     }
