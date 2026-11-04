@@ -73,18 +73,14 @@ fun BookAdditionBottomSheet(
     var dateStarted by rememberSaveable { mutableStateOf(bookToEdit?.dateStarted  ?: "") }
     var dateFinished by rememberSaveable { mutableStateOf(bookToEdit?.dateFinished ?: "") }
 
-    val isDuplicate = remember(books, title, author, year, isEditMode) {
-        if (isEditMode) false
-        else {
-            val normalizedTitle = title.trim()
-            val normalizedAuthor = author.trim()
-            val normalizedYear = year.toLongOrNull() ?: 0L
-            books.any { book ->
-                book.title.trim().equals(normalizedTitle, ignoreCase = true) &&
-                    book.author.trim().equals(normalizedAuthor, ignoreCase = true) &&
-                    book.year == normalizedYear
-            }
-        }
+    val isDuplicate = remember(books, title, author, year, bookToEdit) {
+        isDuplicateEntry(
+            books = books,
+            excludeId = bookToEdit?.id,
+            title = title,
+            author = author,
+            year = year.toLongOrNull() ?: 0L,
+        )
     }
     val isYearValid = year.isBlank() || year.toLongOrNull() != null
     val isValid = title.isNotBlank() && author.isNotBlank() && isYearValid && !isDuplicate
@@ -325,3 +321,17 @@ fun BookAdditionBottomSheet(
 }
 
 private fun String.trimToNull(): String? = trim().ifBlank { null }
+
+/** Same (title, author, year) as another entry, ignoring the one being edited. */
+internal fun isDuplicateEntry(
+    books: List<Book>,
+    excludeId: Int?,
+    title: String,
+    author: String,
+    year: Long,
+): Boolean = books.any { book ->
+    book.id != excludeId &&
+        book.title.trim().equals(title.trim(), ignoreCase = true) &&
+        book.author.trim().equals(author.trim(), ignoreCase = true) &&
+        book.year == year
+}

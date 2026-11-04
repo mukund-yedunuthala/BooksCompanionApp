@@ -305,7 +305,7 @@ fun OverviewContent(
                 // Just persist; the sheet closes itself and the getBook flow refreshes this
                 // screen in place. (Previously this also popped back to Home, hiding the edit.)
                 updateBook = { updated -> onUpdateBook(updated) },
-                books = emptyList(),    // not used in edit mode — duplicate check disabled
+                books = books,
                 bookToEdit = book,
             )
         }

@@ -31,6 +31,8 @@ fun Overview(
 ) {
     LaunchedEffect(bookId) {
         viewModel.getBook(bookId)
+        // The edit sheet's duplicate check compares against all other books.
+        viewModel.getBooks()
     }
 
     Scaffold(
@@ -72,6 +74,7 @@ fun Overview(
                 OverviewContent(
                     modifier = Modifier.padding(innerPadding),
                     book = state.book,
+                    books = viewModel.books,
                     onDeleteBook = { book: Book -> viewModel.deleteBook(book) },
                     onUpdateBook = { book: Book -> viewModel.updateBook(book) },
                     onBackPress = backPress,
