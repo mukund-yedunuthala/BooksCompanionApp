@@ -1,10 +1,8 @@
 package com.mukund.bookcompanion.ui.home
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.data.testBook
 import com.mukund.bookcompanion.data.FakeBooksDao
-import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.util.MainDispatcherRule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,35 +35,30 @@ class BooksViewModelGetBookTest {
         )
     }
 
-    private val defaultBook = Book(
-        id = 0, title = NO_VALUE, genre = NO_VALUE, isbn = NO_VALUE,
-        author = NO_VALUE, year = 0, status = NO_VALUE
-    )
-
     @Test
-    fun getBook_withValidId_updatesBookState() {
+    fun getBook_withValidId_reportsLoaded() {
         fakeDao.emitBook(testBook)
         vm.getBook(testBook.id)
-        assertEquals(testBook, vm.book)
+        assertEquals(BookDetailState.Loaded(testBook), vm.bookDetail)
     }
 
     @Test
-    fun getBook_withNullEmission_doesNotOverwriteExistingState() {
+    fun getBook_withNullEmission_reportsNotFound() {
         fakeDao.emitBook(testBook)
         vm.getBook(testBook.id)
         fakeDao.emitBook(null)
-        assertEquals(testBook, vm.book)
+        assertEquals(BookDetailState.NotFound, vm.bookDetail)
     }
 
     @Test
-    fun getBook_withInvalidId_stateRemainsDefault() {
-        // bookFlow starts as null; collecting null does nothing to state
+    fun getBook_withInvalidId_reportsNotFound() {
+        // Flow for an unknown id starts as null.
         vm.getBook(999)
-        assertEquals(defaultBook, vm.book)
+        assertEquals(BookDetailState.NotFound, vm.bookDetail)
     }
 
     @Test
-    fun getBook_repeatedCallOnlyLatestBookFlowUpdatesDetailState() {
+    fun getBook_repeatedCall_onlyLatestBookFlowUpdatesDetailState() {
         val firstBook = testBook.copy(id = 1)
         val secondBook = testBook.copy(id = 2)
 

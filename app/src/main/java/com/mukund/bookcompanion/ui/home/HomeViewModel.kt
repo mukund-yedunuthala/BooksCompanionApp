@@ -11,7 +11,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.data.network.BooksDao
 import com.mukund.bookcompanion.domain.model.Book
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,22 +44,12 @@ class BooksViewModel @Inject constructor(
 ) : ViewModel() {
 
     var books: List<Book> by mutableStateOf(emptyList())
-    var book by mutableStateOf(
-        Book(id = 0,
-            title = NO_VALUE,
-            genre = NO_VALUE,
-            isbn =  NO_VALUE,
-            author = NO_VALUE,
-            year = 0,
-            status = NO_VALUE)
-    )
         private set
 
     var sortOption by mutableStateOf(SortOption.TITLE)
         private set
 
-    // Drives the Overview screen: Loading → Loaded(book) / NotFound. `book` above is retained for
-    // the legacy field-update helpers; the detail UI reads this state instead.
+    // Drives the Overview screen: Loading → Loaded(book) / NotFound.
     var bookDetail: BookDetailState by mutableStateOf(BookDetailState.Loading)
         private set
 
@@ -88,11 +77,9 @@ class BooksViewModel @Inject constructor(
         bookFetchJob = viewModelScope.launch {
             bookDetail = BookDetailState.Loading
             booksDao.getBook(id).collectLatest { fetched ->
-                if (fetched != null) {
-                    book = fetched
-                    bookDetail = BookDetailState.Loaded(fetched)
-                } else {
-                    bookDetail = BookDetailState.NotFound
+                bookDetail = when (fetched) {
+                    null -> BookDetailState.NotFound
+                    else -> BookDetailState.Loaded(fetched)
                 }
             }
         }
@@ -123,33 +110,6 @@ class BooksViewModel @Inject constructor(
 
     fun deleteBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
         booksDao.deleteBook(book)
-    }
-
-    fun updateTitle(title: String) {
-        book = book.copy(title = title)
-    }
-
-    fun updateGenre(genre: String) {
-        book = book.copy(genre = genre)
-    }
-
-    fun updateISBN(isbn: String) {
-        book = book.copy(isbn = isbn)
-    }
-
-    fun updateAuthor(author: String) {
-        book = book.copy(author = author)
-    }
-
-    fun updateYear(year: String) {
-        val parsed = year.toLongOrNull()
-        if (parsed != null) {
-            book = book.copy(year = parsed)
-        }
-    }
-
-    fun updateStatus(status: String) {
-        book = book.copy(status = status.trim())
     }
 
     suspend fun insertAllBooks(books: List<Book>) {
