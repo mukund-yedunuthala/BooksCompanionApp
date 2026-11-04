@@ -1,5 +1,42 @@
 # Changelog
 
+### [1.0.4](https://github.com/mukund-yedunuthala/BooksCompanionApp/compare/1.0.3...1.0.4) (2026-11-04)
+
+#### Fixes
+
+* **animation:** set predictive back animation default
+([46f013b](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/46f013bf07e5cb996d8b5e231e0c6728b0ff8c99))
+* **sheet:** apply the duplicate check in edit mode
+([ae2857c](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/ae2857c7538c18eb7cc68ca169dbf8b77ed027f8))
+* **settings:** put saved theme on the first frame
+([b4c0c7f](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/b4c0c7f28398e8728733cce8e7449efaee0ef13c))
+* **home:** sort titles case-insensitively
+([5c4e513](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/5c4e513ef8018ce4aca62df8296504ef52cb1c34))
+* **backup:** reject restore files whose entries miss title or author
+([b6f1bc5](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/b6f1bc51220366a9ee03ed00f203d07ffe1d3cd9))
+* **db:** add missing migration from schema v1 and test the chain
+([74cc57a](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/74cc57a433408a6626fcbf4ecbf65f981c93bb61))
+* navigation animation consistency
+([9bec28a](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/9bec28a3585587f7005ae31dc7055e4c4813c8ab))
+
+### [1.0.3](https://github.com/mukund-yedunuthala/BooksCompanionApp/compare/1.0.2...1.0.3) (2026-10-24)
+
+#### Features
+
+* **home:** make the library header collapsible
+([a626dec](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/a626deca3fc9eb47165b312b1067b6b05e9065a6))
+
+#### Fixes
+
+* **forms:** validate entries and improve accessibility
+([204d850](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/204d850142acad18aa5402c3198908021616dba6))
+* **backup:** guard restore and enforce size limits
+([7ccdf5a](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/7ccdf5a0291bedbc2b716c4b503dce26c6da5227))
+* **a11y:** improve text contrast and action targets
+([24b1c87](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/24b1c870cf6c131b9dfe021991b02b6c14d77174))
+* harden backup and book loading flows
+([9e01d7f](https://github.com/mukund-yedunuthala/BooksCompanionApp/commit/9e01d7fff02a384d7a7daa8c4c0569bcf48c560b))
+
 ### [1.0.2](https://github.com/mukund-yedunuthala/BooksCompanionApp/compare/1.0.1...1.0.2) (2026-09-05)
 
 ### [1.0.1](https://github.com/mukund-yedunuthala/BooksCompanionApp/compare/1.0.0...1.0.1) (2026-06-16)
