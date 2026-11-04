@@ -158,7 +158,9 @@ Padding and margin presets (`paddingSmall` → `paddingXLarge`, `marginSmall` �
 | `slow` | 400ms | Deliberate animations (sheet slide) |
 | `slower` | 500ms | Emphasis / page transitions |
 
-Screen-to-screen nav transitions are defined separately in `navigation/AnimationDefaults.kt`.
+Screen-to-screen nav transitions are defined separately in `navigation/AnimationDefaults.kt`
+and wired once as `NavHost`-level defaults in `NavGraph` — do not re-declare transitions
+per destination, or screens will animate inconsistently.
 
 ---
 

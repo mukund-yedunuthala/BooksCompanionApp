@@ -40,17 +40,18 @@ fun NavGraph(
     val darkSetting = resolveTheme(systemTheme, darkTheme, isSystemInDarkTheme())
     BooksCompanionTheme(darkTheme = darkSetting) {
         Surface {
+            // Transitions are defined once here (see AnimationDefaults) so every
+            // screen animates identically — destinations must not override them.
             NavHost(
                 navController = navController,
-                startDestination = BOOKS_SCREEN
+                startDestination = BOOKS_SCREEN,
+                enterTransition = customEnterTransition(),
+                exitTransition = customExitTransition(),
+                popEnterTransition = customPopEnterTransition(),
+                popExitTransition = customPopExitTransition()
             ) {
                 // HOME
-                composable(
-                    route = BOOKS_SCREEN,
-                    enterTransition = customEnterTransition(),
-                    popEnterTransition = customEnterTransition(),
-                    exitTransition = customExitTransition()
-                ) {
+                composable(route = BOOKS_SCREEN) {
                     HomeScreen(
                         navigateTo = {
                             navController.navigate("$OVERVIEW_SCREEN/${it}")
@@ -61,13 +62,7 @@ fun NavGraph(
                     )
                 }
                 // SETTINGS
-                composable(
-                    route = SETTINGS_SCREEN,
-                    enterTransition = customEnterTransition(),
-                    exitTransition = customExitTransition(),
-                    popExitTransition = customExitTransition(),
-                    popEnterTransition = customEnterTransition()
-                ) {
+                composable(route = SETTINGS_SCREEN) {
                     SettingScreen(
                         backPress = { navController.popBackStack() },
                         libraries = { navController.navigate(LIBRARIES_SCREEN) },
@@ -75,11 +70,7 @@ fun NavGraph(
                     )
                 }
                 // OSS LIBS
-                composable(
-                    route = LIBRARIES_SCREEN,
-                    popExitTransition = customExitTransition(),
-                    enterTransition = customEnterTransition()
-                ) {
+                composable(route = LIBRARIES_SCREEN) {
                     LibsScreen {
                         navController.popBackStack()
                     }
@@ -91,11 +82,7 @@ fun NavGraph(
                         navArgument(BOOK_ID) {
                             type = IntType
                         },
-                    ),
-                    enterTransition = customEnterTransition(),
-                    exitTransition = customExitTransition(),
-                    popExitTransition = customExitTransition(),
-                    popEnterTransition = customEnterTransition()
+                    )
                 ) { navBackStackEntry ->
                     val bookId = navBackStackEntry.arguments?.getInt(BOOK_ID) ?: 0
                     Overview(
@@ -104,11 +91,7 @@ fun NavGraph(
                     )
                 }
                 // BACKUP
-                composable(
-                    route = BACKUP_SCREEN,
-                    popExitTransition = customExitTransition(),
-                    enterTransition = customEnterTransition()
-                ) {
+                composable(route = BACKUP_SCREEN) {
                     Backup_Screen { navController.popBackStack() }
                 }
             }
