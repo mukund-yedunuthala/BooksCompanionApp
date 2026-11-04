@@ -9,19 +9,19 @@
 - Launch app: `adb shell am start -n com.mukund.bookcompanion/.MainActivity`.
 
 **Testing**
-- Run all unit tests: `./gradlew test`.
-- Run a single test (replace fully‑qualified name): `./gradlew test --tests "com.mukund.bookcompanion.ui.home.BooksViewModelGetBookTest"`.
+- Run all unit tests: `./gradlew :app:testDebugUnitTest`.
+- Run a single test (replace fully‑qualified name): `./gradlew :app:testDebugUnitTest --tests "com.mukund.bookcompanion.ui.home.BooksViewModelGetBookTest"`.
 - Android instrumented tests: `./gradlew connectedAndroidTest`.
 
 **Architecture Overview**
 - Entry point: `MainActivity` → `NavGraph` (provides theme via `SettingsViewModel`).
 - Screens are composables wired to two ViewModels:
-  - `BooksViewModel` (home, overview, backup) – uses `BooksRepository`.
+  - `BooksViewModel` (home, overview, backup) – injects `BooksDao` directly. There is **no** repository layer.
   - `SettingsViewModel` – uses `DataStore<Preferences>` for theme persistence.
-- **Domain layer** (`domain/`): `Book` entity, `BooksRepository` interface – no Android imports.
-- **Data layer** (`data/`): Room `BooksDao`, `BooksDatabase`, `BookDbProvider`, `BooksRepositoryImpl` (thin DAO wrappers).
-- **DI** (`di/AppModule.kt`): Hilt provides singleton `BooksRepositoryImpl`, `BookDbProvider`, and `DataStore`.
-- **Navigation** (`navigation/Screen.kt`): sealed routes (`books`, `overview/{bookId}`, `settings`, `libraries`, `backup`).
+- **Domain layer** (`domain/`): `Book` Room entity only (it imports Room).
+- **Data layer** (`data/network/`): Room `BooksDao` and `BooksDatabase` (with migrations).
+- **DI** (`di/AppModule.kt`): Hilt provides singleton `BooksDatabase`, `BooksDao`, and `DataStore`.
+- **Navigation** (`navigation/NavGraph.kt` + `Screen` routes): books, overview/{bookId}, settings, libraries, backup.
 - **Backup I/O** (`ui/settings/backup/BackupFile.kt`): JSON import/export, size limits; tested in `BackupFunctionsTest`.
 - Theme resolution utility (pure function) lives in `navigation/NavGraph.kt` – use it in tests.
 
