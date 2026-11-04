@@ -22,6 +22,7 @@
 - **Data layer** (`data/`): Room `BooksDao`, `BooksDatabase`, `BookDbProvider`, `BooksRepositoryImpl` (thin DAO wrappers).
 - **DI** (`di/AppModule.kt`): Hilt provides singleton `BooksRepositoryImpl`, `BookDbProvider`, and `DataStore`.
 - **Navigation** (`navigation/Screen.kt`): sealed routes (`books`, `overview/{bookId}`, `settings`, `libraries`, `backup`).
+- **Backup I/O** (`ui/settings/backup/BackupFile.kt`): JSON import/export, size limits; tested in `BackupFunctionsTest`.
 - Theme resolution utility (pure function) lives in `navigation/NavGraph.kt` – use it in tests.
 
 **Design System Rules**
@@ -32,10 +33,11 @@
 - Adding a new font requires updates to `ComposeFonts.kt` and `AppType`.
 
 **Database Migration Checklist**
-1. Increment `version` in `@Database` annotation (currently 3).
+1. Increment `version` in `@Database` annotation (currently 5).
 2. Add a `MIGRATION_n_(n+1)` object handling column changes.
-3. Pass the migration to `addMigrations()` in `BookDbProvider`.
-4. **Do not** forget any step – missing a migration will wipe user data.
+3. Pass the migration to `addMigrations()` in `di/AppModule.kt`.
+4. Extend `data/BooksDatabaseMigrationTest` so the new path is exercised – all 1→5 migrations must stay reachable.
+5. **Do not** forget any step – a missing migration crashes every older install at launch (no fallback migration is configured).
 
 **Theme Persistence**
 - Settings stored in `DataStore<Preferences>` file named `"settings"`.

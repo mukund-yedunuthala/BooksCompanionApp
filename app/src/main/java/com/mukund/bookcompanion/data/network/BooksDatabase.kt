@@ -11,6 +11,13 @@ import com.mukund.bookcompanion.domain.model.Book
 abstract class BooksDatabase : RoomDatabase() {
     abstract fun booksDao(): BooksDao
         companion object {
+        // v2 added the status column; installs from the 2022 v1 release upgrade through here.
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE $BOOK_TABLE ADD COLUMN status TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
         val MIGRATION_2_3: Migration = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE $BOOK_TABLE ADD COLUMN genre TEXT NOT NULL DEFAULT ''")

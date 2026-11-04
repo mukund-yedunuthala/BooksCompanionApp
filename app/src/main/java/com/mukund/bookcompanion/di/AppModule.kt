@@ -22,7 +22,12 @@ class AppModule {
     @Singleton
     fun provideBooksDatabase(application: Application): BooksDatabase =
         Room.databaseBuilder(application, BooksDatabase::class.java, BOOK_TABLE)
-            .addMigrations(BooksDatabase.MIGRATION_2_3, BooksDatabase.MIGRATION_3_4, BooksDatabase.MIGRATION_4_5)
+            .addMigrations(
+                BooksDatabase.MIGRATION_1_2,
+                BooksDatabase.MIGRATION_2_3,
+                BooksDatabase.MIGRATION_3_4,
+                BooksDatabase.MIGRATION_4_5
+            )
             .build()
 
     @Provides
