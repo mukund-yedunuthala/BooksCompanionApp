@@ -11,5 +11,10 @@ enum class BookCategory(
     All(R.drawable.list_alt, null, R.string.category_all),
     Read(R.drawable.check_circle, "Read", R.string.category_read),
     Unread(R.drawable.check_circle_unread, "Unread", R.string.category_unread),
-    Reading(R.drawable.expand_circle_down, "Reading", R.string.category_reading),
+    Reading(R.drawable.expand_circle_down, "Reading", R.string.category_reading);
+
+    companion object {
+        fun statusOf(value: String?): BookCategory? =
+            entries.firstOrNull { it.statusLabel?.equals(value, ignoreCase = true) == true }
+    }
 }

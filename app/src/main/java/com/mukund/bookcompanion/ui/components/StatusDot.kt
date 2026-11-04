@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.design.BookCompanionSpacing
+import com.mukund.bookcompanion.ui.home.BookCategory
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 /** The design's StatusDot: filled for Read/Reading, hollow ring when Unread.
@@ -23,7 +24,7 @@ fun StatusDot(
     unreadRingColor: Color = bookColors.inkFaint,
 ) {
     val dotColor = statusColor(status)
-    val isUnread = status.lowercase() == "unread"
+    val isUnread = BookCategory.statusOf(status) == BookCategory.Unread
 
     Box(
         modifier = modifier
@@ -39,8 +40,8 @@ fun StatusDot(
 
 /** One home for the status→color mapping (sage = Read, ochre = Reading). */
 @Composable
-fun statusColor(status: String): Color = when (status.lowercase()) {
-    "read"    -> bookColors.sage
-    "reading" -> bookColors.ochre
-    else      -> Color.Transparent
+fun statusColor(status: String): Color = when (BookCategory.statusOf(status)) {
+    BookCategory.Read -> bookColors.sage
+    BookCategory.Reading -> bookColors.ochre
+    else -> Color.Transparent
 }

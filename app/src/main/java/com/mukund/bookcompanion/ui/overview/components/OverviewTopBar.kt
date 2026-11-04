@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.ui.theme.AppType
+import com.mukund.bookcompanion.ui.settings.components.BackNavRow
 import com.mukund.bookcompanion.ui.theme.bookColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,30 +38,11 @@ fun OverviewTopBar(
             scrolledContainerColor = bookColors.paper,
         ),
         navigationIcon = {
-            Row(
-                modifier = Modifier
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        role = Role.Button
-                    ) { onBackPress() }
-                    .heightIn(min = 48.dp)
-                    .padding(start = 20.dp, top = 8.dp, bottom = 8.dp, end = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.arrow_back),
-                    contentDescription = stringResource(R.string.back),
-                    tint = bookColors.inkSoft,
-                    modifier = Modifier.size(18.dp)
-                )
-                Text(
-                    text = stringResource(R.string.home_library),
-                    style = AppType.bodySmall,
-                    color = bookColors.inkSoft,
-                )
-            }
+            com.mukund.bookcompanion.ui.settings.components.BackNavRow(
+                text = stringResource(R.string.home_library),
+                description = stringResource(R.string.back),
+                onClick = { onBackPress() },
+            )
         },
         title = {},
         scrollBehavior = scrollBehavior

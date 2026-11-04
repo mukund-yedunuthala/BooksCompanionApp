@@ -51,6 +51,7 @@ import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.home.components.BookAdditionBottomSheet
 import com.mukund.bookcompanion.ui.components.StatusDot
 import com.mukund.bookcompanion.ui.components.statusColor
+import com.mukund.bookcompanion.ui.home.BookCategory
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
@@ -59,6 +60,7 @@ import com.mukund.bookcompanion.ui.theme.bookColors
 fun OverviewContent(
     modifier: Modifier = Modifier,
     book: Book,
+    books: List<Book> = emptyList(),
     onDeleteBook: (Book) -> Unit,
     onBackPress: () -> Boolean,
     onUpdateBook: (Book) -> Unit,
@@ -318,7 +320,7 @@ private fun OverviewStatusBadge(
     status: String,
     modifier: Modifier = Modifier,
 ) {
-    val isUnread = status.lowercase() == "unread"
+    val isUnread = BookCategory.statusOf(status) == BookCategory.Unread
     val borderColor = if (isUnread) bookColors.inkFaint else statusColor(status)
 
     Row(
