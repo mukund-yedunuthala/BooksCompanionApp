@@ -48,7 +48,9 @@ fun NavGraph(
                 enterTransition = customEnterTransition(),
                 exitTransition = customExitTransition(),
                 popEnterTransition = customPopEnterTransition(),
-                popExitTransition = customPopExitTransition()
+                popExitTransition = customPopExitTransition(),
+                predictivePopEnterTransition = { customPopEnterTransition()(this) },
+                predictivePopExitTransition = { customPopExitTransition()(this) }
             ) {
                 // HOME
                 composable(route = BOOKS_SCREEN) {
