@@ -12,8 +12,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -32,6 +34,16 @@ class SettingsViewModel @Inject constructor(
         readThemePreferences()
     }
     private fun readThemePreferences() {
+        // One blocking read of the stored value (DataStore's documented pattern) so the
+        // first frame already shows the saved theme — otherwise a manual dark theme
+        // flashes light for one frame on every launch.
+        runBlocking {
+            dataStore.data.first().let { preferences ->
+                hasUserDarkThemeEnabled = preferences[DARK_THEME_KEY] ?: false
+                followSystemTheme = preferences[SYSTEM_THEME] ?: false
+            }
+        }
+        // Keep collecting so later edits from SettingsScreen are reflected immediately.
         viewModelScope.launch {
             dataStore.data
                 .map { preferences ->
