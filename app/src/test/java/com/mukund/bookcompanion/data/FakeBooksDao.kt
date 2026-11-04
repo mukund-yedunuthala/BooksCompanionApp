@@ -30,7 +30,7 @@ class FakeBooksDao : BooksDao {
     }
 
     override fun getBooksSortedByTitle(): Flow<List<Book>> =
-        booksFlow.map { it.sortedBy { b -> b.title } }
+        booksFlow.map { it.sortedBy { b -> b.title.lowercase() } }
 
     override fun getBooksSortedByYear(): Flow<List<Book>> =
         booksFlow.map { it.sortedByDescending { b -> b.year } }

@@ -56,6 +56,15 @@ class BooksViewModelSortTest {
     }
 
     @Test
+    fun updateSortOption_title_sortsCaseInsensitively() {
+        val lowercaseTitle = bookB.copy(title = "zebra")
+        fakeDao.emitBooks(listOf(lowercaseTitle, bookA))
+        vm.updateSortOption(SortOption.TITLE)
+        // Lowercase titles must land between their capitalized neighbours.
+        assertEquals(listOf(bookA, lowercaseTitle), vm.books)
+    }
+
+    @Test
     fun updateSortOption_year_booksAreSortedByYearDesc() {
         fakeDao.emitBooks(listOf(bookA, bookB))
         vm.updateSortOption(SortOption.YEAR)
