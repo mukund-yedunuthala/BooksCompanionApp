@@ -124,7 +124,7 @@ The preference keys and defaults are:
 
 1. The screen launches `GetContent` with MIME type `application/json`.
 2. `importBackupFile(viewModel, resolver, uri)` opens the input stream and reads at most 10 MiB plus one byte to determine whether the limit is exceeded. Files larger than 10 MiB return `ImportResult.FileTooLarge` without buffering the remainder.
-3. Gson parses the JSON as an array of `Book`. A missing stream returns `EmptyStream`; a JSON `null` result or `JsonSyntaxException` returns `Malformed`.
+3. Gson parses the JSON as an array of `Book`. A missing stream returns `EmptyStream`; a JSON `null` result or `JsonSyntaxException` returns `Malformed`. Entries missing required fields (title, author) also return `Malformed` — Gson reflection-fills missing keys with null.
 4. Parsed entries are passed to `BooksViewModel.insertAllBooks`, which delegates to `BooksDao.insertAll` (`REPLACE` conflict behavior) and suspends until it completes. The helper returns `Success(count)` after completion or `RestoreFailed` if the database insert throws an exception. Coroutine cancellation is rethrown.
 
 The result types are `ImportResult.Success(count)`, `EmptyStream`, `FileTooLarge`, `Malformed`, and `RestoreFailed`; export results are `ExportResult.Success` and `NoOutputStream`. The screen displays a localized toast for the result. Export obtains a first DAO-flow snapshot through `getBooksSnapshot()` before serializing the selected file.

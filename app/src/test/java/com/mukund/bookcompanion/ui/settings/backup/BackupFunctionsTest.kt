@@ -85,6 +85,26 @@ class BackupFunctionsTest {
     }
 
     @Test
+    fun importBackupFile_withMissingRequiredFields_returnsMalformed() = runTest {
+        // Gson reflections-fill missing keys, so partial JSON parses into Books with null
+        // "non-null" fields. These must be rejected instead of failing at the DB write.
+        val json = """[{"id":1,"author":"Some author","year":2020,"status":"Read"}]"""
+        every { mockResolver.openInputStream(mockUri) } returns json.byteInputStream()
+        val result = importBackupFile(vm, mockResolver, mockUri)
+        assertEquals(ImportResult.Malformed, result)
+        assertNull(fakeDao.lastInsertedAll)
+    }
+
+    @Test
+    fun importBackupFile_withNullAuthor_returnsMalformed() = runTest {
+        val json = """[{"id":1,"title":"Title","author":null,"year":2020,"status":"Read"}]"""
+        every { mockResolver.openInputStream(mockUri) } returns json.byteInputStream()
+        val result = importBackupFile(vm, mockResolver, mockUri)
+        assertEquals(ImportResult.Malformed, result)
+        assertNull(fakeDao.lastInsertedAll)
+    }
+
+    @Test
     fun importBackupFile_withNullStream_returnsEmptyStream() = runTest {
         every { mockResolver.openInputStream(mockUri) } returns null
         val result = importBackupFile(vm, mockResolver, mockUri)

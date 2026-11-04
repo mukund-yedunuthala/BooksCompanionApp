@@ -50,6 +50,13 @@ suspend fun importBackupFile(
             } catch (e: JsonSyntaxException) {
                 return ImportResult.Malformed
             }
+            // unchecked: Gson reflection-fills missing fields, so partial JSON parses into
+            // rows with null "non-null" fields. Room would reject them one book at a time;
+            // reject the whole file here instead of failing the write half-way.
+            @Suppress("SENSELESS_COMPARISON")
+            if (books.any { it.title == null || it.author == null }) {
+                return ImportResult.Malformed
+            }
             try {
                 viewModel.insertAllBooks(books.toList())
             } catch (cancelled: CancellationException) {
