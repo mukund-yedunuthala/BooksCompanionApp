@@ -18,7 +18,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId="com.mukund.bookcompanion"
+        applicationId="page.mukundyedunuthala.bookcompanion"
         minSdk=31
         targetSdk=36
         versionCode= 35
