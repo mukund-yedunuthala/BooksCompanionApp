@@ -112,7 +112,7 @@ The preference keys and defaults are:
 
 ## JSON backup and restore
 
-`ui/settings/backup/BackupScreen.kt` provides document-picker UI and the top-level helper functions used for JSON transfer. It uses Gson and the Android `ContentResolver`.
+`ui/settings/backup/BackupScreen.kt` provides the document-picker UI; `ui/settings/backup/BackupFile.kt` holds the top-level helper functions used for JSON transfer. Both use Gson (I/O file) and the Android `ContentResolver`.
 
 ### Export
 
