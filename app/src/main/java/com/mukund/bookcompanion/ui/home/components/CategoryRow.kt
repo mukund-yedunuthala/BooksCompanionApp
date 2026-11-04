@@ -1,7 +1,6 @@
 package com.mukund.bookcompanion.ui.home.components
 
 import com.mukund.bookcompanion.design.BookCompanionBorders
-import com.mukund.bookcompanion.design.BookCompanionSpacing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.selection.selectable
@@ -25,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.mukund.bookcompanion.ui.home.BookCategory
+import com.mukund.bookcompanion.ui.components.StatusDot
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
@@ -73,23 +73,11 @@ fun CategoryButtonGroupNew(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     // Status dot — matches the design's StatusDot
-                    val dotColor = when (category) {
-                        BookCategory.Read -> bookColors.sage
-                        BookCategory.Reading -> bookColors.ochre
-                        else -> Color.Transparent
-                    }
-                    Box(
-                        modifier = Modifier
-                            .size(BookCompanionSpacing.statusDot)
-                            .border(
-                                width = 1.dp,
-                                color = if (category == BookCategory.Unread)
-                                    if (isActive) bookColors.paper.copy(alpha = 0.6f)
-                                    else bookColors.inkFaint
-                                else Color.Transparent,
-                                shape = CircleShape
-                            )
-                            .background(dotColor, CircleShape)
+                    StatusDot(
+                        status = category.statusLabel.orEmpty(),
+                        unreadRingColor = if (isActive)
+                            bookColors.paper.copy(alpha = 0.6f)
+                            else bookColors.inkFaint,
                     )
                     Text(
                         text = stringResource(category.labelRes),

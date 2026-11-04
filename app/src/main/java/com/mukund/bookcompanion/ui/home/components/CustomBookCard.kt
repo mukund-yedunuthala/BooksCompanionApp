@@ -5,20 +5,15 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
@@ -27,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,6 +32,7 @@ import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.design.BookCompanionBorders
 import com.mukund.bookcompanion.design.BookCompanionSpacing
 import com.mukund.bookcompanion.domain.model.Book
+import com.mukund.bookcompanion.ui.components.StatusDot
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.BooksCompanionTheme
 import com.mukund.bookcompanion.ui.theme.bookColors
@@ -103,23 +98,7 @@ fun CustomBookCardNew(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    val dotColor = when (book.status.lowercase()) {
-                        "read"    -> bookColors.sage
-                        "reading" -> bookColors.ochre
-                        else      -> Color.Transparent
-                    }
-                    Box(
-                        modifier = Modifier
-                            .size(BookCompanionSpacing.statusDot)
-                            .border(
-                                width = 1.dp,
-                                color = if (book.status.lowercase() == "unread")
-                                    bookColors.inkFaint
-                                else Color.Transparent,
-                                shape = CircleShape
-                            )
-                            .background(dotColor, CircleShape)
-                    )
+                    StatusDot(status = book.status)
                     Text(
                         text = book.status.trim(),
                         style = AppType.labelMicroMono,

@@ -37,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -50,6 +49,8 @@ import com.mukund.bookcompanion.R
 import com.mukund.bookcompanion.core.Constants.Companion.NO_VALUE
 import com.mukund.bookcompanion.domain.model.Book
 import com.mukund.bookcompanion.ui.home.components.BookAdditionBottomSheet
+import com.mukund.bookcompanion.ui.components.StatusDot
+import com.mukund.bookcompanion.ui.components.statusColor
 import com.mukund.bookcompanion.ui.theme.AppType
 import com.mukund.bookcompanion.ui.theme.bookColors
 
@@ -317,13 +318,8 @@ private fun OverviewStatusBadge(
     status: String,
     modifier: Modifier = Modifier,
 ) {
-    val dotColor = when (status.lowercase()) {
-        "read"    -> bookColors.sage
-        "reading" -> bookColors.ochre
-        else      -> Color.Transparent
-    }
     val isUnread = status.lowercase() == "unread"
-    val borderColor = if (isUnread) bookColors.inkFaint else dotColor
+    val borderColor = if (isUnread) bookColors.inkFaint else statusColor(status)
 
     Row(
         modifier = modifier
@@ -332,16 +328,7 @@ private fun OverviewStatusBadge(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(7.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(6.dp)
-                .border(
-                    width = 1.dp,
-                    color = if (isUnread) bookColors.inkFaint else Color.Transparent,
-                    shape = CircleShape
-                )
-                .background(dotColor, CircleShape)
-        )
+        StatusDot(status = status)
         Text(
             text = status.trim().uppercase(),
             style = AppType.labelMicroMono,
